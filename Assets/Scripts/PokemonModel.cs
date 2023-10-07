@@ -6,12 +6,13 @@ public class PokemonModel : MonoBehaviour
 {
     string speciesName;
     int level;
-    List<AbilityModel> ability;
+    List<IAbility> ability;
     string gender;
     TypeModel Type1;
     TypeModel Type2;
-    List<AttackModel> moveSet;
-    ItemModel heldItem;
+    List<IAttack> moveSet;
+    List<IAttack> learnSet;
+    IItem heldItem;
     int hitPoints;
     int attack;
     int defense;
@@ -20,4 +21,5 @@ public class PokemonModel : MonoBehaviour
     int speed;
     Dictionary<string, int> ivs;
     Dictionary<string, int> evs;
+    TypeModel newType = TypeModel.Bug;
 }
