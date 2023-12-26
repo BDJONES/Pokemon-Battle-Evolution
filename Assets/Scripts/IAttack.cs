@@ -4,8 +4,8 @@ using UnityEngine;
 
 public interface IAttack
 {
-    TypeModel type { get; set; }
-    string moveCategory { get; set; }
+    IType type { get; set; }
+    Category moveCategory { get; set; }
     int power { get; set; }
     
     
@@ -15,4 +15,10 @@ public interface IAttack
     int powerPoints { get; set; }
     int maxPowerPoints { get; set; }
     void TriggerEffect();
+}
+
+public enum Category
+{
+    Physical,
+    Special
 }

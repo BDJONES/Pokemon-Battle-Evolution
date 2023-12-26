@@ -4,20 +4,14 @@ using System.IO;
 using UnityEngine;
 
 
-public class TypeModel : MonoBehaviour
+public class IType : MonoBehaviour
 {
-    //var anon = new
-    //{
-    //    Id = 1,
-    //    Name = "Maclane",
-    //};
-
     public string typeName;
-    public List<TypeModel> immunities;
-    public List<TypeModel> weaknesses;
-    public List<TypeModel> resistances;
-    public List<TypeModel> strengths;
-    public static TypeModel Normal = new ()
+    public List<IType> immunities;
+    public List<IType> weaknesses;
+    public List<IType> resistances;
+    public List<IType> strengths;
+    public static IType Normal = new ()
     {
         typeName = "Normal",
         immunities = { Ghost },
@@ -25,7 +19,7 @@ public class TypeModel : MonoBehaviour
         resistances = { },
         strengths = { }
     };
-    public static TypeModel Fire = new ()
+    public static IType Fire = new ()
     {
         typeName = "Fire",
         immunities = { },
@@ -33,7 +27,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Fire, Fairy, Steel, Grass, Ice },
         strengths = { Steel, Grass, Ice, Bug }
     };
-    public static TypeModel Water = new ()
+    public static IType Water = new ()
     {
         typeName = "Water",
         immunities = { },
@@ -41,7 +35,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Water, Ice, Fire, Steel },
         strengths = { Rock, Ground, Fire }
     };
-    public static TypeModel Electric = new () 
+    public static IType Electric = new () 
     {
         typeName = "Electric",
         immunities = { },
@@ -49,7 +43,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Steel, Flying, Electric },
         strengths = { Water, Flying }
     };
-    public static TypeModel Grass = new ()
+    public static IType Grass = new ()
     {
         typeName = "Grass",
         immunities = { },
@@ -57,7 +51,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Electric, Water, Ground, Grass },
         strengths = { Rock, Ground, Water }
     };
-    public static TypeModel Ice = new ()
+    public static IType Ice = new ()
     {
         typeName = "Ice",
         immunities = { },
@@ -65,7 +59,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Ice },
         strengths = { Dragon, Grass, Flying, Ground }
     };
-    public static TypeModel Fighting = new ()
+    public static IType Fighting = new ()
     {
         typeName = "Fighting",
         immunities = { },
@@ -73,7 +67,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Dark, Rock, Bug },
         strengths = { Normal, Rock, Steel, Dark }
     };
-    public static TypeModel Poison = new ()
+    public static IType Poison = new ()
     {
         typeName = "Poison",
         immunities = { },
@@ -81,7 +75,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Grass, Fighting, Poison, Bug },
         strengths = { Grass, Fairy }
     };
-    public static TypeModel Ground = new ()
+    public static IType Ground = new ()
     {
         typeName = "Ground",
         immunities = { Electric },
@@ -89,7 +83,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Rock, Poison },
         strengths = { Electric, Rock, Fire, Steel, Poison }
     };
-    public static TypeModel Flying = new ()
+    public static IType Flying = new ()
     {
         typeName = "Flying",
         immunities = { Ground },
@@ -97,7 +91,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Grass, Fighting, Bug },
         strengths = { Fighting, Grass, Bug }
     };
-    public static TypeModel Psychic = new ()
+    public static IType Psychic = new ()
     {
         typeName = "Psychic",
         immunities = { },
@@ -105,7 +99,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Psychic, Fighting },
         strengths = { Fighting, Poison }
     };
-    public static TypeModel Bug = new ()
+    public static IType Bug = new ()
     {
         typeName = "Bug",
         immunities = { },
@@ -113,7 +107,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Grass, Fighting, Ground },
         strengths = { Grass, Psychic, Dark }
     };
-    public static TypeModel Rock = new ()
+    public static IType Rock = new ()
     {
         typeName = "Rock",
         immunities = { },
@@ -121,7 +115,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Flying, Fire, Normal, Poison },
         strengths = { Fire, Flying, Ice, Bug }
     };
-    public static TypeModel Ghost = new ()
+    public static IType Ghost = new ()
     {
         typeName = "Ghost",
         immunities = { Normal, Fighting },
@@ -129,7 +123,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Bug, Poison },
         strengths = { Psychic, Ghost }
     };
-    public static TypeModel Dragon = new ()
+    public static IType Dragon = new ()
     {
         typeName = "Dragon",
         immunities = { },
@@ -137,7 +131,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Fire, Water, Grass, Electric },
         strengths = { Dragon }
     };
-    public static TypeModel Dark = new ()
+    public static IType Dark = new ()
     {
         typeName = "Dark",
         immunities = { Psychic },
@@ -145,7 +139,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Ghost, Dark },
         strengths = { Psychic, Ghost }
     };
-    public static TypeModel Steel = new ()
+    public static IType Steel = new ()
     {
         typeName = "Steel",
         immunities = { Poison },
@@ -153,7 +147,7 @@ public class TypeModel : MonoBehaviour
         resistances = { Steel, Flying, Grass, Dragon, Psychic, Normal, Rock, Fairy, Bug, Ice },
         strengths = { Water, Flying }
     };
-    public static TypeModel Fairy = new ()
+    public static IType Fairy = new ()
     {
         typeName = "Fairy",
         immunities = { Dragon },

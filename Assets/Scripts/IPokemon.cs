@@ -1,15 +1,17 @@
+#nullable enable
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PokemonModel : MonoBehaviour
+public class IPokemon : MonoBehaviour
 {
     string speciesName;
     int level;
     List<IAbility> ability;
     string gender;
-    TypeModel Type1;
-    TypeModel Type2;
+    IType Type1;
+    IType? Type2;
     List<IAttack> moveSet;
     List<IAttack> learnSet;
     IItem heldItem;
@@ -21,5 +23,5 @@ public class PokemonModel : MonoBehaviour
     int speed;
     Dictionary<string, int> ivs;
     Dictionary<string, int> evs;
-    TypeModel newType = TypeModel.Bug;
+    //TypeModel newType = TypeModel.Bug;
 }
