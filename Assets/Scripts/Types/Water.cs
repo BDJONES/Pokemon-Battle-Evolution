@@ -2,45 +2,14 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Water : IType
+public class Water : Type
 {
-    public string typeName
+    public Water()
     {
-        get
-        {
-            return "Water";
-        }
-    }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType>();
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Electric, StaticTypeObjects.Grass };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.StaticTypeObjects.Water, StaticTypeObjects.Ice, StaticTypeObjects.StaticTypeObjects.Fire, StaticTypeObjects.Steel };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Rock, StaticTypeObjects.Ground, StaticTypeObjects.StaticTypeObjects.Fire };
-        }
-        set => throw new System.NotImplementedException();
+        typeName = "Water";
+        immunities = new List<Type>();
+        weaknesses = new List<Type> { StaticTypeObjects.Electric, StaticTypeObjects.Grass };
+        resistances = new List<Type> { StaticTypeObjects.Water, StaticTypeObjects.Ice, StaticTypeObjects.Fire, StaticTypeObjects.Steel };
+        strengths = new List<Type> { StaticTypeObjects.Rock, StaticTypeObjects.Ground, StaticTypeObjects.Fire };
     }
 }

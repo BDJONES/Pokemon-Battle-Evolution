@@ -3,45 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class Ground : IType
+public class Ground : Type
 {
-    public string typeName
+    public Ground()
     {
-        get
-        {
-            return "Ground";
-        }
-    }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Electric };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Water, StaticTypeObjects.Ice, StaticTypeObjects.Grass };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Rock, StaticTypeObjects.Poison };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Electric, StaticTypeObjects.Rock, StaticTypeObjects.Fire, StaticTypeObjects.Steel, StaticTypeObjects.Poison };
-        }
-        set => throw new System.NotImplementedException();
+        typeName = "Ground";
+        immunities = new List<Type> { StaticTypeObjects.Electric };
+        weaknesses = new List<Type> { StaticTypeObjects.Water, StaticTypeObjects.Ice, StaticTypeObjects.Grass };
+        resistances = new List<Type> { StaticTypeObjects.Rock, StaticTypeObjects.Poison };
+        strengths = new List<Type> { StaticTypeObjects.Electric, StaticTypeObjects.Rock, StaticTypeObjects.Fire, StaticTypeObjects.Steel, StaticTypeObjects.Poison };
     }
 }

@@ -4,14 +4,14 @@ using System.IO;
 using UnityEngine;
 
 
-public interface IType
+public class Type : MonoBehaviour
 {
-    public string typeName { get; }
-    public List<IType> immunities { get; set; }
-    public List<IType> weaknesses { get; set; }
-    public List<IType> resistances { get; set; }
-    public List<IType> strengths { get; set; }
-    //static IType StaticTypeObjects.Normal = new()
+    public string typeName = null!;
+    public List<Type> immunities = null!;
+    public List<Type> weaknesses = null!;
+    public List<Type> resistances = null!;
+    public List<Type> strengths = null!;
+    //static Type StaticTypeObjects.Normal = new()
     //{
     //    typeName = "StaticTypeObjects.Normal",
     //    immunities = { StaticTypeObjects.Ghost },
@@ -19,7 +19,7 @@ public interface IType
     //    resistances = { },
     //    strengths = { }
     //};
-    //    public static IType StaticTypeObjects.Fire = new ()
+    //    public static Type StaticTypeObjects.Fire = new ()
     //    {
     //        typeName = "StaticTypeObjects.Fire",
     //        immunities = { },
@@ -27,7 +27,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Fire, StaticTypeObjects.Fairy, StaticTypeObjects.Steel, StaticTypeObjects.Grass, StaticTypeObjects.Ice },
     //        strengths = { StaticTypeObjects.Steel, StaticTypeObjects.Grass, StaticTypeObjects.Ice, StaticTypeObjects.Bug }
     //    };
-    //    public static IType StaticTypeObjects.Water = new ()
+    //    public static Type StaticTypeObjects.Water = new ()
     //    {
     //        typeName = "StaticTypeObjects.Water",
     //        immunities = { },
@@ -35,7 +35,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Water, StaticTypeObjects.Ice, StaticTypeObjects.Fire, StaticTypeObjects.Steel },
     //        strengths = { StaticTypeObjects.Rock, StaticTypeObjects.Ground, StaticTypeObjects.Fire }
     //    };
-    //    public static IType StaticTypeObjects.Electric = new () 
+    //    public static Type StaticTypeObjects.Electric = new () 
     //    {
     //        typeName = "StaticTypeObjects.Electric",
     //        immunities = { },
@@ -43,7 +43,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Steel, StaticTypeObjects.Flying, StaticTypeObjects.Electric },
     //        strengths = { StaticTypeObjects.Water, StaticTypeObjects.Flying }
     //    };
-    //    public static IType StaticTypeObjects.Grass = new ()
+    //    public static Type StaticTypeObjects.Grass = new ()
     //    {
     //        typeName = "StaticTypeObjects.Grass",
     //        immunities = { },
@@ -51,7 +51,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Electric, StaticTypeObjects.Water, StaticTypeObjects.Ground, StaticTypeObjects.Grass },
     //        strengths = { StaticTypeObjects.Rock, StaticTypeObjects.Ground, StaticTypeObjects.Water }
     //    };
-    //    public static IType StaticTypeObjects.Ice = new ()
+    //    public static Type StaticTypeObjects.Ice = new ()
     //    {
     //        typeName = "StaticTypeObjects.Ice",
     //        immunities = { },
@@ -59,7 +59,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Ice },
     //        strengths = { StaticTypeObjects.Dragon, StaticTypeObjects.Grass, StaticTypeObjects.Flying, StaticTypeObjects.Ground }
     //    };
-    //    public static IType StaticTypeObjects.Fighting = new ()
+    //    public static Type StaticTypeObjects.Fighting = new ()
     //    {
     //        typeName = "StaticTypeObjects.Fighting",
     //        immunities = { },
@@ -67,7 +67,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Dark, StaticTypeObjects.Rock, StaticTypeObjects.Bug },
     //        strengths = { StaticTypeObjects.Normal, StaticTypeObjects.Rock, StaticTypeObjects.Steel, StaticTypeObjects.Dark }
     //    };
-    //    public static IType StaticTypeObjects.Poison = new ()
+    //    public static Type StaticTypeObjects.Poison = new ()
     //    {
     //        typeName = "StaticTypeObjects.Poison",
     //        immunities = { },
@@ -75,7 +75,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Grass, StaticTypeObjects.Fighting, StaticTypeObjects.Poison, StaticTypeObjects.Bug },
     //        strengths = { StaticTypeObjects.Grass, StaticTypeObjects.Fairy }
     //    };
-    //    public static IType StaticTypeObjects.Ground = new ()
+    //    public static Type StaticTypeObjects.Ground = new ()
     //    {
     //        typeName = "StaticTypeObjects.Ground",
     //        immunities = { StaticTypeObjects.Electric },
@@ -83,7 +83,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Rock, StaticTypeObjects.Poison },
     //        strengths = { StaticTypeObjects.Electric, StaticTypeObjects.Rock, StaticTypeObjects.Fire, StaticTypeObjects.Steel, StaticTypeObjects.Poison }
     //    };
-    //    public static IType StaticTypeObjects.Flying = new ()
+    //    public static Type StaticTypeObjects.Flying = new ()
     //    {
     //        typeName = "StaticTypeObjects.Flying",
     //        immunities = { StaticTypeObjects.Ground },
@@ -91,7 +91,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Grass, StaticTypeObjects.Fighting, StaticTypeObjects.Bug },
     //        strengths = { StaticTypeObjects.Fighting, StaticTypeObjects.Grass, StaticTypeObjects.Bug }
     //    };
-    //    public static IType StaticTypeObjects.Psychic = new ()
+    //    public static Type StaticTypeObjects.Psychic = new ()
     //    {
     //        typeName = "StaticTypeObjects.Psychic",
     //        immunities = { },
@@ -99,7 +99,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Psychic, StaticTypeObjects.Fighting },
     //        strengths = { StaticTypeObjects.Fighting, StaticTypeObjects.Poison }
     //    };
-    //    public static IType StaticTypeObjects.Bug = new ()
+    //    public static Type StaticTypeObjects.Bug = new ()
     //    {
     //        typeName = "StaticTypeObjects.Bug",
     //        immunities = { },
@@ -107,7 +107,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Grass, StaticTypeObjects.Fighting, StaticTypeObjects.Ground },
     //        strengths = { StaticTypeObjects.Grass, StaticTypeObjects.Psychic, StaticTypeObjects.Dark }
     //    };
-    //    public static IType StaticTypeObjects.Rock = new ()
+    //    public static Type StaticTypeObjects.Rock = new ()
     //    {
     //        typeName = "StaticTypeObjects.Rock",
     //        immunities = { },
@@ -115,7 +115,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Flying, StaticTypeObjects.Fire, StaticTypeObjects.Normal, StaticTypeObjects.Poison },
     //        strengths = { StaticTypeObjects.Fire, StaticTypeObjects.Flying, StaticTypeObjects.Ice, StaticTypeObjects.Bug }
     //    };
-    //    public static IType StaticTypeObjects.Ghost = new ()
+    //    public static Type StaticTypeObjects.Ghost = new ()
     //    {
     //        typeName = "StaticTypeObjects.Ghost",
     //        immunities = { StaticTypeObjects.Normal, StaticTypeObjects.Fighting },
@@ -123,7 +123,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Bug, StaticTypeObjects.Poison },
     //        strengths = { StaticTypeObjects.Psychic, StaticTypeObjects.Ghost }
     //    };
-    //    public static IType StaticTypeObjects.Dragon = new ()
+    //    public static Type StaticTypeObjects.Dragon = new ()
     //    {
     //        typeName = "StaticTypeObjects.Dragon",
     //        immunities = { },
@@ -131,7 +131,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Fire, StaticTypeObjects.Water, StaticTypeObjects.Grass, StaticTypeObjects.Electric },
     //        strengths = { StaticTypeObjects.Dragon }
     //    };
-    //    public static IType StaticTypeObjects.Dark = new ()
+    //    public static Type StaticTypeObjects.Dark = new ()
     //    {
     //        typeName = "StaticTypeObjects.Dark",
     //        immunities = { StaticTypeObjects.Psychic },
@@ -139,7 +139,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Ghost, StaticTypeObjects.Dark },
     //        strengths = { StaticTypeObjects.Psychic, StaticTypeObjects.Ghost }
     //    };
-    //    public static IType StaticTypeObjects.Steel = new ()
+    //    public static Type StaticTypeObjects.Steel = new ()
     //    {
     //        typeName = "StaticTypeObjects.Steel",
     //        immunities = { StaticTypeObjects.Poison },
@@ -147,7 +147,7 @@ public interface IType
     //        resistances = { StaticTypeObjects.Steel, StaticTypeObjects.Flying, StaticTypeObjects.Grass, StaticTypeObjects.Dragon, StaticTypeObjects.Psychic, StaticTypeObjects.Normal, StaticTypeObjects.Rock, StaticTypeObjects.Fairy, StaticTypeObjects.Bug, StaticTypeObjects.Ice },
     //        strengths = { StaticTypeObjects.Ice, StaticTypeObjects.Rock, StaticTypeObjects.Fairy }
     //    };
-    //    public static IType StaticTypeObjects.Fairy = new ()
+    //    public static Type StaticTypeObjects.Fairy = new ()
     //    {
     //        typeName = "StaticTypeObjects.Fairy",
     //        immunities = { StaticTypeObjects.Dragon },

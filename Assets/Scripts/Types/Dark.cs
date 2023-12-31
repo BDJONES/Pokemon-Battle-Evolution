@@ -2,45 +2,14 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Dark : IType
+public class Dark : Type
 {
-    public string typeName
+    public Dark()
     {
-        get
-        {
-            return "Dark";
-        }
-    }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Psychic };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Fighting, StaticTypeObjects.Bug, StaticTypeObjects.Fairy };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Ghost, StaticTypeObjects.Dark };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Psychic, StaticTypeObjects.Ghost };
-        }
-        set => throw new System.NotImplementedException();
+        typeName = "Dark";
+        immunities = new List<Type> { StaticTypeObjects.Psychic };
+        weaknesses = new List<Type> { StaticTypeObjects.Fighting, StaticTypeObjects.Bug, StaticTypeObjects.Fairy };
+        resistances = new List<Type> { StaticTypeObjects.Ghost, StaticTypeObjects.Dark };
+        strengths = new List<Type> { StaticTypeObjects.Psychic, StaticTypeObjects.Ghost };
     }
 }

@@ -2,45 +2,14 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Poison : IType
+public class Poison : Type
 {
-    public string typeName
+    public Poison()
     {
-        get
-        {
-            return "Poison";
-        }
-    }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType>();
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Ground, StaticTypeObjects.Psychic };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Grass, StaticTypeObjects.Fighting, StaticTypeObjects.Poison, StaticTypeObjects.Bug };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Grass, StaticTypeObjects.Fairy };
-        }
-        set => throw new System.NotImplementedException();
+        typeName = "Poison";
+        immunities = new List<Type>();
+        weaknesses = new List<Type> { StaticTypeObjects.Ground, StaticTypeObjects.Psychic };
+        resistances = new List<Type> { StaticTypeObjects.Grass, StaticTypeObjects.Fighting, StaticTypeObjects.Poison, StaticTypeObjects.Bug };
+        strengths = new List<Type> { StaticTypeObjects.Grass, StaticTypeObjects.Fairy };
     }
 }

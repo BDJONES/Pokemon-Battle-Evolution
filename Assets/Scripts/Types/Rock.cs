@@ -2,45 +2,14 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Rock : IType
+public class Rock : Type
 {
-    public string typeName
+    public Rock()
     {
-        get
-        {
-            return "Rock";
-        }
-    }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType>();
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Ground, StaticTypeObjects.Grass, StaticTypeObjects.Water, StaticTypeObjects.Fighting };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Flying, StaticTypeObjects.Fire, StaticTypeObjects.Normal, StaticTypeObjects.Poison };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Fire, StaticTypeObjects.Flying, StaticTypeObjects.Ice, StaticTypeObjects.Bug };
-        }
-        set => throw new System.NotImplementedException();
+        typeName = "Rock";
+        immunities = new List<Type>();
+        weaknesses = new List<Type> { StaticTypeObjects.Ground, StaticTypeObjects.Grass, StaticTypeObjects.Water, StaticTypeObjects.Fighting };
+        resistances = new List<Type> { StaticTypeObjects.Flying, StaticTypeObjects.Fire, StaticTypeObjects.Normal, StaticTypeObjects.Poison };
+        strengths = new List<Type> { StaticTypeObjects.Fire, StaticTypeObjects.Flying, StaticTypeObjects.Ice, StaticTypeObjects.Bug };
     }
 }

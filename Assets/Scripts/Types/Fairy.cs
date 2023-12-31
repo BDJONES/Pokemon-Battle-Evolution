@@ -2,45 +2,15 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Fairy : IType
+public class Fairy : Type
 {
-    public string typeName
+    public Fairy()
     {
-        get
-        {
-            return "Fairy";
-        }
+        typeName = "Fairy";
+        immunities = new List<Type> { StaticTypeObjects.Dragon };
+        weaknesses = new List<Type> { StaticTypeObjects.Steel, StaticTypeObjects.Poison };
+        resistances = new List<Type> { StaticTypeObjects.Fighting, StaticTypeObjects.Bug, StaticTypeObjects.Dark };
+        strengths = new List<Type> { StaticTypeObjects.Fighting, StaticTypeObjects.Dark, StaticTypeObjects.Dragon };
     }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Dragon };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Steel, StaticTypeObjects.Poison };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Fighting, StaticTypeObjects.Bug, StaticTypeObjects.Dark };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Fighting, StaticTypeObjects.Dark, StaticTypeObjects.Dragon };
-        }
-        set => throw new System.NotImplementedException();
-    }
+
 }

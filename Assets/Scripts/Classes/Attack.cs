@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IAttack
+public class Attack : MonoBehaviour
 {
-    IType type { get; set; }
+    Type type { get; set; }
     AttackCategory moveCategory { get; set; }
     int power { get; set; }
     
@@ -14,5 +14,7 @@ public interface IAttack
     
     int powerPoints { get; set; }
     int maxPowerPoints { get; set; }
-    void TriggerEffect();
+    void TriggerEffect() {
+        return;
+    }
 }

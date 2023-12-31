@@ -2,45 +2,45 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Bug : IType
+public class Bug : Type
 {
-    public string typeName
+    public Bug()
     {
-        get
-        {
-            return "Bug";
-        }
+        typeName = "Bug";
+        immunities = new List<Type> { };
+        weaknesses = new List<Type> { StaticTypeObjects.Fire, StaticTypeObjects.Flying };
+        strengths = new List<Type> { StaticTypeObjects.Grass, StaticTypeObjects.Psychic, StaticTypeObjects.Dark };
     }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType>();
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Fire, StaticTypeObjects.Flying };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Grass, StaticTypeObjects.Fighting, StaticTypeObjects.Ground };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Grass, StaticTypeObjects.Psychic, StaticTypeObjects.Dark };
-        }
-        set => throw new System.NotImplementedException();
-    }
+    //public List<Type> immunities
+    //{
+    //    get
+    //    {
+    //        return new List<Type>();
+    //    }
+    //    set => throw new System.NotImplementedException();
+    //}
+    //public List<Type> weaknesses
+    //{
+    //    get
+    //    {
+    //        return new List<Type> { StaticTypeObjects.Fire, StaticTypeObjects.Flying };
+    //    }
+    //    set => throw new System.NotImplementedException();
+    //}
+    //public List<Type> resistances
+    //{
+    //    get
+    //    {
+    //        return new List<Type> { StaticTypeObjects.Grass, StaticTypeObjects.Fighting, StaticTypeObjects.Ground };
+    //    }
+    //    set => throw new System.NotImplementedException();
+    //}
+    //public List<Type> strengths
+    //{
+    //    get
+    //    {
+    //        return new List<Type> { StaticTypeObjects.Grass, StaticTypeObjects.Psychic, StaticTypeObjects.Dark };
+    //    }
+    //    set => throw new System.NotImplementedException();
+    //}
 }

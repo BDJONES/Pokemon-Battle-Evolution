@@ -2,45 +2,14 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Ice : IType
+public class Ice : Type
 {
-    public string typeName
+    public Ice()
     {
-        get
-        {
-            return "Ice";
-        }
-    }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType>();
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Fire, StaticTypeObjects.Fighting, StaticTypeObjects.Rock, StaticTypeObjects.Steel };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Ice };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Dragon, StaticTypeObjects.Grass, StaticTypeObjects.Flying, StaticTypeObjects.Ground };
-        }
-        set => throw new System.NotImplementedException();
+        typeName = "Ice";
+        immunities = new List<Type>();
+        weaknesses = new List<Type> { StaticTypeObjects.Fire, StaticTypeObjects.Fighting, StaticTypeObjects.Rock, StaticTypeObjects.Steel };
+        resistances = new List<Type> { StaticTypeObjects.Ice };
+        strengths = new List<Type> { StaticTypeObjects.Dragon, StaticTypeObjects.Grass, StaticTypeObjects.Flying, StaticTypeObjects.Ground };
     }
 }

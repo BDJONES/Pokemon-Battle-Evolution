@@ -2,45 +2,14 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Fighting : IType
+public class Fighting : Type
 {
-    public string typeName
+    public Fighting()
     {
-        get
-        {
-            return "Fighting";
-        }
-    }
-    public List<IType> immunities
-    {
-        get
-        {
-            return new List<IType>();
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> weaknesses
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Psychic, StaticTypeObjects.Fairy, StaticTypeObjects.Flying };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> resistances
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Dark, StaticTypeObjects.Rock, StaticTypeObjects.Bug };
-        }
-        set => throw new System.NotImplementedException();
-    }
-    public List<IType> strengths
-    {
-        get
-        {
-            return new List<IType> { StaticTypeObjects.Normal, StaticTypeObjects.Rock, StaticTypeObjects.Steel, StaticTypeObjects.Dark };
-        }
-        set => throw new System.NotImplementedException();
+        typeName = "Fighting";
+        immunities = new List<Type>();
+        weaknesses = new List<Type> { StaticTypeObjects.Psychic, StaticTypeObjects.Fairy, StaticTypeObjects.Flying };
+        resistances = new List<Type> { StaticTypeObjects.Dark, StaticTypeObjects.Rock, StaticTypeObjects.Bug };
+        strengths = new List<Type> { StaticTypeObjects.Normal, StaticTypeObjects.Rock, StaticTypeObjects.Steel, StaticTypeObjects.Dark };
     }
 }
