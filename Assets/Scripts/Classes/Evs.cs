@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class Evs : MonoBehaviour
+public class Evs : ScriptableObject
 {
     public int hp;
     public int attack;
@@ -10,7 +10,7 @@ public class Evs : MonoBehaviour
     public int specialAttack;
     public int specialDefense;
     public int speed;
-    public Evs()
+    private void Awake()
     {
         hp = 0;
         attack = 0;

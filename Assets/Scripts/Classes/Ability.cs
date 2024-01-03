@@ -2,12 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ability : MonoBehaviour
+public abstract class Ability : ScriptableObject
 {
-    string abilityName = null!;
-    string description = null!;
-    void TriggerEffect()
-    {
-        return;
-    }
+    protected string abilityName = null!;
+    protected string description = null!;
+    public abstract void TriggerEffect(Pokemon target);
 }

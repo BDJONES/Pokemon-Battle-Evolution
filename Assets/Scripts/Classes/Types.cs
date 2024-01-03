@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 
 
-public class Type : MonoBehaviour
+public class Type : ScriptableObject
 {
     public string typeName = null!;
     public List<Type> immunities = null!;
