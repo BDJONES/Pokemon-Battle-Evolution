@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Fairy : Type
 {
-    public Fairy()
+    private void Awake()
     {
         typeName = "Fairy";
         immunities = new List<Type> { StaticTypeObjects.Dragon };

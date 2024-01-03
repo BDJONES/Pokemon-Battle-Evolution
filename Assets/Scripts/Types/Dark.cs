@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Dark : Type
 {
-    public Dark()
+    private void Awake()
     {
         typeName = "Dark";
         immunities = new List<Type> { StaticTypeObjects.Psychic };

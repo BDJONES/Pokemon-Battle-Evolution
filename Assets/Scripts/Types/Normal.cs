@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Normal : Type
 {
-    public Normal()
+    private void Awake()
     {
         typeName = "Normal";
         immunities = new List<Type> { StaticTypeObjects.Ghost };

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ghost : Type
 {
-    public Ghost()
+    private void Awake()
     {
         typeName = "Ghost";
         immunities = new List<Type> { StaticTypeObjects.Normal, StaticTypeObjects.Fighting };

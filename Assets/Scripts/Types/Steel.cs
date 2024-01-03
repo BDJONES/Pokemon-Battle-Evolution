@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Steel : Type
 {
-    public Steel()
+    private void Awake()
     {
         typeName = "Steel";
         immunities = new List<Type> { StaticTypeObjects.Poison };

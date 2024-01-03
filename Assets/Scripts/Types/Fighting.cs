@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Fighting : Type
 {
-    public Fighting()
+    private void Awake()
     {
         typeName = "Fighting";
         immunities = new List<Type>();

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Electric : Type
 {
-    public Electric()
+    private void Awake()
     {
         typeName = "Electric";
         immunities = new List<Type>();

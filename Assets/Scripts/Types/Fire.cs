@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class Fire : Type
 {
-    public Fire()
+    private void Awake()
     {
         typeName = "Fire";
         immunities = new List<Type>();

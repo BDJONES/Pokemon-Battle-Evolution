@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class Ground : Type
 {
-    public Ground()
+    private void Awake()
     {
         typeName = "Ground";
         immunities = new List<Type> { StaticTypeObjects.Electric };
