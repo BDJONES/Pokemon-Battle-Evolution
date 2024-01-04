@@ -12,20 +12,20 @@ public class Tackle : Attack
         this.moveCategory = AttackCategory.Physical;
         this.power = 40;
         this.accuracy = 100;
+        this.priority = 0;
         this.currPowerPoints = 56;
         this.maxPowerPoints = 56;
     }
 
-    public override bool UseAttack(Pokemon target)
+    public override bool UseAttack(Pokemon attacker, Pokemon target)
     {
-        System.Random rdm = new();
         if (this.accuracy == 100f)
         {
-            TriggerEffect(target);
+            TriggerEffect(attacker, target);
         }
         else
         {
-            int generatedValue = rdm.Next(100);
+            int generatedValue = Random.Range(0, 99);
             int accurateRange = 100 - this.accuracy;
             if (generatedValue < accurateRange)
             {
@@ -34,7 +34,7 @@ public class Tackle : Attack
             }
             else
             {
-                TriggerEffect(target);
+                TriggerEffect(attacker, target);
             }
         }
         Debug.Log("The Attack Landed");

@@ -12,39 +12,16 @@ public class Flamethrower : Attack
         this.moveCategory = AttackCategory.Special;
         this.power = 90;
         this.accuracy = 100;
+        this.priority = 0;
         this.currPowerPoints = 16;
         this.maxPowerPoints = 16;
     }
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //var flamethrower = new Flamethrower();
-    }
-
-
-
-    public override void TriggerEffect(Pokemon target)
-    {
-        base.TriggerEffect(target);
-        int genereatedValue = Random.Range(0, 99);
-        if (genereatedValue < 10)
-        {
-            if (target.GetHPStat() > 0)
-            {
-                target.SetStatus(StatusConditions.Burn);
-                Debug.Log("Flamethrower burned the target");
-            }
-
-        }
-    }
-    public override bool UseAttack(Pokemon target)
+    
+    public override bool UseAttack(Pokemon attacker, Pokemon target)
     {
         if (this.accuracy == 100)
         {
-            TriggerEffect(target);
+            TriggerEffect(attacker, target);
         }
         else
         {
@@ -57,10 +34,24 @@ public class Flamethrower : Attack
             }
             else
             {
-                TriggerEffect(target);
+                TriggerEffect(attacker, target);
             }
         }
         Debug.Log("The Attack Landed");
         return true;
+    }
+    public override void TriggerEffect(Pokemon attacker, Pokemon target)
+    {
+        base.TriggerEffect(attacker, target);
+        int genereatedValue = Random.Range(0, 99);
+        if (genereatedValue < 10)
+        {
+            if (target.GetHPStat() > 0)
+            {
+                target.SetStatus(StatusConditions.Burn);
+                Debug.Log("Flamethrower burned the target");
+            }
+
+        }
     }
 }

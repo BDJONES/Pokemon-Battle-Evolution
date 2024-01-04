@@ -4,5 +4,6 @@ using UnityEngine;
 public enum AttackCategory
 {
     Physical,
-    Special
+    Special,
+    Status
 }

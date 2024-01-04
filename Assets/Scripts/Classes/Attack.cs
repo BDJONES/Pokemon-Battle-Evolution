@@ -4,20 +4,53 @@ using UnityEngine;
 
 public abstract class Attack : ScriptableObject
 {
-    public string attackName;
-    public string description;
-    public Type type { get; set; }
-    public AttackCategory moveCategory { get; set; }
-    public int power { get; set; }
-
-
-    public int accuracy { get; set; }
-
-
-    public int currPowerPoints { get; set; }
-    public int maxPowerPoints { get; set; }
-    public abstract bool UseAttack(Pokemon target);
-    public virtual void TriggerEffect(Pokemon target)
+    protected string attackName;
+    protected string description;
+    protected Type type = null!;
+    protected AttackCategory moveCategory;
+    protected int power;
+    protected int accuracy;
+    protected int priority;
+    protected int currPowerPoints;
+    protected int maxPowerPoints;
+    public string GetAttackName()
+    {
+        return attackName;
+    }
+    public string GetAttackDescription()
+    {
+        return description;
+    }
+    public Type GetAttackType()
+    {
+        return type;
+    }
+    public AttackCategory GetAttackCategory()
+    {
+        return moveCategory;
+    }
+    public int GetAttackPower()
+    {
+        return power;
+    }
+    public int GetAttackAccuracy()
+    {
+        return accuracy;
+    }
+    public int GetAttackPriority()
+    {
+        return priority;
+    }
+    public int GetCurrentPP()
+    {
+        return currPowerPoints;
+    }
+    public int GetMaxPP()
+    {
+        return maxPowerPoints;
+    }
+    public abstract bool UseAttack(Pokemon attacker, Pokemon target);
+    public virtual void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         currPowerPoints -= 1;
         return;
