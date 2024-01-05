@@ -13,6 +13,6 @@ public class Intimidate : Ability
     public override void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         Debug.Log("You intimidated the target");
-        target.SetAttackStage(target.GetAttackStage() - 1);
+        target.AttackStage--;
     }
 }
