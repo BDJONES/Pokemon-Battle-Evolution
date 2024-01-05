@@ -9,7 +9,7 @@ public class PoketCreature : Pokemon
         this.speciesName = "Poket Creature";
         this.level = 100;
         this.gender = Gender.Male;
-        this.status = StatusConditions.Healthy;
+        this.Status = StatusConditions.Healthy;
         this.baseHP = 60;
         this.baseAttack = 60;
         this.baseDefense = 60;
@@ -22,10 +22,29 @@ public class PoketCreature : Pokemon
     private void Start()
     {
         // Must assign Scriptable Objects in Start Function
+        this.ability = ScriptableObject.CreateInstance<Intimidate>();
+        this.abilityList = new List<Ability>
+        {
+            ScriptableObject.CreateInstance<Intimidate>()
+        };
         this.Type1 = StaticTypeObjects.Fire;
         this.Type2 = null;
+        this.moveSet = new List<Attack>
+        { 
+            ScriptableObject.CreateInstance<Tackle>(),
+            ScriptableObject.CreateInstance<Flamethrower>(),
+            ScriptableObject.CreateInstance<Earthquake>(),
+            ScriptableObject.CreateInstance<ThunderWave>()
+        };
+        this.learnSet = new List<Attack>
+        {
+            ScriptableObject.CreateInstance<Flamethrower>(),
+            ScriptableObject.CreateInstance<Tackle>(),
+            ScriptableObject.CreateInstance<Earthquake>(),
+            ScriptableObject.CreateInstance<ThunderWave>()
+        };        
         this.ivs = ScriptableObject.CreateInstance<Ivs>();
-        this.evs = ScriptableObject.CreateInstance<Evs>();
+        this.evs = ScriptableObject.CreateInstance<Evs>();    
         // Assigning the actual values to the stats as opposed to the Base Stats
         // Math comes from this website: https://pokemon.fandom.com/wiki/Statistics
         this.hpStat = Mathf.FloorToInt(0.01f * (2 * this.baseHP + this.ivs.hp + Mathf.FloorToInt(0.25f * evs.hp)) * this.level) + this.level + 10;
@@ -34,15 +53,6 @@ public class PoketCreature : Pokemon
         this.specialAttackStat = Mathf.FloorToInt(0.01f * (2 * this.baseSpecialAttack + this.ivs.specialAttack + Mathf.FloorToInt(0.25f * evs.specialAttack)) * this.level) + 5;
         this.specialDefenseStat = Mathf.FloorToInt(0.01f * (2 * this.baseSpecialDefense + this.ivs.specialDefense + Mathf.FloorToInt(0.25f * evs.specialDefense)) * this.level) + 5;
         this.speedStat = Mathf.FloorToInt(0.01f * (2 * this.baseSpeed + this.ivs.speed + Mathf.FloorToInt(0.25f * evs.speed)) * this.level) + 5;
-        this.moveSet = new List<Attack>
-        { 
-            ScriptableObject.CreateInstance<Flamethrower>(),
-            ScriptableObject.CreateInstance<Tackle>()
-        };
-        //GameObject moves = new GameObject();
-        //var flamethrower = moves.AddComponent<Flamethrower>();
-        //var tackle = moves.AddComponent<Tackle>();
-        //this.moveSet.Add(flamethrower);
-        //this.moveSet.Add(tackle);
+
     }
 }
