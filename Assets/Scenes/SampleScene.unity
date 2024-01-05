@@ -123,11 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &322492515 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+--- !u!114 &322492516 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
   m_PrefabInstance: {fileID: 997972029}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a252c3418c20d2341aa3da25e63b9014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &351221507
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,9 +258,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team:
-  - {fileID: 322492515}
-  activePokemonObject: {fileID: 322492515}
-  activePokemonScript: {fileID: 0}
+  - {fileID: 322492516}
+  activePokemon: {fileID: 0}
 --- !u!4 &491376185
 Transform:
   m_ObjectHideFlags: 0
@@ -421,6 +426,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+      propertyPath: speedStage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+      propertyPath: attackStage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+      propertyPath: defenseStage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+      propertyPath: specialAttackStage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+      propertyPath: specialDefenseStage
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080cf6846cf343249aa6617407b98584, type: 3}
 --- !u!1 &1225661878
@@ -453,9 +478,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team:
-  - {fileID: 1986482185}
-  activePokemonObject: {fileID: 1986482185}
-  activePokemonScript: {fileID: 0}
+  - {fileID: 1986482186}
+  activePokemon: {fileID: 0}
 --- !u!4 &1225661880
 Transform:
   m_ObjectHideFlags: 0
@@ -502,8 +526,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trainer1: {fileID: 1225661879}
   trainer2: {fileID: 491376184}
-  pokemon1: {fileID: 0}
-  pokemon2: {fileID: 0}
 --- !u!4 &1273391664
 Transform:
   m_ObjectHideFlags: 0
@@ -616,11 +638,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1986482185 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+--- !u!114 &1986482186 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
   m_PrefabInstance: {fileID: 1430054322992199695}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a252c3418c20d2341aa3da25e63b9014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1430054322992199695
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -688,5 +716,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4074437382947049457, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+      propertyPath: heldItem
+      value: 
+      objectReference: {fileID: 3379369780255774946, guid: aa8aa04eac835e04eaf8f4bd6f1984b5, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080cf6846cf343249aa6617407b98584, type: 3}

@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public abstract class Item : MonoBehaviour
 {
-    string itemName { get; set; }
-    string description { get; set; }
-    void TriggerEffect()
+    protected string itemName { get; set; }
+    protected string description { get; set; }
+    public abstract void TriggerEffect(Pokemon holder);
+    public virtual void RevertEffect(Pokemon holder)
     {
         return;
     }
