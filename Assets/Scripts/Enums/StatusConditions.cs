@@ -10,6 +10,4 @@ public enum StatusConditions
     Poison,
     BadPoison,
     Asleep,
-    Confused,
-    Attracted
 }
