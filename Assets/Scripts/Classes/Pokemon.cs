@@ -186,6 +186,34 @@ public abstract class Pokemon: MonoBehaviour
     {
         return Type2;
     }
+    public bool IsHealthy()
+    {
+        return this.status == StatusConditions.Healthy;
+    }
+    public bool IsBurned()
+    {
+        return this.status == StatusConditions.Burn;
+    }
+    public bool IsFrozen()
+    {
+        return this.status == StatusConditions.Freeze;
+    }
+    public bool IsParalyzed()
+    {
+        return this.status == StatusConditions.Paralysis;
+    }
+    public bool IsPoisoned()
+    {
+        return this.status == StatusConditions.Poison;
+    }
+    public bool IsBadlyPoisoned()
+    {
+        return this.status == StatusConditions.BadPoison;
+    }
+    public bool IsAsleep()
+    {
+        return this.status == StatusConditions.Asleep;
+    }
     public List<Attack> GetMoveset()
     {
         return moveSet;
@@ -279,9 +307,9 @@ public abstract class Pokemon: MonoBehaviour
         if (this.status == StatusConditions.Burn)
         {
             // Fix Burn effect based on info here: https://the-episodes-and-movie-yveltal-and-more.fandom.com/wiki/Burn_(Pok%C3%A9mon_Status_Condition)#Generation_7
-            //this.SetAttackStat(Mathf.FloorToInt(0.01f * (2 * this.baseAttack + this.ivs.attack + Mathf.FloorToInt(0.25f * this.evs.attack)) * level) + 5);
-            //this.SetAttackStat(this.attackStat / 2);
-            //this.SetAttackStat(this.attackStat * this.attackStage);
+            // Damage Calculation already takes burn into effect
+            return;
+
         }
         else if (this.status == StatusConditions.Paralysis)
         {
@@ -290,5 +318,4 @@ public abstract class Pokemon: MonoBehaviour
             this.SetSpeedStat(this.speedStat * this.speedStage);
         }
     }
-
 }
