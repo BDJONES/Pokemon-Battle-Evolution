@@ -167,13 +167,3 @@ public abstract class Attack : ScriptableObject
         target.SetHPStat(target.GetHPStat() - damage);
     }
 }
-
-public enum GameState
-{
-    BattleStart,
-    TurnStart,
-    WaitingOnPlayerInput,
-    ProcessingInput,
-    TurnEnd,
-    BattleEnd
-}

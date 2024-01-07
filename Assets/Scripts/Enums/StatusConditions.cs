@@ -9,5 +9,5 @@ public enum StatusConditions
     Paralysis,
     Poison,
     BadPoison,
-    Asleep,
+    Asleep
 }
