@@ -9,7 +9,7 @@ public enum StatusConditions
     Paralysis,
     Poison,
     BadPoison,
-    Sleep,
+    Asleep,
     Confused,
     Attracted
 }

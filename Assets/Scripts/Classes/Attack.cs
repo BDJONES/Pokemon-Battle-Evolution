@@ -94,7 +94,7 @@ public abstract class Attack : ScriptableObject
         int stab = 1; // Same Type Attack Bonus
         float typeMatchup = 1f;
         int damageRange = Random.Range(217, 255);
-
+        int damage;
         // Damage Formula comes from this attack https://www.math.miami.edu/~jam/azure/compendium/battdam.htm
         // Visual for Formula https://gamerant.com/pokemon-damage-calculation-help-guide/
         if (attack.GetAttackCategory() == AttackCategory.Physical)
@@ -118,9 +118,12 @@ public abstract class Attack : ScriptableObject
             //Debug.Log($"Step 8 = {step8}");
             int step9 = Mathf.FloorToInt(step8 / 255);
             //Debug.Log($"Step 9 = {step9}");
-            int damage = step9;
-            return damage;
-
+            damage = step9;
+            // Move Power needs to be halved
+            if (attacker.Status == StatusConditions.Burn)
+            {
+                damage /= 2;
+            }
         }
         else if (attack.GetAttackCategory() == AttackCategory.Special)
         {
@@ -144,13 +147,13 @@ public abstract class Attack : ScriptableObject
             //Debug.Log($"Step 8 = {step8}");
             int step9 = Mathf.FloorToInt(step8 / 255);
             //Debug.Log($"Step 9 = {step9}");
-            int damage = step9;
-            return damage;
+            damage = step9;
         }
         else
         {
             return 0;
         }
+        return damage;
     }
     public virtual void DealDamage(int damage, Pokemon attacker, Pokemon target)
     {
@@ -163,4 +166,14 @@ public abstract class Attack : ScriptableObject
         }
         target.SetHPStat(target.GetHPStat() - damage);
     }
+}
+
+public enum GameState
+{
+    BattleStart,
+    TurnStart,
+    WaitingOnPlayerInput,
+    ProcessingInput,
+    TurnEnd,
+    BattleEnd
 }
