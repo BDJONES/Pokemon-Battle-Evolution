@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/PokemonInfoBar_Styles.uss?fileID=7433441132597879392&amp;guid=788bc805e5f733141afc0cc178ae2511&amp;type=3#PokemonInfoBar_Styles" />
+    <ui:VisualElement name="OpposingPokemonInfo" style="flex-grow: 1; flex-direction: row-reverse; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; justify-content: flex-start; align-self: auto;">
+        <ui:VisualElement name="Battle_Info" style="flex-grow: 5; background-color: rgba(255, 255, 255, 0.78); flex-direction: column; align-items: stretch; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; width: 381px; flex-shrink: 0; flex-basis: 0; justify-content: space-between; align-self: auto; flex-wrap: nowrap;">
+            <ui:VisualElement name="Name_And_Gender" style="flex-grow: 1; flex-direction: row; justify-content: space-between; align-items: flex-start; align-self: stretch;">
+                <ui:Label tabindex="-1" text="Pokemon" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Name" style="font-size: 20px;" />
+                <ui:Label tabindex="-1" text="Male " parse-escape-sequences="true" display-tooltip-when-elided="true" name="Gender" />
+            </ui:VisualElement>
+            <ui:VisualElement name="LevelInfo" style="flex-grow: 1;">
+                <ui:Label tabindex="-1" text="Lv. 100" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Level" style="font-size: 20px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="HPBar" style="flex-grow: 1; justify-content: space-between; align-items: flex-start; align-self: auto; flex-direction: row;">
+                <ui:Label tabindex="-1" text="HP" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="align-items: flex-start; justify-content: space-between; font-size: 20px;" />
+                <ui:ProgressBar value="160" high-value="280" name="ProgressBar" style="width: 250px; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Button text="Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="OpposingPokemonInfoButton" class="button" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; flex-grow: 1.5; flex-basis: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; color: rgb(255, 255, 255); white-space: nowrap; border-top-left-radius: 250px; border-bottom-left-radius: 250px;" />
+    </ui:VisualElement>
+</ui:UXML>

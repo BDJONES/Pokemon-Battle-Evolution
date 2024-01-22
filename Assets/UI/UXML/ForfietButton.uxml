@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/ForfietButton_Style.uss?fileID=7433441132597879392&amp;guid=d9144fd278576c644a47e019b660a217&amp;type=3#ForfietButton_Style" />
+    <Style src="project://database/Assets/UI/USS/PlayerActionButtonAnimation_Style.uss?fileID=7433441132597879392&amp;guid=7c1e34b1b0bb1f242af81bfcefc8dc2f&amp;type=3#PlayerActionButtonAnimation_Style" />
+    <ui:VisualElement style="flex-grow: 1; align-items: center; justify-content: center;">
+        <ui:Button text="Forfiet" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ForfietButton" class="forfietButton buttonPressed" style="border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);" />
+    </ui:VisualElement>
+</ui:UXML>
