@@ -172,23 +172,10 @@ public abstract class Attack : IPlayerAction
         }
         target.SetHPStat(target.GetHPStat() - damage);
     }
-<<<<<<< Updated upstream
-}
-
-public enum GameState
-{
-    BattleStart,
-    TurnStart,
-    WaitingOnPlayerInput,
-    ProcessingInput,
-    TurnEnd,
-    BattleEnd
-=======
-
     public IPlayerAction PerformAction()
     {
         return this;
-        
+
     }
 
     public IPlayerAction PerformAction(Pokemon attacker, Pokemon target)
@@ -201,5 +188,4 @@ public enum GameState
     {
         throw new System.NotImplementedException();
     }
->>>>>>> Stashed changes
 }
