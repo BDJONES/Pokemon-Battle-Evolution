@@ -7,6 +7,7 @@ public class PoketCreature : Pokemon
     private PoketCreature()
     {
         this.speciesName = "Poket Creature";
+        this.nickname = this.speciesName;
         this.level = 100;
         this.gender = Gender.Male;
         this.Status = StatusConditions.Healthy;
@@ -16,38 +17,39 @@ public class PoketCreature : Pokemon
         this.baseSpecialAttack = 60;
         this.baseSpecialDefense = 60;
         this.baseSpeed = 60;
-
     }
 
     private void Start()
     {
         // Must assign Scriptable Objects in Start Function
-        this.ability = ScriptableObject.CreateInstance<Intimidate>();
         this.abilityList = new List<Ability>
         {
             ScriptableObject.CreateInstance<Intimidate>()
         };
+        this.ability = this.abilityList[0];
+        // Get the user of this ability to the Ability
+        this.ability.abilityUser = this;
         this.Type1 = StaticTypeObjects.Fire;
         this.Type2 = null;
         this.moveSet = new List<Attack>
         { 
-            ScriptableObject.CreateInstance<Tackle>(),
-            ScriptableObject.CreateInstance<Flamethrower>(),
-            ScriptableObject.CreateInstance<Earthquake>(),
-            ScriptableObject.CreateInstance<ThunderWave>()
+            new Tackle(),
+            new Flamethrower(),
+            new Earthquake(),
+            new ThunderWave()
         };
         this.learnSet = new List<Attack>
         {
-            ScriptableObject.CreateInstance<Flamethrower>(),
-            ScriptableObject.CreateInstance<Tackle>(),
-            ScriptableObject.CreateInstance<Earthquake>(),
-            ScriptableObject.CreateInstance<ThunderWave>()
+            new Flamethrower(),
+            new Tackle(),
+            new Earthquake(),
+            new ThunderWave()
         };        
-        this.ivs = ScriptableObject.CreateInstance<Ivs>();
-        this.evs = ScriptableObject.CreateInstance<Evs>();    
+        this.ivs = new Ivs();
+        this.evs = new Evs();
         // Assigning the actual values to the stats as opposed to the Base Stats
         // Math comes from this website: https://pokemon.fandom.com/wiki/Statistics
-        this.hpStat = Mathf.FloorToInt(0.01f * (2 * this.baseHP + this.ivs.hp + Mathf.FloorToInt(0.25f * evs.hp)) * this.level) + this.level + 10;
+        this.hpStat = GetMaxHPStat();
         this.attackStat = Mathf.FloorToInt(0.01f * (2 * this.baseAttack + this.ivs.attack + Mathf.FloorToInt(0.25f * evs.attack)) * this.level) + 5;
         this.defenseStat = Mathf.FloorToInt(0.01f * (2 * this.baseDefense + this.ivs.defense + Mathf.FloorToInt(0.25f * evs.defense)) * this.level) + 5;
         this.specialAttackStat = Mathf.FloorToInt(0.01f * (2 * this.baseSpecialAttack + this.ivs.specialAttack + Mathf.FloorToInt(0.25f * evs.specialAttack)) * this.level) + 5;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Flamethrower : Attack
 {
-    private void Awake()
+    public Flamethrower()
     {
         this.attackName = "Flamethrower";
         this.description = "The target is scorched with an intense blast of fire. This may also leave the target with a burn.";
@@ -17,7 +17,7 @@ public class Flamethrower : Attack
         this.maxPowerPoints = 16;
     }
     
-    public override void TriggerEffect(Pokemon attacker, Pokemon target)
+    protected override void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         base.TriggerEffect(attacker, target);
         int genereatedValue = Random.Range(0, 99);

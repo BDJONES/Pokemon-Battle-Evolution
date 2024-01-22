@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ThunderWave : Attack
 {
-    private void Awake()
+    public ThunderWave()
     {
         this.attackName = "Thunder Wave";
         this.description = "The user launches a weak jolt of electricity that paralyzes the target.";
@@ -17,7 +17,7 @@ public class ThunderWave : Attack
         this.maxPowerPoints = 32;
     }
 
-    public override void TriggerEffect(Pokemon attacker, Pokemon target)
+    protected override void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         base.TriggerEffect(attacker, target);
         if (target.Status == StatusConditions.Healthy && (target.GetType1() != StaticTypeObjects.Electric || (target.GetType2() && target.GetType2() != StaticTypeObjects.Electric)))

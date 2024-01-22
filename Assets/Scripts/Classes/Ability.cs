@@ -4,7 +4,10 @@ using UnityEngine;
 
 public abstract class Ability : ScriptableObject
 {
+    public Pokemon abilityUser;
     protected string abilityName = null!;
     protected string description = null!;
-    public abstract void TriggerEffect(Pokemon attacker, Pokemon target);
+    
+    protected abstract void TriggerEffect(Pokemon attacker, Pokemon target);
+    protected abstract void GameStateOnChangeHandler(GameState state);
 }

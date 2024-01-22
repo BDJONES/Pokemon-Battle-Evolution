@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tackle : Attack
 {
-    private void Awake()
+    public Tackle()
     {
         this.attackName = "Tackle";
         this.description = "A physical attack in which the user charges and slams into the target with its whole body.";

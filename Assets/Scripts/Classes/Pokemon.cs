@@ -1,5 +1,6 @@
 #nullable enable
 
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,9 +9,10 @@ using UnityEngine;
 public abstract class Pokemon: MonoBehaviour
 {
     protected string speciesName = null!;
+    [SerializeField] protected string nickname = null!;
     protected int level;
-    [SerializeField] protected Ability ability;
     protected List<Ability> abilityList;
+    [SerializeField] protected Ability ability;
     protected Gender gender;
     protected Type Type1 = null!;
     protected Type? Type2;
@@ -50,6 +52,11 @@ public abstract class Pokemon: MonoBehaviour
                 return;
             }
             attackStage = value;
+            Debug.Log($"Attack Stage = {attackStage}");
+            Debug.Log($"Base Attack = {baseAttack}");
+            //Debug.Log($"Attack IVs = {ivs.attack}");
+            Debug.Log($"Attack Evs = {evs.attack}");
+            Debug.Log($"Level = {level}");
             attackStat = Mathf.FloorToInt(0.01f * (2 * baseAttack + ivs.attack + Mathf.FloorToInt(0.25f * evs.attack)) * level) + 5;
             attackStat = Mathf.FloorToInt(attackStat * stageConversionDictionary[attackStage]);
         }
@@ -162,6 +169,14 @@ public abstract class Pokemon: MonoBehaviour
         { -5, 0.29f },
         { -6, 0.25f }
     };
+    public string GetSpeciesName()
+    {
+        return speciesName;
+    }
+    public string GetNickname()
+    {
+        return nickname;
+    }
     public int GetLevel()
     {
         return level;
@@ -250,6 +265,10 @@ public abstract class Pokemon: MonoBehaviour
     {
         return baseSpeed;
     }
+    public int GetMaxHPStat()
+    {
+        return Mathf.FloorToInt(0.01f * (2 * this.baseHP + this.ivs.hp + Mathf.FloorToInt(0.25f * evs.hp)) * this.level) + this.level + 10;
+    }
     public int GetHPStat()
     {
         return hpStat;
@@ -277,6 +296,10 @@ public abstract class Pokemon: MonoBehaviour
     public void RemoveItem()
     {
         heldItem = null;
+    }
+    public void SetNickname(string newNickname)
+    {
+        nickname = newNickname;
     }
     public void SetHPStat(int newHP)
     {

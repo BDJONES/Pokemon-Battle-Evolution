@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Earthquake : Attack
 {
-    private void Awake()
+    public Earthquake()
     {
         this.attackName = "Earthquake";
         this.description = "The user sets off an earthquake that strikes every Pokémon around it.";
@@ -17,7 +17,7 @@ public class Earthquake : Attack
         this.maxPowerPoints = 16;
     }
 
-    public override void TriggerEffect(Pokemon attacker, Pokemon target)
+    protected override void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         base.TriggerEffect(attacker, target);
         // IF the opponent is underground, double the damage     

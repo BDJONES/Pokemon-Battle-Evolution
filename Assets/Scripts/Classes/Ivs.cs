@@ -2,15 +2,15 @@
 using UnityEngine;
 
 
-public class Ivs : ScriptableObject
+public class Ivs
 {
-    public int hp;
-    public int attack;
-    public int defense;
-    public int specialAttack;
-    public int specialDefense;
-    public int speed;
-    private void Awake()
+    [SerializeField] public int hp;
+    [SerializeField] public int attack;
+    [SerializeField] public int defense;
+    [SerializeField] public int specialAttack;
+    [SerializeField] public int specialDefense;
+    [SerializeField] public int speed;
+    public Ivs()
     {
         hp = 31;
         attack = 31;
