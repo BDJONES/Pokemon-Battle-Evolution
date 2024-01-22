@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Attack : ScriptableObject
+public abstract class Attack : IPlayerAction
 {
     protected string attackName;
     protected string description;
@@ -13,6 +13,12 @@ public abstract class Attack : ScriptableObject
     protected int priority;
     protected int currPowerPoints;
     protected int maxPowerPoints;
+
+    public Attack() 
+    {
+        this.attackName = "Generic Attack";
+    }
+
     public string GetAttackName()
     {
         return attackName;
@@ -49,7 +55,7 @@ public abstract class Attack : ScriptableObject
     {
         return maxPowerPoints;
     }
-    public virtual bool UseAttack(Pokemon attacker, Pokemon target)
+    protected virtual bool UseAttack(Pokemon attacker, Pokemon target)
     {
         if (this.accuracy == 100)
         {
@@ -84,12 +90,12 @@ public abstract class Attack : ScriptableObject
         Debug.Log("The Attack Landed");
         return true;
     }
-    public virtual void TriggerEffect(Pokemon attacker, Pokemon target)
+    protected virtual void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         currPowerPoints -= 1;
         return;
     }
-    public virtual int CalculateDamage(Attack attack, Pokemon attacker, Pokemon target)
+    protected virtual int CalculateDamage(Attack attack, Pokemon attacker, Pokemon target)
     {
         int stab = 1; // Same Type Attack Bonus
         float typeMatchup = 1f;
@@ -99,7 +105,7 @@ public abstract class Attack : ScriptableObject
         // Visual for Formula https://gamerant.com/pokemon-damage-calculation-help-guide/
         if (attack.GetAttackCategory() == AttackCategory.Physical)
         {
-            Debug.Log("Fired a Physical Attack");
+            Debug.Log($"Fired a Physical Attack = {attack.attackName}");
             int step1 = (2 * attacker.GetLevel() / 5 + 2);
             //Debug.Log($"Step 1 = {step1}");
             int step2 = step1 * attacker.GetAttackStat() * attack.GetAttackPower();
@@ -127,7 +133,7 @@ public abstract class Attack : ScriptableObject
         }
         else if (attack.GetAttackCategory() == AttackCategory.Special)
         {
-            Debug.Log("Fired a Special Attack");
+            Debug.Log($"Fired a Special Attack = {attack.attackName}");
             //Debug.Log($"Special Attack Stat = {pokemon1.GetSpecialAttackStat()}");
             int step1 = (2 * attacker.GetLevel() / 5 + 2);
             //Debug.Log($"Step 1 = {step1}");
@@ -161,11 +167,12 @@ public abstract class Attack : ScriptableObject
         {
             target.SetHPStat(0);
             Debug.Log("Opponent fainted");
-            Destroy(target.gameObject);
+            Object.Destroy(target.gameObject);
             return;
         }
         target.SetHPStat(target.GetHPStat() - damage);
     }
+<<<<<<< Updated upstream
 }
 
 public enum GameState
@@ -176,4 +183,23 @@ public enum GameState
     ProcessingInput,
     TurnEnd,
     BattleEnd
+=======
+
+    public IPlayerAction PerformAction()
+    {
+        return this;
+        
+    }
+
+    public IPlayerAction PerformAction(Pokemon attacker, Pokemon target)
+    {
+        UseAttack(attacker, target);
+        return this;
+    }
+
+    public IPlayerAction PerformAction(Trainer trainer, Pokemon pokemon2)
+    {
+        throw new System.NotImplementedException();
+    }
+>>>>>>> Stashed changes
 }
