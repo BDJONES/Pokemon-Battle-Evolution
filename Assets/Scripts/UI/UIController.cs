@@ -6,12 +6,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
-public class UIController : MonoBehaviour
+public class UIController : Singleton<UIController>
 {
     [SerializeField] private UIToolkitElements uiElements;
-    [SerializeField] private UIDocument mainUI;
+    [SerializeField] public UIDocument currentUI;
+    [SerializeField] public VisualTreeAsset generalBattleUI; // Your HP, Opponent HP, Fight Button, Pokemon Button, Forfiet Button
     [SerializeField] private UIDocument attackingUI;
-    [SerializeField] private UIDocument teamUI;
+    [SerializeField] public VisualTreeAsset teamUI;
     [SerializeField] private UIDocument pokemonInfoUI;
     [SerializeField] private UIDocument opposingPokemonInfoUI;
     [SerializeField] private UIDocument moveInfoUI;

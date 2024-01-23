@@ -255,9 +255,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiElements: {fileID: 48023139}
-  mainUI: {fileID: 0}
+  currentUI: {fileID: 48023137}
+  generalBattleUI: {fileID: 9197481963319205126, guid: 5a18e687ea3099948b8315c1e93e6feb, type: 3}
   attackingUI: {fileID: 0}
-  teamUI: {fileID: 0}
+  teamUI: {fileID: 9197481963319205126, guid: 54f2370bb3db3754fa99d72645ff2ad7, type: 3}
   pokemonInfoUI: {fileID: 0}
   opposingPokemonInfoUI: {fileID: 0}
   moveInfoUI: {fileID: 0}
