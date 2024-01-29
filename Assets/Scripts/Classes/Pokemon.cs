@@ -11,8 +11,8 @@ public abstract class Pokemon: MonoBehaviour
     protected string speciesName = null!;
     [SerializeField] protected string nickname = null!;
     protected int level;
-    protected List<Ability> abilityList;
-    [SerializeField] protected Ability ability;
+    protected List<Ability> abilityList= null!;
+    [SerializeField] protected Ability ability = null!;
     protected Gender gender;
     protected Type Type1 = null!;
     protected Type? Type2;
@@ -52,11 +52,11 @@ public abstract class Pokemon: MonoBehaviour
                 return;
             }
             attackStage = value;
-            Debug.Log($"Attack Stage = {attackStage}");
-            Debug.Log($"Base Attack = {baseAttack}");
+            //Debug.Log($"Attack Stage = {attackStage}");
+            //Debug.Log($"Base Attack = {baseAttack}");
             //Debug.Log($"Attack IVs = {ivs.attack}");
-            Debug.Log($"Attack Evs = {evs.attack}");
-            Debug.Log($"Level = {level}");
+            //Debug.Log($"Attack Evs = {evs.attack}");
+            //Debug.Log($"Level = {level}");
             attackStat = Mathf.FloorToInt(0.01f * (2 * baseAttack + ivs.attack + Mathf.FloorToInt(0.25f * evs.attack)) * level) + 5;
             attackStat = Mathf.FloorToInt(attackStat * stageConversionDictionary[attackStage]);
         }
@@ -338,7 +338,7 @@ public abstract class Pokemon: MonoBehaviour
         {
             this.SetSpeedStat(Mathf.FloorToInt(0.01f * (2 * this.baseSpeed + this.ivs.speed + Mathf.FloorToInt(0.25f * this.evs.speed)) * level) + 5);
             this.SetSpeedStat(this.speedStat / 2);
-            this.SetSpeedStat(this.speedStat * this.speedStage);
+            this.SetSpeedStat(Mathf.FloorToInt(this.speedStat * stageConversionDictionary[speedStage]));
         }
     }
 }
