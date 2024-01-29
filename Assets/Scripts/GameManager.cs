@@ -15,6 +15,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private PokemonInfoController pokemonInfoController;
     [SerializeField] private OpposingPokemonInfoBarController opposingPokemonInfoBarController;
     [SerializeField] private PokemonButtonController pokemonButtonController;
+    private IPlayerAction selectedAction;
     //public override void Awake()
     //{
     //    base.Awake();
@@ -45,10 +46,8 @@ public class GameManager : Singleton<GameManager>
             player2Item.TriggerEffect(trainer2.activePokemon);
         }
 
-        //var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
-        //DecideWhoGoesFirst(player1Move, player2Move);
-
-        //moveUsed.UseAttack(trainer1.activePokemon, trainer2.activePokemon);
+        var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
+        DecideWhoGoesFirst(player1Move, player2Move);
     }
 
     // Update is called once per frame
@@ -123,17 +122,30 @@ public class GameManager : Singleton<GameManager>
     }
     private async UniTask<IPlayerAction> SelectMove()
     {
-        float time = 0f;
-        while (time < 3f)
+        var receiver = GameObject.Find("AttackSelectionControllers").GetComponent<MoveSelectButton>();
+        UIInputGrabber another = new UIInputGrabber();
+        IPlayerAction selection = null;
+        MoveSelectButton.InputReceived += (input) =>
         {
-            //Debug.Log(Time.time);
-            //if (pokemonButtonController)
-            time += Time.deltaTime;
+            // Invoke the handler and set value of selection to returned Action
+            selection = another.HandleInput(input);
+        };
+        while (selection == null)
+        {
+            Debug.Log("In The Loop");
             await UniTask.Yield();
         }
-        var attacks = trainer1.activePokemon.GetMoveset();
-        int randomMove = UnityEngine.Random.Range(0, 3);
-        return attacks[randomMove];
+        return selection;
+        //float time = 0f;
+        //while (time < 3f)
+        //{
+        //    //Debug.Log(Time.time);
+        //    time += Time.deltaTime;
+        //    await UniTask.Yield();
+        //}
+        //var attacks = trainer1.activePokemon.GetMoveset();
+        //int randomMove = UnityEngine.Random.Range(0, 3);
+        //return attacks[randomMove];
     }
 
     private void ExecuteAttack(IPlayerAction playerAction, Pokemon attacker, Pokemon target)
@@ -161,26 +173,26 @@ public class GameManager : Singleton<GameManager>
             Switch convertedTrainer2Action = (Switch)trainer2Action;
             if (trainer1.activePokemon.GetSpeedStat() > trainer2.activePokemon.GetSpeedStat())
             {
-                ExecuteSwitch(trainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
-                ExecuteSwitch(trainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
+                ExecuteSwitch(convertedTrainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
+                ExecuteSwitch(convertedTrainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
             }
             else if (trainer1.activePokemon.GetSpeedStat() < trainer2.activePokemon.GetSpeedStat())
             {
-                ExecuteSwitch(trainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
-                ExecuteSwitch(trainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
+                ExecuteSwitch(convertedTrainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
+                ExecuteSwitch(convertedTrainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
             }
             else
             {
                 int speedTie = UnityEngine.Random.Range(0, 99);
                 if (speedTie < 50)
                 {
-                    ExecuteSwitch(trainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
-                    ExecuteSwitch(trainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
+                    ExecuteSwitch(convertedTrainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
+                    ExecuteSwitch(convertedTrainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
                 }
                 else
                 {
-                    ExecuteSwitch(trainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
-                    ExecuteSwitch(trainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
+                    ExecuteSwitch(convertedTrainer2Action, trainer2, trainer2.pokemonTeam[1].GetComponent<Pokemon>());
+                    ExecuteSwitch(convertedTrainer1Action, trainer1, trainer1.pokemonTeam[1].GetComponent<Pokemon>());
                 }
             }
         }
@@ -202,25 +214,25 @@ public class GameManager : Singleton<GameManager>
             Attack convertedTrainer2Action = (Attack)trainer2Action;
             if (convertedTrainer1Action.GetAttackPriority() > convertedTrainer2Action.GetAttackPriority())
             {
-                convertedTrainer1Action.PerformAction(trainer1.activePokemon, trainer2.activePokemon);
-                convertedTrainer2Action.PerformAction(trainer2.activePokemon, trainer1.activePokemon);
+                ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
+                ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
             }
             else if (convertedTrainer1Action.GetAttackPriority() <  convertedTrainer2Action.GetAttackPriority())
             {
-                convertedTrainer2Action.PerformAction(trainer2.activePokemon, trainer1.activePokemon);
-                convertedTrainer1Action.PerformAction(trainer1.activePokemon, trainer2.activePokemon);
+                ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
             }
             else
             {
                 if (trainer1.activePokemon.GetSpeedStat() > trainer2.activePokemon.GetSpeedStat())
                 {
-                    convertedTrainer1Action.PerformAction(trainer1.activePokemon, trainer2.activePokemon);
-                    convertedTrainer2Action.PerformAction(trainer2.activePokemon, trainer1.activePokemon);
+                    ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
+                    ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
                 }
                 else if (trainer1.activePokemon.GetSpeedStat() < trainer2.activePokemon.GetSpeedStat())
                 {
-                    convertedTrainer2Action.PerformAction(trainer2.activePokemon, trainer1.activePokemon);
-                    convertedTrainer1Action.PerformAction(trainer1.activePokemon, trainer2.activePokemon);
+                    ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                    ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
                 }
                 else
                 {
@@ -229,22 +241,21 @@ public class GameManager : Singleton<GameManager>
                     if (speedTie < 50)
                     {
                         Debug.Log("Trainer 1 won the speed tie");
-                        convertedTrainer1Action.PerformAction(trainer1.activePokemon, trainer2.activePokemon);
+                        ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
                         UpdateGameState(GameState.FirstAttack);
-                        await opposingPokemonInfoBarController.UpdateHealthBar();
-                        
-                        convertedTrainer2Action.PerformAction(trainer2.activePokemon, trainer1.activePokemon);
-                        await pokemonInfoController.UpdateHealthBar();
+                        await opposingPokemonInfoBarController.UpdateHealthBar(Menus.GeneralBattleMenu);
+                        ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                        await pokemonInfoController.UpdateHealthBar(Menus.GeneralBattleMenu);
                         UpdateGameState(GameState.SecondAttack);
                     }
                     else
                     {
                         Debug.Log("Trainer 2 won the speed tie");
-                        convertedTrainer2Action.PerformAction(trainer2.activePokemon, trainer1.activePokemon);
-                        await pokemonInfoController.UpdateHealthBar();
+                        ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                        await pokemonInfoController.UpdateHealthBar(Menus.GeneralBattleMenu);
                         UpdateGameState(GameState.FirstAttack);
-                        convertedTrainer1Action.PerformAction(trainer1.activePokemon, trainer2.activePokemon);
-                        await opposingPokemonInfoBarController.UpdateHealthBar();
+                        ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
+                        await opposingPokemonInfoBarController.UpdateHealthBar(Menus.GeneralBattleMenu);
                         UpdateGameState(GameState.SecondAttack);
                     }
                 }

@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="No_Button" src="project://database/Assets/UI/UXML/Assets/Forfiet%20Screen%20UI/No_Button.uxml?fileID=9197481963319205126&amp;guid=7bbedba8ca0212749a860869fa24f156&amp;type=3#No_Button" />
+    <ui:Template name="Yes_Button" src="project://database/Assets/UI/UXML/Assets/Forfiet%20Screen%20UI/Yes_Button.uxml?fileID=9197481963319205126&amp;guid=6dd588ed17f25464fbf9acbeb13d974e&amp;type=3#Yes_Button" />
+    <ui:VisualElement name="Screen" style="flex-grow: 1; align-items: center; justify-content: center;">
+        <ui:VisualElement name="Content" style="flex-grow: 1; align-items: center; justify-content: center; align-self: auto; height: 210px; position: absolute; top: auto; left: auto; right: auto; bottom: auto; width: 500px;">
+            <ui:VisualElement name="Body" style="flex-grow: 1; align-self: auto; justify-content: flex-start; align-items: auto; background-color: rgb(255, 255, 255); height: 200px; width: 350px; position: relative; flex-wrap: wrap; top: auto; left: auto; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px;">
+                <ui:VisualElement name="ActionText" style="flex-grow: 3; align-items: stretch; align-self: stretch; justify-content: space-around; border-bottom-width: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); height: 10px;">
+                    <ui:Label tabindex="-1" text="Forfiet Match" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Text" style="align-items: stretch; align-self: auto; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+                </ui:VisualElement>
+                <ui:Label tabindex="-1" text="Are you sure you would like to forfiet the match?" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Message" style="align-items: auto; flex-wrap: nowrap; flex-direction: column; height: 40px; position: relative; justify-content: space-around; flex-grow: 1; align-self: stretch; border-bottom-width: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-width: 0; background-color: rgb(195, 195, 195); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                <ui:VisualElement name="Buttons" style="flex-grow: 1; flex-direction: row; justify-content: space-around; align-items: stretch; align-self: stretch;">
+                    <ui:Instance template="No_Button" name="No_Button" class="buttonPressed" style="width: 25%;" />
+                    <ui:Instance template="Yes_Button" name="Yes_Button" class="buttonPressed" style="width: 25%;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

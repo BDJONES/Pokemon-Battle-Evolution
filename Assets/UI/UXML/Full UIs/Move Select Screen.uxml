@@ -1,0 +1,32 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="PokemonInfoBar" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/PokemonInfoBar.uxml?fileID=9197481963319205126&amp;guid=dc24fdffd3da14d4984838b0650899b9&amp;type=3#PokemonInfoBar" />
+    <ui:Template name="OpposingPokemonInfoBar" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/OpposingPokemonInfoBar.uxml?fileID=9197481963319205126&amp;guid=f7fe7a5fa331bc8449a2b36b95e3e37e&amp;type=3#OpposingPokemonInfoBar" />
+    <ui:Template name="Back Button" src="project://database/Assets/UI/UXML/Assets/Pokemon%20Party%20UI/Back%20Button.uxml?fileID=9197481963319205126&amp;guid=d7b6966cbefd4a04984ec609c28775ae&amp;type=3#Back Button" />
+    <ui:Template name="LeftAttackButton" src="project://database/Assets/UI/UXML/Assets/Move%20Selection%20UI/AttackButtons/LeftAttackButton.uxml?fileID=9197481963319205126&amp;guid=c877d4069b0c1fd43a2c24f38ce959b3&amp;type=3#LeftAttackButton" />
+    <ui:Template name="AttackButton" src="project://database/Assets/UI/UXML/Assets/Move%20Selection%20UI/AttackButtons/RightAttackButton.uxml?fileID=9197481963319205126&amp;guid=6ab5c8e3624793f4d845303b2fec1e66&amp;type=3#RightAttackButton" />
+    <ui:VisualElement name="Screen" style="flex-grow: 1; width: 100%; height: 100%;">
+        <ui:VisualElement name="Content" style="flex-grow: 1; justify-content: flex-end; align-items: flex-end;">
+            <ui:VisualElement name="TrainerInfo" style="flex-grow: 1; position: absolute; left: 0; bottom: 0; top: auto; flex-direction: row; width: 40%; height: 27%;">
+                <ui:VisualElement name="TeamHealth" style="flex-grow: 1;" />
+                <ui:Instance template="PokemonInfoBar" name="PokemonInfoBar" style="height: 100%; width: 100%; position: relative; left: auto; bottom: auto;">
+                    <AttributeOverrides element-name="HPBar" value="160" high-value="280" />
+                </ui:Instance>
+            </ui:VisualElement>
+            <ui:VisualElement name="OpposingTrainerInfo" style="flex-grow: 1; position: absolute; top: 0; right: 0; left: auto; flex-direction: row; width: 40%; height: 27%;">
+                <ui:Instance template="OpposingPokemonInfoBar" name="OpposingPokemonInfoBar" style="width: 100%; height: 100%; position: relative; right: auto; top: auto;" />
+                <ui:VisualElement name="TeamHealth" style="flex-grow: 1; flex-direction: row-reverse;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Attacks" style="flex-grow: 1; justify-content: flex-end; align-self: auto; align-items: auto; flex-direction: row; right: auto; top: auto; position: absolute; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; width: 50%; height: 40%;">
+                <ui:Instance template="Back Button" name="Back_Button" style="bottom: 7px;" />
+                <ui:VisualElement name="LeftAttacks" style="flex-grow: 1; width: 50%; align-items: stretch;">
+                    <ui:Instance template="LeftAttackButton" name="Attack1" />
+                    <ui:Instance template="LeftAttackButton" name="Attack3" />
+                </ui:VisualElement>
+                <ui:VisualElement name="RightAttacks" style="flex-grow: 1; width: 50%;">
+                    <ui:Instance template="AttackButton" name="Attack2" />
+                    <ui:Instance template="AttackButton" name="Attack4" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

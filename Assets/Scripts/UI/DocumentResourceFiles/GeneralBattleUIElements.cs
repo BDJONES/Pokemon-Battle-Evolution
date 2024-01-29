@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class UIToolkitElements : MonoBehaviour
+public class GeneralBattleUIElements : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
     public VisualElement PokemonInfoBar
@@ -18,7 +18,9 @@ public class UIToolkitElements : MonoBehaviour
             }
             VisualElement screen = uiDocument.rootVisualElement.Query<VisualElement>("Screen");
             VisualElement content = screen.Query<VisualElement>("Content");
-            VisualElement pokemonInfoBar = content.Query<VisualElement>("PokemonInfoBar");
+            VisualElement trainerInfo = content.Query<VisualElement>("TrainerInfo");
+            TemplateContainer pokemonInfoBarWidget = trainerInfo.Query<TemplateContainer>("PokemonInfoBar");
+            VisualElement pokemonInfoBar = pokemonInfoBarWidget.Query<VisualElement>("PokemonInfo");
             return pokemonInfoBar;
         }
     }
@@ -33,8 +35,10 @@ public class UIToolkitElements : MonoBehaviour
             }
             VisualElement screen = uiDocument.rootVisualElement.Query<VisualElement>("Screen");
             VisualElement content = screen.Query<VisualElement>("Content");
-            VisualElement pokemonInfoBar = content.Query<VisualElement>("OpposingPokemonInfoBar");
-            return pokemonInfoBar;
+            VisualElement opposingTrainerInfo = content.Query<VisualElement>("OpposingTrainerInfo");
+            TemplateContainer opposingPokemonInfoBarWidget = opposingTrainerInfo.Query<TemplateContainer>("OpposingPokemonInfoBar");
+            VisualElement opposingPokemonInfoBar = opposingPokemonInfoBarWidget.Query<VisualElement>("OpposingPokemonInfo");
+            return opposingPokemonInfoBar;
         }
     }
     public Button FightButton

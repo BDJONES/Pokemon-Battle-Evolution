@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/PlayerActionButtonAnimation_Style.uss?fileID=7433441132597879392&amp;guid=7c1e34b1b0bb1f242af81bfcefc8dc2f&amp;type=3#PlayerActionButtonAnimation_Style" />
+    <ui:VisualElement name="Content" style="flex-grow: 1; align-items: center; justify-content: flex-start; flex-direction: row; width: auto; align-self: auto; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+        <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="AttackButton" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; width: 70%; height: 100%; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; align-items: center; align-self: center; justify-content: center; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+            <ui:VisualElement name="Content" style="flex-grow: 1; width: 85%; height: auto;">
+                <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AttackName" />
+                <ui:VisualElement name="MoveInfo" style="flex-grow: 1; flex-direction: row; justify-content: space-around; align-self: auto; align-items: stretch; width: auto;">
+                    <ui:Label tabindex="-1" text="Type" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Type" style="align-items: flex-start;" />
+                    <ui:Label tabindex="-1" text="PP: 10/16" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PP" style="align-items: flex-end;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:Button>
+        <ui:Button text="Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AttackInfoButton" class="buttonPressed" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; flex-grow: 1.5; flex-basis: 0; border-top-right-radius: 250px; border-bottom-right-radius: 250px; color: rgb(255, 255, 255); font-size: 20%; width: auto; height: 100%; background-color: rgb(0, 0, 0);" />
+    </ui:VisualElement>
+</ui:UXML>
