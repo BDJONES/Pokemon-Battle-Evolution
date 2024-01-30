@@ -35,6 +35,7 @@ public class GameManager : Singleton<GameManager>
         }
         UpdateGameState(GameState.BattleStart);
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
+        TimeManager.Instance.StartMatchTimer();
         var player1Item = trainer1.activePokemon.GetItem();
         var player2Item = trainer2.activePokemon.GetItem();
         if (player1Item)
@@ -122,6 +123,7 @@ public class GameManager : Singleton<GameManager>
     }
     private async UniTask<IPlayerAction> SelectMove()
     {
+        TimeManager.Instance.StartTurnTimer();
         var receiver = GameObject.Find("AttackSelectionControllers").GetComponent<MoveSelectButton>();
         UIInputGrabber another = new UIInputGrabber();
         IPlayerAction selection = null;
@@ -130,22 +132,20 @@ public class GameManager : Singleton<GameManager>
             // Invoke the handler and set value of selection to returned Action
             selection = another.HandleInput(input);
         };
-        while (selection == null)
+        while (selection == null && TimeManager.Instance.IsTurnTimerActive())
         {
-            Debug.Log("In The Loop");
+            //Debug.Log("In The Loop");
             await UniTask.Yield();
         }
-        return selection;
-        //float time = 0f;
-        //while (time < 3f)
-        //{
-        //    //Debug.Log(Time.time);
-        //    time += Time.deltaTime;
-        //    await UniTask.Yield();
-        //}
-        //var attacks = trainer1.activePokemon.GetMoveset();
-        //int randomMove = UnityEngine.Random.Range(0, 3);
-        //return attacks[randomMove];
+        // If a move was selected return that value
+        if (selection != null)
+        {
+            return selection;
+        }
+        // Otherwise, perform a random move
+        var attacks = trainer1.activePokemon.GetMoveset();
+        int randomMove = UnityEngine.Random.Range(0, 3);
+        return attacks[randomMove];
     }
 
     private void ExecuteAttack(IPlayerAction playerAction, Pokemon attacker, Pokemon target)
