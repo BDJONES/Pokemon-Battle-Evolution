@@ -11,7 +11,7 @@ public class ForfietButtonController : MonoBehaviour
 	private void OnEnable()
 	{
 		UIController.OnMenuChange += HandleMenuChange;
-        uiElements.FightButton.clicked += ForfietButtonClicked;
+        UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
     }
 
 
@@ -22,13 +22,13 @@ public class ForfietButtonController : MonoBehaviour
 		{
 			return;
 		}
-		uiElements.ForfietButton.clicked -= ForfietButtonClicked;
+		
 	}
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.GeneralBattleMenu)
 		{
-            uiElements.ForfietButton.clicked += ForfietButtonClicked;
+            UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
         }
     }
 

@@ -26,7 +26,7 @@ public class NoButtonController : MonoBehaviour
     {
         if (menu == Menus.ForfietMenu)
         {
-            forfietUIElements.NoButton.clicked += NoButtonClicked;
+            UIEventSubscriptionManager.Subscribe(forfietUIElements.NoButton, NoButtonClicked);
         }
     }
 

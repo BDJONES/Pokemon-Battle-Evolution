@@ -22,17 +22,16 @@ public class BackButtonController : MonoBehaviour
     {
         if (menu == Menus.InBattlePartyMenu)
         {
-            uIInBattleParty.BackButton.clicked += BackButtonClicked;
+            UIEventSubscriptionManager.Subscribe(uIInBattleParty.BackButton, BackButtonClicked);
         }
         if (menu == Menus.MoveSelectionMenu)
         {
-            uIMoveSelection.BackButton.clicked += BackButtonClicked;
+            UIEventSubscriptionManager.Subscribe(uIMoveSelection.BackButton, BackButtonClicked);
         }
     }
 
     private void BackButtonClicked()
     {
-        uIInBattleParty.BackButton.clicked -= BackButtonClicked;
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 }

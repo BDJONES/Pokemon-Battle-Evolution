@@ -12,7 +12,7 @@ public class FightButtonController : MonoBehaviour
     private void OnEnable()
     {
         UIController.OnMenuChange += HandleMenuChange;
-        uiElements.FightButton.clicked += FightButtonClicked;
+        UIEventSubscriptionManager.Subscribe(uiElements.FightButton, FightButtonClicked);
     }
 
 
@@ -23,14 +23,14 @@ public class FightButtonController : MonoBehaviour
         {
             return;
         }
-        uiElements.FightButton.clicked -= FightButtonClicked;
+        
     }
 
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.GeneralBattleMenu)
         {
-            uiElements.FightButton.clicked += FightButtonClicked;
+            UIEventSubscriptionManager.Subscribe(uiElements.FightButton, FightButtonClicked);
         }
     }
 
@@ -41,7 +41,7 @@ public class FightButtonController : MonoBehaviour
         //OpposingPokemonInfoBarController opposingPokemonInfoBarController = GameObject.Find("UI Controller").GetComponent<OpposingPokemonInfoBarController>();
         //await opposingPokemonInfoBarController.UpdateHealthBar();
         //Debug.Log("Fight button Clicked");
+        
         UIController.Instance.UpdateMenu(Menus.MoveSelectionMenu);
-
     }
 }
