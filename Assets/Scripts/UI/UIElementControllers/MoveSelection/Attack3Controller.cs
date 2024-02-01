@@ -21,7 +21,7 @@ public class Attack3Controller : MoveSelectButton
         if (menu == Menus.MoveSelectionMenu)
         {
             InitializeButton(moveSelectionUIElements.Attack3Button);
-            moveSelectionUIElements.Attack3Button.clicked += OnAttackSelected;
+            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3Button, OnAttackSelected);
         }
     }
 }
