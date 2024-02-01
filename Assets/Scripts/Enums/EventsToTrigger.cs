@@ -4,5 +4,10 @@ using UnityEngine;
 
 public enum EventsToTrigger
 {
-    
+    PokemonDamage,
+    OpposingPokemonDamage,
+    PokemonSwitch,
+    OpposingPokemonSwitch,
+    OnAbilityTrigger,
+    OnItemTrigger
 }
