@@ -13,8 +13,8 @@ public abstract class Pokemon: MonoBehaviour
     protected int level;
     protected List<Ability> abilityList= null!;
     [SerializeField] protected Ability ability = null!;
-    protected Gender gender;
-    protected Type Type1 = null!;
+    [SerializeField] protected Gender gender;
+    [SerializeField] protected Type Type1 = null!;
     protected Type? Type2;
     [SerializeField] private StatusConditions status = StatusConditions.Healthy;
     public StatusConditions Status { 

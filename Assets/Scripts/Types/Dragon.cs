@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Dragon : Type
 {
-    private void Awake()
+    public override void InitializeValues()
     {
         typeName = "Dragon";
         immunities = new List<Type>();

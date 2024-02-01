@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class Attack : IPlayerAction
@@ -97,9 +98,10 @@ public abstract class Attack : IPlayerAction
     }
     protected virtual int CalculateDamage(Attack attack, Pokemon attacker, Pokemon target)
     {
-        int stab = 1; // Same Type Attack Bonus
-        float typeMatchup = 1f;
+        float stab = IsStab(attacker); // Same Type Attack Bonus
+        float typeMatchup = Effectiveness(attacker, target);
         int damageRange = Random.Range(217, 255);
+        int critChance = Random.Range(1, 16);
         int damage;
         // Damage Formula comes from this attack https://www.math.miami.edu/~jam/azure/compendium/battdam.htm
         // Visual for Formula https://gamerant.com/pokemon-damage-calculation-help-guide/
@@ -116,7 +118,7 @@ public abstract class Attack : IPlayerAction
             //Debug.Log($"Step 4 = {step4}");
             int step5 = step4 + 2;
             //Debug.Log($"Step 5 = {step5}");
-            int step6 = step5 * stab;
+            float step6 = step5 * stab;
             //Debug.Log($"Step 6 = {step6}");
             float step7 = step6 * typeMatchup;
             //Debug.Log($"Step 7 = {step7}");
@@ -129,6 +131,11 @@ public abstract class Attack : IPlayerAction
             if (attacker.Status == StatusConditions.Burn)
             {
                 damage /= 2;
+            }
+            if (critChance == 1)
+            {
+                Debug.Log("You landed a critical hit");
+                damage = Mathf.FloorToInt(damage * 1.5f);
             }
         }
         else if (attack.GetAttackCategory() == AttackCategory.Special)
@@ -145,7 +152,7 @@ public abstract class Attack : IPlayerAction
             //Debug.Log($"Step 4 = {step4}");
             int step5 = step4 + 2;
             //Debug.Log($"Step 5 = {step5}");
-            int step6 = step5 * stab;
+            float step6 = step5 * stab;
             //Debug.Log($"Step 6 = {step6}");
             float step7 = step6 * typeMatchup;
             //Debug.Log($"Step 7 = {step7}"); 
@@ -154,6 +161,11 @@ public abstract class Attack : IPlayerAction
             int step9 = Mathf.FloorToInt(step8 / 255);
             //Debug.Log($"Step 9 = {step9}");
             damage = step9;
+            if (critChance == 1)
+            {
+                Debug.Log("You landed a critical hit");
+                damage = Mathf.FloorToInt(damage * 1.5f);
+            }
         }
         else
         {
@@ -187,5 +199,80 @@ public abstract class Attack : IPlayerAction
     public IPlayerAction PerformAction(Trainer trainer, Pokemon pokemon2)
     {
         throw new System.NotImplementedException();
+    }
+
+    protected virtual float IsStab(Pokemon pokemon)
+    {
+        if (this.type == pokemon.GetType1() || (pokemon.GetType2() != null && this.type == pokemon.GetType2())) {
+            Debug.Log($"{this.GetAttackName()} is STAB");
+            return 1.5f;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+    protected virtual float Effectiveness(Pokemon attacker, Pokemon target)
+    {
+        float effectiveness = 1f;
+
+        //for (int i = 0; i < target.GetType1().weaknesses.Count; i++)
+        //{
+        //    Debug.Log(target.GetType1().weaknesses[i].GetType().Name);
+        //    if (this.type)
+        //    {
+        //        Debug.Log("He Weak to this right here");
+        //    }
+        //    else
+        //    {
+        //        Debug.Log("That's aight");
+        //    }
+        //}
+        //Debug.Log("Checking for move effectiveness");
+        if (target.GetType1().immunities.Contains(this.type) || (target.GetType2() != null && target.GetType2().immunities.Contains(this.type)))
+        {
+            Debug.Log($"{target.GetSpeciesName()} is unaffected.");
+            return 0;
+        }
+
+        if (target.GetType1().weaknesses.Contains(this.type))
+        {
+            Debug.Log($"{target.GetType1().GetType().Name} is weak to {this.type.GetType().Name}");
+            effectiveness *= 2;
+        }
+
+        if (target.GetType2() != null && target.GetType2().weaknesses.Contains(this.type))
+        {
+            Debug.Log($"{target.GetType2().GetType().Name} is weak to {this.type.GetType().Name}");
+            effectiveness *= 2;
+        }
+
+        if (target.GetType1().resistances.Contains(this.type))
+        {
+            Debug.Log($"{target.GetType1().GetType().Name} resists {this.type.GetType().Name}");
+            effectiveness /= 2;
+        }
+
+        if (target.GetType2() != null && target.GetType2().resistances.Contains(this.type))
+        {
+            Debug.Log($"{target.GetType2().GetType().Name} resists {this.type.GetType().Name}");
+            effectiveness /= 2;
+        }
+
+        if (effectiveness > 1f)
+        {
+            Debug.Log($"{this.GetAttackName()} is super effective. Effectiveness = {effectiveness}.");
+        }
+        else if (effectiveness == 1f)
+        {
+            Debug.Log($"{this.GetAttackName()} is effective");
+        }
+        else
+        {
+            Debug.Log($"{this.GetAttackName()} is not very effective. Effectiveness = {effectiveness}.");
+        }
+
+        return effectiveness;
     }
 }

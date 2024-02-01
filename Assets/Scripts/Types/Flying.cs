@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class Flying : Type
 {
-    private void Awake()
+    public override void InitializeValues()
     {
         typeName = "Flying";
         immunities = new List<Type> { StaticTypeObjects.Ground };

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Grass : Type
 {
-    private void Awake()
+    public override void InitializeValues()
     {
         typeName = "Grass";
         immunities = new List<Type>();

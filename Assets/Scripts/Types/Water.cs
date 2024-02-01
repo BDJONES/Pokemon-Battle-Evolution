@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Water : Type
 {
-    private void Awake()
+    public override void InitializeValues()
     {
         typeName = "Water";
         immunities = new List<Type>();

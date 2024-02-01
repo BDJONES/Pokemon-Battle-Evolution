@@ -20,7 +20,7 @@ public class ThunderWave : Attack
     protected override void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         base.TriggerEffect(attacker, target);
-        if (target.Status == StatusConditions.Healthy && (target.GetType1() != StaticTypeObjects.Electric || (target.GetType2() && target.GetType2() != StaticTypeObjects.Electric)))
+        if (target.Status == StatusConditions.Healthy && (target.GetType1() != StaticTypeObjects.Electric || (target.GetType2() != null && target.GetType2() != StaticTypeObjects.Electric)))
         {
             Debug.Log("The target was paralyzed");
             target.Status = StatusConditions.Paralysis;
