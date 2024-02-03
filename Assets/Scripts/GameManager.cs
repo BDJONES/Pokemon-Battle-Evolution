@@ -28,68 +28,40 @@ public class GameManager : Singleton<GameManager>
         UIDocument uiDocument = uiController.GetComponent<UIDocument>();
         uiDocument.rootVisualElement.style.display = DisplayStyle.None;
         float time = 0f;
+        
         while (time < 3f)
+        {
+            time += Time.deltaTime;
+            await UniTask.Yield();
+        }
+        time = 0f;
+        UpdateGameState(GameState.LoadingPokemonInfo);
+        while (time < 2f)
         {
             time += Time.deltaTime;
             await UniTask.Yield();
         }
         UpdateGameState(GameState.BattleStart);
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
-        var player1Item = trainer1.activePokemon.GetItem();
-        var player2Item = trainer2.activePokemon.GetItem();
-        if (player1Item)
-        {
-            player1Item.TriggerEffect(trainer1.activePokemon);
-        }
-        if (player2Item)
-        {
-            player2Item.TriggerEffect(trainer2.activePokemon);
-        }
-
-        var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
-        DecideWhoGoesFirst(player1Move, player2Move);
+        TurnSystem();
     }
 
     // Update is called once per frame
-    private void Update()
+    private async void TurnSystem()
     {
-
-        // Trigger Tackle
-        //if (Input.GetKeyDown(KeyCode.W))
-        //{
-        //    Debug.Log("Tackle was used");
-        //    Attack move1 = trainer1.activePokemon.GetMoveset()[0];
-        //    move1.UseAttack(trainer1.activePokemon, trainer2.activePokemon);
-        //    var player2Item = trainer2.activePokemon.GetItem();
-        //    player2Item.RevertEffect(trainer2.activePokemon);
-        //}
-        //// Trigger Flamethrower
-        //if (Input.GetKeyDown(KeyCode.A))
-        //{
-        //    Debug.Log("Flamethrower was used");
-        //    Attack move2 = trainer1.activePokemon.GetMoveset()[1];
-        //    move2.UseAttack(trainer1.activePokemon, trainer2.activePokemon);
-        //}
-        //// Trigger Earthquake
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    Debug.Log("Earthquake was used");
-        //    Attack move3 = trainer1.activePokemon.GetMoveset()[2];
-        //    move3.UseAttack(trainer1.activePokemon, trainer2.activePokemon);
-        //}
-        //// Trigger Thunder Wave
-        //if (Input.GetKeyDown(KeyCode.D))
-        //{
-        //    Debug.Log("Thunder Wave was used");
-        //    Attack move4 = trainer1.activePokemon.GetMoveset()[3];
-        //    move4.UseAttack(trainer1.activePokemon, trainer2.activePokemon);
-        //}
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    Debug.Log("Intimidate was used");
-        //    Ability ability = trainer1.activePokemon.GetAbility();
-        //    ability.TriggerEffect(trainer1.activePokemon, trainer2.activePokemon);
-        //}
+        var player1Item = trainer1.activePokemon.GetItem();
+        var player2Item = trainer2.activePokemon.GetItem();
+        if (player1Item != null)
+        {
+            player1Item.TriggerEffect(trainer1.activePokemon);
+        }
+        if (player2Item != null)
+        {
+            player2Item.TriggerEffect(trainer2.activePokemon);
+        }
+        UpdateGameState(GameState.TurnStart);
+        var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
+        DecideWhoGoesFirst(player1Move, player2Move);
     }
     public void UpdateGameState(GameState newState)
     {
@@ -97,8 +69,10 @@ public class GameManager : Singleton<GameManager>
         switch (newState)
         {
             case GameState.BattleStart:
+                TimeManager.Instance.StartMatchTimer();
                 break;
             case GameState.TurnStart: 
+                TimeManager.Instance.StartTurnTimer();
                 break;
             case GameState.WaitingOnPlayerInput: 
                 break;
