@@ -5,12 +5,12 @@ using UnityEditor;
 
 public class Fire : Type
 {
-    private void Awake()
+    public override void InitializeValues()
     {
         typeName = "Fire";
         immunities = new List<Type>();
-        weaknesses = new List<Type> { StaticTypeObjects.Water, StaticTypeObjects.Rock, StaticTypeObjects.Ground };
-        resistances = new List<Type> { StaticTypeObjects.Fire, StaticTypeObjects.Fairy, StaticTypeObjects.Steel, StaticTypeObjects.Grass, StaticTypeObjects.Ice };
-        strengths = new List<Type> { StaticTypeObjects.Steel, StaticTypeObjects.Grass, StaticTypeObjects.Ice, StaticTypeObjects.Bug };
+        weaknesses = new List<Type> { StaticTypeObjects.Ground, StaticTypeObjects.Rock, StaticTypeObjects.Water };
+        resistances = new List<Type> { StaticTypeObjects.Fairy, StaticTypeObjects.Fire, StaticTypeObjects.Grass, StaticTypeObjects.Ice, StaticTypeObjects.Steel };
+        strengths = new List<Type> { StaticTypeObjects.Bug, StaticTypeObjects.Grass, StaticTypeObjects.Ice, StaticTypeObjects.Steel };
     }
 }

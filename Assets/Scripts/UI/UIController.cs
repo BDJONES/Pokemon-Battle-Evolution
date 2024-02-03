@@ -32,6 +32,7 @@ public class UIController : Singleton<UIController>
 
     public void UpdateMenu(Menus newMenu)
     {
+        UIEventSubscriptionManager.UnsubscribeAll();
         menu = newMenu;
         switch (newMenu)
         {

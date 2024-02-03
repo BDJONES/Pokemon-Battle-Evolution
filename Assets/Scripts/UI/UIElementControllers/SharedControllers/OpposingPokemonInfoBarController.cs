@@ -96,16 +96,11 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
             {
                 while (hpBar.value < newHPValue)
                 {
-                    //hpBar.schedule.Execute(() =>
-                    //{
                         hpBar.value += 1f;
-
-                    //}).Every(50).Until(() => hpBar.value >= newHPValue);
                     await UniTask.WaitForSeconds(0.02f);
                 }
             }
         }
-        //await UniTask.Yield();
         return;
     }
 
@@ -115,15 +110,6 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
         {
             UpdateInfo(Menus.GeneralBattleMenu);
         }
-        //else if (state == GameState.FirstAttack || state == GameState.SecondAttack)
-        //{
-        //    Debug.Log("The correct game state has been achieved");
-        //    int oldHPValue = Mathf.FloorToInt(hpBar.value);
-        //    //Debug.Log($"oldHPValue = {oldHPValue}");
-        //    int newHPValue = GameManager.Instance.trainer2.activePokemon.GetHPStat();
-        //    //Debug.Log($"newHPValue = {newHPValue}");
-        //    await UpdateHealthBar(oldHPValue, newHPValue);
-        //}
     }
 
     private void HandleMenuChange(Menus menu)

@@ -440,6 +440,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 408927992}
+  - component: {fileID: 408927993}
   m_Layer: 0
   m_Name: TimerManager
   m_TagString: Untagged
@@ -462,6 +463,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &408927993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408927991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e796d5f0289cf44994604b5bbc7cf59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &491376183
 GameObject:
   m_ObjectHideFlags: 0
@@ -590,11 +603,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1327382658}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &693828215 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
-  m_PrefabInstance: {fileID: 1489166572}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &751706185 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
@@ -701,6 +709,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 938270508}
+  - component: {fileID: 938270509}
   m_Layer: 0
   m_Name: InBattlePartyControllers
   m_TagString: Untagged
@@ -723,6 +732,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1327382658}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &938270509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938270506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221b1973a65fe39499793b1024beaf43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InBattlePartyWidget: {fileID: 9197481963319205126, guid: 566c5e09aac0eba4f94af025160c804d, type: 3}
 --- !u!1001 &997972029
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -847,7 +869,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team:
   - {fileID: 2099316858}
-  - {fileID: 693828215}
   activePokemonGameObject: {fileID: 0}
   pokemonTeam:
   - {fileID: 0}
@@ -1259,6 +1280,50 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+--- !u!1 &2044077804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2044077806}
+  - component: {fileID: 2044077805}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2044077805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044077804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e85296384f604b2469bd6ef4980ee45d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2044077806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044077804}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 681.44116, y: 40.668747, z: 50.635727}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2099316858 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
@@ -1357,3 +1422,4 @@ SceneRoots:
   - {fileID: 48023138}
   - {fileID: 1327382658}
   - {fileID: 408927992}
+  - {fileID: 2044077806}

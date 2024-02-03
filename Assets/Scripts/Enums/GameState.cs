@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum GameState
 {
+    LoadingPokemonInfo,
     BattleStart,
     TurnStart,
     WaitingOnPlayerInput,

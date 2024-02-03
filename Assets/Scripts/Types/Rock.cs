@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Rock : Type
 {
-    private void Awake()
+    public override void InitializeValues()
     {
         typeName = "Rock";
         immunities = new List<Type>();

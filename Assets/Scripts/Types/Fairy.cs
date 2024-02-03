@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Fairy : Type
 {
-    private void Awake()
+    public override void InitializeValues()
     {
         typeName = "Fairy";
         immunities = new List<Type> { StaticTypeObjects.Dragon };
@@ -12,5 +12,4 @@ public class Fairy : Type
         resistances = new List<Type> { StaticTypeObjects.Fighting, StaticTypeObjects.Bug, StaticTypeObjects.Dark };
         strengths = new List<Type> { StaticTypeObjects.Fighting, StaticTypeObjects.Dark, StaticTypeObjects.Dragon };
     }
-
 }
