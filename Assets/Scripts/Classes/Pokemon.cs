@@ -267,7 +267,7 @@ public abstract class Pokemon: MonoBehaviour
     }
     public int GetMaxHPStat()
     {
-        return Mathf.FloorToInt(0.01f * (2 * this.baseHP + this.ivs.hp + Mathf.FloorToInt(0.25f * evs.hp)) * this.level) + this.level + 10;
+        return Mathf.FloorToInt(0.01f * (2 * this.baseHP + this.ivs.hp + Mathf.FloorToInt(0.25f * this.evs.hp)) * this.level) + this.level + 10;
     }
     public int GetHPStat()
     {

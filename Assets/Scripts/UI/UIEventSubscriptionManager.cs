@@ -12,6 +12,7 @@ public class UIEventSubscriptionManager : Singleton<UIEventSubscriptionManager>
     
     public static void Subscribe(Button button, Action func)
     {
+        TemplateContainer templateContainer = new TemplateContainer();
         button.clicked += func;
         buttons.Add(button);
         functions.Add(func);

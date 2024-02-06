@@ -149,7 +149,7 @@ public class PokemonInfoController : MonoBehaviour
         {
             pokemonNameLabelGB.text = GameManager.Instance.trainer1.activePokemon.GetSpeciesName();
             pokemonLevelLabelGB.text = $"Lv. {GameManager.Instance.trainer1.activePokemon.GetLevel()}";
-            Debug.Log(hpBarGB.highValue);
+            //Debug.Log(hpBarGB.highValue);
             hpBarGB.highValue = GameManager.Instance.trainer1.activePokemon.GetMaxHPStat();
             hpBarGB.value = GameManager.Instance.trainer1.activePokemon.GetHPStat();
             hpStatLabelGB.text = $"{GameManager.Instance.trainer1.activePokemon.GetHPStat()}/{GameManager.Instance.trainer1.activePokemon.GetMaxHPStat()}";

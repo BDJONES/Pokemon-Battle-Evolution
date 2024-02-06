@@ -16,6 +16,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private OpposingPokemonInfoBarController opposingPokemonInfoBarController;
     [SerializeField] private PokemonButtonController pokemonButtonController;
     private IPlayerAction selectedAction;
+    UIInputGrabber uIGrabber;
     //public override void Awake()
     //{
     //    base.Awake();
@@ -26,6 +27,7 @@ public class GameManager : Singleton<GameManager>
     private async void Start()
     {
         UIDocument uiDocument = uiController.GetComponent<UIDocument>();
+        uIGrabber = new UIInputGrabber();
         uiDocument.rootVisualElement.style.display = DisplayStyle.None;
         float time = 0f;
         
@@ -97,26 +99,27 @@ public class GameManager : Singleton<GameManager>
     private async UniTask<IPlayerAction> SelectMove()
     {
         var receiver = GameObject.Find("AttackSelectionControllers").GetComponent<MoveSelectButton>();
-        UIInputGrabber another = new UIInputGrabber();
+        
         IPlayerAction selection = null;
-        MoveSelectButton.InputReceived += (input) =>
+
+        Action<IPlayerAction> anonFunc = (input) =>
         {
             // Invoke the handler and set value of selection to returned Action
-            selection = another.HandleInput(input);
+            selection = uIGrabber.HandleInput(input);
+            return;
         };
+
+        MoveSelectButton.InputReceived += anonFunc;
+        PartyPokemonController.InputReceived += anonFunc;
         while (selection == null)
         {
             Debug.Log("In The Loop");
             await UniTask.Yield();
         }
+        MoveSelectButton.InputReceived -= anonFunc;
+        PartyPokemonController.InputReceived -= anonFunc;
         return selection;
-        //float time = 0f;
-        //while (time < 3f)
-        //{
-        //    //Debug.Log(Time.time);
-        //    time += Time.deltaTime;
-        //    await UniTask.Yield();
-        //}
+
         //var attacks = trainer1.activePokemon.GetMoveset();
         //int randomMove = UnityEngine.Random.Range(0, 3);
         //return attacks[randomMove];
