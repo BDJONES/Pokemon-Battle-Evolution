@@ -63,12 +63,10 @@ public class StaticTypeObjects : MonoBehaviour
         Steel = new Steel();
         Fairy = new Fairy();
         InitializeAllTypes();
-        Debug.Log(Fire.weaknesses.Count);
     }
 
     private void InitializeAllTypes()
     {
-        Debug.Log("initalized all values");
         Normal.InitializeValues();
         Fire.InitializeValues();
         Water.InitializeValues();
