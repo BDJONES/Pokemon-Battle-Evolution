@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="PokemonInfoBar" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/PokemonInfoBar.uxml?fileID=9197481963319205126&amp;guid=dc24fdffd3da14d4984838b0650899b9&amp;type=3#PokemonInfoBar" />
+    <ui:VisualElement name="Screen" style="flex-grow: 1;">
+        <ui:VisualElement name="Content" style="flex-grow: 1; justify-content: flex-end; align-items: flex-end;">
+            <ui:VisualElement name="TrainerInfo" style="flex-grow: 1; position: absolute; left: 0; bottom: 0; top: auto; flex-direction: row; width: 40%; height: 27%;">
+                <ui:VisualElement name="TeamHealth" style="flex-grow: 1;" />
+                <ui:Instance template="PokemonInfoBar" name="PokemonInfoBar" style="height: 100%; width: 100%; position: relative; left: auto; bottom: auto;">
+                    <AttributeOverrides element-name="HPBar" value="160" high-value="280" />
+                </ui:Instance>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

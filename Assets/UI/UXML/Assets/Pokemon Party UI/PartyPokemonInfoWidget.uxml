@@ -1,20 +1,22 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Template name="PokemonImageContainer" src="project://database/Assets/UI/UXML/PokemonImageContainer.uxml?fileID=9197481963319205126&amp;guid=d9daac48583869043acb9259e1a9d163&amp;type=3#PokemonImageContainer" />
-    <ui:VisualElement style="flex-grow: 1; align-self: center; align-items: center;">
-        <ui:VisualElement name="PartyPokemonInfoWidget" style="flex-grow: 1; background-color: rgb(255, 255, 255); border-top-left-radius: 10px; border-top-right-radius: 10px; align-items: center; justify-content: center; align-self: auto; width: 250px; height: 150px; position: absolute; top: 60px; flex-direction: column; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
-            <ui:VisualElement name="WidgetContents" style="flex-grow: 1; justify-content: flex-start; align-items: center; align-self: auto; flex-direction: column; flex-wrap: nowrap; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0;">
-                <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Name" style="justify-content: flex-start; align-items: auto; align-self: auto; flex-direction: row; position: absolute; top: 40px; font-size: 18px;" />
-                <ui:VisualElement name="BottomInfo" style="flex-grow: 1; align-items: flex-start; align-self: center; justify-content: center; flex-direction: row; height: 224px; position: absolute; top: 80px;">
-                    <ui:Label tabindex="-1" text="Lv. 100" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Level" />
-                    <ui:Label tabindex="-1" text="Male" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Gender" />
-                    <ui:ProgressBar value="1" high-value="111" style="height: auto; width: 50%; flex-direction: column;">
-                        <ui:Label tabindex="-1" text="1/111" parse-escape-sequences="true" display-tooltip-when-elided="true" name="HPStat" style="align-items: auto; font-size: 9px; justify-content: flex-end; align-self: flex-end;" />
-                    </ui:ProgressBar>
+    <ui:Template name="PokemonImageContainer" src="project://database/Assets/UI/UXML/Assets/Pokemon%20Party%20UI/PokemonImageContainer.uxml?fileID=9197481963319205126&amp;guid=d9daac48583869043acb9259e1a9d163&amp;type=3#PokemonImageContainer" />
+    <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Widget" style="background-color: rgba(188, 188, 188, 0); height: 250px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; width: 250px; align-self: center; justify-content: flex-start; align-items: auto;">
+        <ui:VisualElement name="Content" style="flex-grow: 1; align-self: center; align-items: center; height: auto;">
+            <ui:VisualElement name="PartyPokemonInfoWidget" style="flex-grow: 1; background-color: rgb(255, 255, 255); border-top-left-radius: 10px; border-top-right-radius: 10px; align-items: center; justify-content: center; align-self: auto; width: 250px; height: 150px; position: absolute; top: 60px; flex-direction: column; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+                <ui:VisualElement name="WidgetContents" style="flex-grow: 1; justify-content: flex-start; align-items: center; align-self: auto; flex-direction: column; flex-wrap: nowrap; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0;">
+                    <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Name" style="justify-content: flex-start; align-items: auto; align-self: auto; flex-direction: row; position: absolute; top: 40px; font-size: 18px;" />
+                    <ui:VisualElement name="BottomInfo" style="flex-grow: 1; align-items: flex-start; align-self: center; justify-content: center; flex-direction: row; height: 224px; position: absolute; top: 80px;">
+                        <ui:Label tabindex="-1" text="Lv. 100" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Level" />
+                        <ui:Label tabindex="-1" text="Male" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Gender" />
+                        <ui:ProgressBar value="1" high-value="111" name="HPBar" style="height: auto; width: 50%; flex-direction: column;">
+                            <ui:Label tabindex="-1" text="1/111" parse-escape-sequences="true" display-tooltip-when-elided="true" name="HPStat" style="align-items: auto; font-size: 9px; justify-content: flex-end; align-self: flex-end;" />
+                        </ui:ProgressBar>
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-grow: 1; position: absolute; flex-direction: row;">
+                <ui:Instance template="PokemonImageContainer" name="PokemonImageContainer" style="height: 100px; width: 100px;" />
+            </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="VisualElement" style="flex-grow: 1; position: absolute; flex-direction: row;">
-            <ui:Instance template="PokemonImageContainer" name="PokemonImageContainer" style="height: 100px; width: 100px;" />
-        </ui:VisualElement>
-    </ui:VisualElement>
+    </ui:Button>
 </ui:UXML>

@@ -17,6 +17,8 @@ public class UIController : Singleton<UIController>
     [SerializeField] private UIDocument opposingPokemonInfoUI;
     [SerializeField] private UIDocument moveInfoUI;
     [SerializeField] public VisualTreeAsset forfietUI;
+    [SerializeField] public VisualTreeAsset pokemonDamagedScreen;
+    [SerializeField] public VisualTreeAsset opposingPokemonDamagedScreen;
     [SerializeField] private Menus menu;
     public static event Action<Menus> OnMenuChange;
     private void OnEnable()
@@ -54,6 +56,16 @@ public class UIController : Singleton<UIController>
             case Menus.ForfietMenu:
                 currentUI.rootVisualElement.style.display = DisplayStyle.None;
                 currentUI.visualTreeAsset = forfietUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.PokemonDamagedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = pokemonDamagedScreen;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.OpposingPokemonDamagedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = opposingPokemonDamagedScreen;
                 currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
                 break;
         }

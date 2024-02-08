@@ -17,7 +17,14 @@ public class Trainer : MonoBehaviour
         int i = 0;
         foreach (var go in team)
         {
-            pokemonTeam[i] = go.GetComponent<Pokemon>();
+            if (go == null)
+            {
+                pokemonTeam[i] = null;
+            }
+            else
+            {
+                pokemonTeam[i] = go.GetComponent<Pokemon>();
+            }
             i++;
         }
         activePokemon = pokemonTeam[0];

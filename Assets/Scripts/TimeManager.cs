@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class TimeManager : Singleton<TimeManager>
 {
@@ -9,7 +11,8 @@ public class TimeManager : Singleton<TimeManager>
     private float turnTimer;
     private bool matchTimerActive = false;
     private bool turnTimerActive = false;
-
+    public static event Action MatchTimerEnd;
+    public static event Action TurnTimerEnd;
     public float MatchTimer 
     {  
         get { 
@@ -24,13 +27,30 @@ public class TimeManager : Singleton<TimeManager>
         }
     }
 
-    public void StartMatchTimer()
+    private void OnEnable()
+    {
+        GameManager.OnStateChange += HandleStateChange;
+    }
+
+    private void HandleStateChange(GameState state)
+    {
+        if (state == GameState.BattleStart)
+        {
+            StartMatchTimer();
+        }
+        else if (state == GameState.TurnStart)
+        {
+            StartTurnTimer();
+        }
+    }
+
+    private void StartMatchTimer()
     {
         matchTimerActive = true;
         matchTimer = 60f;
     }
     
-    public void StartTurnTimer()
+    private void StartTurnTimer()
     {
         turnTimerActive = true;
         turnTimer = 8f;
@@ -51,11 +71,29 @@ public class TimeManager : Singleton<TimeManager>
         if (matchTimer <= 0)
         {
             matchTimerActive = false;
+            UpdateMatchState();
         }
 
         if (turnTimer <= 0)
         {
             turnTimerActive = false;
+            UpdateTurnState();
+        }
+    }
+
+    private void UpdateMatchState()
+    {
+        if (matchTimer == 0)
+        {
+            MatchTimerEnd.Invoke();
+        }
+    }
+
+    private void UpdateTurnState()
+    {
+        if (turnTimer == 0)
+        {
+            TurnTimerEnd.Invoke();
         }
     }
 
