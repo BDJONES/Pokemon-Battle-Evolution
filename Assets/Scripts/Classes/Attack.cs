@@ -93,6 +93,7 @@ public abstract class Attack : IPlayerAction
     }
     protected virtual void TriggerEffect(Pokemon attacker, Pokemon target)
     {
+        Debug.Log($"Triggering Effect {currPowerPoints}");
         currPowerPoints -= 1;
         return;
     }
@@ -179,7 +180,7 @@ public abstract class Attack : IPlayerAction
         {
             target.SetHPStat(0);
             Debug.Log("Opponent fainted");
-            Object.Destroy(target.gameObject);
+            //Object.Destroy(target.gameObject);
             return;
         }
         target.SetHPStat(target.GetHPStat() - damage);
