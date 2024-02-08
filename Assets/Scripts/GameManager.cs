@@ -15,25 +15,11 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private PokemonInfoController pokemonInfoController;
     [SerializeField] private OpposingPokemonInfoBarController opposingPokemonInfoBarController;
     [SerializeField] private PokemonButtonController pokemonButtonController;
-    private IPlayerAction selectedAction;
-<<<<<<< Updated upstream
     UIInputGrabber uIGrabber;
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-    //public override void Awake()
-    //{
-    //    base.Awake();
-    //    
-    //}
-=======
-    UIInputGrabber uIGrabber;
->>>>>>> Stashed changes
 
     private void OnEnable()
     {
         TimeManager.MatchTimerEnd += HandleMatchTimeout;
-        //TimeManager.TurnTimerEnd += HandleTurnTimeout;
     }
 
 
@@ -44,7 +30,7 @@ public class GameManager : Singleton<GameManager>
         uIGrabber = new UIInputGrabber();
         uiDocument.rootVisualElement.style.display = DisplayStyle.None;
         float time = 0f;
-        
+
         while (time < 3f)
         {
             time += Time.deltaTime;
@@ -59,73 +45,20 @@ public class GameManager : Singleton<GameManager>
         }
         UpdateGameState(GameState.BattleStart);
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
-<<<<<<< Updated upstream
-        TurnSystem();
-=======
-<<<<<<< Updated upstream
-        TimeManager.Instance.StartMatchTimer();
-        var player1Item = trainer1.activePokemon.GetItem();
-        var player2Item = trainer2.activePokemon.GetItem();
-        if (player1Item)
-=======
         TurnSystem();
     }
 
-    // Update is called once per frame
     private async void TurnSystem()
     {
         while (gameState != GameState.BattleEnd)
->>>>>>> Stashed changes
         {
             UpdateGameState(GameState.TurnStart);
-            //var player1Item = trainer1.activePokemon.GetItem();
-            //var player2Item = trainer2.activePokemon.GetItem();
-            //if (player1Item != null)
-            //{
-            //    player1Item.TriggerEffect(trainer1.activePokemon);
-            //}
-            //if (player2Item != null)
-            //{
-            //    player2Item.TriggerEffect(trainer2.activePokemon);
-            //}
-        
             UpdateGameState(GameState.WaitingOnPlayerInput);
             UpdateGameState(GameState.ProcessingInput);
             var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
             DecideWhoGoesFirst(player1Move, player2Move);
             UpdateGameState(GameState.TurnEnd);
-        // if Battle over end loop
         }
-<<<<<<< Updated upstream
-        if (player2Item)
-        {
-            player2Item.TriggerEffect(trainer2.activePokemon);
-        }
-
-        var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
-        DecideWhoGoesFirst(player1Move, player2Move);
-=======
-        
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-    }
-
-    // Update is called once per frame
-    private async void TurnSystem()
-    {
-        var player1Item = trainer1.activePokemon.GetItem();
-        var player2Item = trainer2.activePokemon.GetItem();
-        if (player1Item != null)
-        {
-            player1Item.TriggerEffect(trainer1.activePokemon);
-        }
-        if (player2Item != null)
-        {
-            player2Item.TriggerEffect(trainer2.activePokemon);
-        }
-        UpdateGameState(GameState.TurnStart);
-        var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
-        DecideWhoGoesFirst(player1Move, player2Move);
     }
     public void UpdateGameState(GameState newState)
     {
@@ -133,10 +66,8 @@ public class GameManager : Singleton<GameManager>
         switch (newState)
         {
             case GameState.BattleStart:
-                TimeManager.Instance.StartMatchTimer();
                 break;
             case GameState.TurnStart: 
-                TimeManager.Instance.StartTurnTimer();
                 break;
             case GameState.WaitingOnPlayerInput: 
                 break;
@@ -162,10 +93,6 @@ public class GameManager : Singleton<GameManager>
     private void HandleMatchTimeout()
     {
         UpdateGameState(GameState.BattleEnd);
-    }    
-    private void HandleTurnTimeout()
-    {
-        UpdateGameState(GameState.TurnEnd);
     }
 
     private async UniTask<IPlayerAction> SelectMove()
@@ -180,49 +107,24 @@ public class GameManager : Singleton<GameManager>
             selection = uIGrabber.HandleInput(input);
             return;
         };
-<<<<<<< Updated upstream
 
         MoveSelectButton.InputReceived += anonFunc;
         PartyPokemonController.InputReceived += anonFunc;
-        while (selection == null)
-=======
-<<<<<<< Updated upstream
-=======
 
-        MoveSelectButton.InputReceived += anonFunc;
-        PartyPokemonController.InputReceived += anonFunc;
->>>>>>> Stashed changes
         while (selection == null && TimeManager.Instance.IsTurnTimerActive())
->>>>>>> Stashed changes
         {
             Debug.Log("In The Loop");
             await UniTask.Yield();
         }
-<<<<<<< Updated upstream
-        MoveSelectButton.InputReceived -= anonFunc;
-        PartyPokemonController.InputReceived -= anonFunc;
-        return selection;
 
-        //var attacks = trainer1.activePokemon.GetMoveset();
-        //int randomMove = UnityEngine.Random.Range(0, 3);
-        //return attacks[randomMove];
-=======
-<<<<<<< Updated upstream
-        // If a move was selected return that value
-=======
         MoveSelectButton.InputReceived -= anonFunc;
         PartyPokemonController.InputReceived -= anonFunc;
->>>>>>> Stashed changes
+
+        // If a move was selected return that value
         if (selection != null)
         {
             return selection;
         }
-<<<<<<< Updated upstream
-        // Otherwise, perform a random move
-        var attacks = trainer1.activePokemon.GetMoveset();
-        int randomMove = UnityEngine.Random.Range(0, 3);
-        return attacks[randomMove];
-=======
         else
         {
             Debug.Log("Time out of the turn. Will select a random move.");
@@ -230,8 +132,7 @@ public class GameManager : Singleton<GameManager>
             int randomMove = UnityEngine.Random.Range(0, 3);
             return attacks[randomMove];
         }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
     }
 
     private void ExecuteAttack(IPlayerAction playerAction, Pokemon attacker, Pokemon target)
