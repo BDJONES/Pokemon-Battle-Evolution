@@ -210,6 +210,8 @@ MonoBehaviour:
   opposingPokemonInfoUI: {fileID: 0}
   moveInfoUI: {fileID: 0}
   forfietUI: {fileID: 9197481963319205126, guid: d95bbceb232f0d840b3c3e3bc5b8d604, type: 3}
+  pokemonDamagedScreen: {fileID: 9197481963319205126, guid: 8b36f6b095cf0c54eaf8476fe9477bc4, type: 3}
+  opposingPokemonDamagedScreen: {fileID: 9197481963319205126, guid: d97eb202a2ea55743a1f3d1ce4a5e31c, type: 3}
   menu: 0
 --- !u!114 &48023145
 MonoBehaviour:

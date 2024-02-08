@@ -113,6 +113,7 @@ public class PokemonInfoController : MonoBehaviour
                 await UniTask.WaitForSeconds(0.02f);
             }
         }
+        // If the pokemon reaches 0 hp, then play animation of faint
         return;
     }
 
