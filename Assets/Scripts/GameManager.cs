@@ -16,14 +16,28 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private OpposingPokemonInfoBarController opposingPokemonInfoBarController;
     [SerializeField] private PokemonButtonController pokemonButtonController;
     private IPlayerAction selectedAction;
+<<<<<<< Updated upstream
     UIInputGrabber uIGrabber;
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
     //public override void Awake()
     //{
     //    base.Awake();
     //    
     //}
+=======
+    UIInputGrabber uIGrabber;
+>>>>>>> Stashed changes
 
-    // Start is called before the first frame update
+    private void OnEnable()
+    {
+        TimeManager.MatchTimerEnd += HandleMatchTimeout;
+        //TimeManager.TurnTimerEnd += HandleTurnTimeout;
+    }
+
+
+
     private async void Start()
     {
         UIDocument uiDocument = uiController.GetComponent<UIDocument>();
@@ -45,7 +59,55 @@ public class GameManager : Singleton<GameManager>
         }
         UpdateGameState(GameState.BattleStart);
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
+<<<<<<< Updated upstream
         TurnSystem();
+=======
+<<<<<<< Updated upstream
+        TimeManager.Instance.StartMatchTimer();
+        var player1Item = trainer1.activePokemon.GetItem();
+        var player2Item = trainer2.activePokemon.GetItem();
+        if (player1Item)
+=======
+        TurnSystem();
+    }
+
+    // Update is called once per frame
+    private async void TurnSystem()
+    {
+        while (gameState != GameState.BattleEnd)
+>>>>>>> Stashed changes
+        {
+            UpdateGameState(GameState.TurnStart);
+            //var player1Item = trainer1.activePokemon.GetItem();
+            //var player2Item = trainer2.activePokemon.GetItem();
+            //if (player1Item != null)
+            //{
+            //    player1Item.TriggerEffect(trainer1.activePokemon);
+            //}
+            //if (player2Item != null)
+            //{
+            //    player2Item.TriggerEffect(trainer2.activePokemon);
+            //}
+        
+            UpdateGameState(GameState.WaitingOnPlayerInput);
+            UpdateGameState(GameState.ProcessingInput);
+            var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
+            DecideWhoGoesFirst(player1Move, player2Move);
+            UpdateGameState(GameState.TurnEnd);
+        // if Battle over end loop
+        }
+<<<<<<< Updated upstream
+        if (player2Item)
+        {
+            player2Item.TriggerEffect(trainer2.activePokemon);
+        }
+
+        var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
+        DecideWhoGoesFirst(player1Move, player2Move);
+=======
+        
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 
     // Update is called once per frame
@@ -96,6 +158,16 @@ public class GameManager : Singleton<GameManager>
             OnStateChange.Invoke(newState);
         }
     }
+    
+    private void HandleMatchTimeout()
+    {
+        UpdateGameState(GameState.BattleEnd);
+    }    
+    private void HandleTurnTimeout()
+    {
+        UpdateGameState(GameState.TurnEnd);
+    }
+
     private async UniTask<IPlayerAction> SelectMove()
     {
         var receiver = GameObject.Find("AttackSelectionControllers").GetComponent<MoveSelectButton>();
@@ -108,14 +180,25 @@ public class GameManager : Singleton<GameManager>
             selection = uIGrabber.HandleInput(input);
             return;
         };
+<<<<<<< Updated upstream
 
         MoveSelectButton.InputReceived += anonFunc;
         PartyPokemonController.InputReceived += anonFunc;
         while (selection == null)
+=======
+<<<<<<< Updated upstream
+=======
+
+        MoveSelectButton.InputReceived += anonFunc;
+        PartyPokemonController.InputReceived += anonFunc;
+>>>>>>> Stashed changes
+        while (selection == null && TimeManager.Instance.IsTurnTimerActive())
+>>>>>>> Stashed changes
         {
             Debug.Log("In The Loop");
             await UniTask.Yield();
         }
+<<<<<<< Updated upstream
         MoveSelectButton.InputReceived -= anonFunc;
         PartyPokemonController.InputReceived -= anonFunc;
         return selection;
@@ -123,6 +206,32 @@ public class GameManager : Singleton<GameManager>
         //var attacks = trainer1.activePokemon.GetMoveset();
         //int randomMove = UnityEngine.Random.Range(0, 3);
         //return attacks[randomMove];
+=======
+<<<<<<< Updated upstream
+        // If a move was selected return that value
+=======
+        MoveSelectButton.InputReceived -= anonFunc;
+        PartyPokemonController.InputReceived -= anonFunc;
+>>>>>>> Stashed changes
+        if (selection != null)
+        {
+            return selection;
+        }
+<<<<<<< Updated upstream
+        // Otherwise, perform a random move
+        var attacks = trainer1.activePokemon.GetMoveset();
+        int randomMove = UnityEngine.Random.Range(0, 3);
+        return attacks[randomMove];
+=======
+        else
+        {
+            Debug.Log("Time out of the turn. Will select a random move.");
+            var attacks = trainer1.activePokemon.GetMoveset();
+            int randomMove = UnityEngine.Random.Range(0, 3);
+            return attacks[randomMove];
+        }
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 
     private void ExecuteAttack(IPlayerAction playerAction, Pokemon attacker, Pokemon target)
@@ -220,8 +329,10 @@ public class GameManager : Singleton<GameManager>
                         Debug.Log("Trainer 1 won the speed tie");
                         ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
                         UpdateGameState(GameState.FirstAttack);
+                        UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                         await opposingPokemonInfoBarController.UpdateHealthBar(Menus.GeneralBattleMenu);
                         ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                        UIController.Instance.UpdateMenu(Menus.PokemonDamagedScreen);
                         await pokemonInfoController.UpdateHealthBar(Menus.GeneralBattleMenu);
                         UpdateGameState(GameState.SecondAttack);
                     }
@@ -229,9 +340,11 @@ public class GameManager : Singleton<GameManager>
                     {
                         Debug.Log("Trainer 2 won the speed tie");
                         ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                        UIController.Instance.UpdateMenu(Menus.PokemonDamagedScreen);
                         await pokemonInfoController.UpdateHealthBar(Menus.GeneralBattleMenu);
                         UpdateGameState(GameState.FirstAttack);
                         ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
+                        UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                         await opposingPokemonInfoBarController.UpdateHealthBar(Menus.GeneralBattleMenu);
                         UpdateGameState(GameState.SecondAttack);
                     }
