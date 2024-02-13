@@ -12,7 +12,7 @@ public class TimeManager : Singleton<TimeManager>
     private bool matchTimerActive = false;
     private bool turnTimerActive = false;
     public static event Action MatchTimerEnd;
-    public static event Action TurnTimerEnd;
+    //public static event Action TurnTimerEnd;
     public float MatchTimer 
     {  
         get { 
@@ -91,10 +91,10 @@ public class TimeManager : Singleton<TimeManager>
 
     private void UpdateTurnState()
     {
-        if (turnTimer == 0)
-        {
-            TurnTimerEnd.Invoke();
-        }
+        //if (turnTimer == 0)
+        //{
+        //    TurnTimerEnd.Invoke();
+        //}
     }
 
     public bool IsMatchTimerActive()

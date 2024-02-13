@@ -9,6 +9,7 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
 {
     [SerializeField] private GeneralBattleUIElements uIGBElements;
     [SerializeField] private MoveSelectionUIElements moveSelectionUIElements;
+    [SerializeField] private OpposingPokemonDamagedUIElements opposingPokemonDamagedUIElements;
     private Label pokemonNameLabelGB;
     private Label pokemonLevelLabelGB;
     private ProgressBar hpBarGB;
@@ -17,6 +18,10 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
     private Label pokemonLevelLabelMS;
     private ProgressBar hpBarMS;
     private Button infoButtonMS;
+    private Label pokemonNameLabelOD;
+    private Label pokemonLevelLabelOD;
+    private ProgressBar hpBarOD;
+    private Button infoButtonOD;
 
 
     private void OnEnable()
@@ -54,6 +59,17 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
         pokemonLevelLabelMS = levelInfoVE.Query<Label>("Level");
         hpBarMS = hpBarVE.Query<ProgressBar>("ProgressBar");
         infoButtonMS = battleInfoVE.Query<Button>("OpposingPokemonInfoButton");
+        // Oppoing Pokemon Damaged Screen
+        pokemonInfoVE = opposingPokemonDamagedUIElements.OpposingPokemonInfoBar.Query<VisualElement>("OpposingPokemonInfo");
+        battleInfoVE = pokemonInfoVE.Query<VisualElement>("Battle_Info");
+        nameAndGenderVE = battleInfoVE.Query<VisualElement>("Name_And_Gender");
+        levelInfoVE = battleInfoVE.Query<VisualElement>("LevelInfo");
+        hpBarVE = battleInfoVE.Query<VisualElement>("HPBar");
+
+        pokemonNameLabelOD = nameAndGenderVE.Query<Label>("Name");
+        pokemonLevelLabelOD = levelInfoVE.Query<Label>("Level");
+        hpBarOD = hpBarVE.Query<ProgressBar>("ProgressBar");
+        infoButtonOD = battleInfoVE.Query<Button>("OpposingPokemonInfoButton");
     }
 
     private void Start()
@@ -71,6 +87,10 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
         else if (menu == Menus.MoveSelectionMenu)
         {
             hpBar = hpBarMS;
+        }
+        else if (menu == Menus.PokemonDamagedScreen)
+        {
+            hpBar = hpBarOD;
         }
         else
         {
@@ -114,7 +134,7 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
 
     private void HandleMenuChange(Menus menu)
     {
-        if (menu == Menus.GeneralBattleMenu || menu == Menus.MoveSelectionMenu)
+        if (menu == Menus.GeneralBattleMenu || menu == Menus.MoveSelectionMenu || menu == Menus.OpposingPokemonDamagedScreen) 
         {
             InitializeFields();
             UpdateInfo(menu);
@@ -136,6 +156,13 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
             pokemonLevelLabelMS.text = $"Lv. {GameManager.Instance.trainer2.activePokemon.GetLevel()}";
             hpBarMS.highValue = GameManager.Instance.trainer2.activePokemon.GetMaxHPStat();
             hpBarMS.value = GameManager.Instance.trainer2.activePokemon.GetHPStat();
+        }
+        else if (menu == Menus.OpposingPokemonDamagedScreen)
+        {
+            pokemonNameLabelOD.text = GameManager.Instance.trainer2.activePokemon.GetSpeciesName();
+            pokemonLevelLabelOD.text = $"Lv. {GameManager.Instance.trainer2.activePokemon.GetLevel()}";
+            hpBarOD.highValue = GameManager.Instance.trainer2.activePokemon.GetMaxHPStat();
+            hpBarOD.value = GameManager.Instance.trainer2.activePokemon.GetHPStat();
         }
     }
 }

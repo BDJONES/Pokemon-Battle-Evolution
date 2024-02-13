@@ -39,24 +39,28 @@ public class UIInputGrabber //: IDisposable
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Attack2Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Attack3Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Attack4Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Switch1Selected(object sender, OnSwitchEventArgs e)
@@ -64,6 +68,7 @@ public class UIInputGrabber //: IDisposable
         Debug.Log("Clicking Switch 1");
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Switch2Selected(object sender, OnSwitchEventArgs e)
@@ -71,30 +76,35 @@ public class UIInputGrabber //: IDisposable
         Debug.Log("Clicking Switch 2");
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Switch3Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Switch4Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Switch5Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     private void Switch6Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
     public IPlayerAction GetSelectedAction()

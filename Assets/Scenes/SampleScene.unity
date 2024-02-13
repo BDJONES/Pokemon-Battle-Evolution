@@ -138,6 +138,9 @@ GameObject:
   - component: {fileID: 48023145}
   - component: {fileID: 48023146}
   - component: {fileID: 48023147}
+  - component: {fileID: 48023149}
+  - component: {fileID: 48023148}
+  - component: {fileID: 48023150}
   m_Layer: 0
   m_Name: UI Controller
   m_TagString: Untagged
@@ -211,6 +214,7 @@ MonoBehaviour:
   moveInfoUI: {fileID: 0}
   forfietUI: {fileID: 9197481963319205126, guid: d95bbceb232f0d840b3c3e3bc5b8d604, type: 3}
   pokemonDamagedScreen: {fileID: 9197481963319205126, guid: 8b36f6b095cf0c54eaf8476fe9477bc4, type: 3}
+  dialogueScreen: {fileID: 9197481963319205126, guid: f85fb5a6c7e20ac4f9cc537475ff284f, type: 3}
   opposingPokemonDamagedScreen: {fileID: 9197481963319205126, guid: d97eb202a2ea55743a1f3d1ce4a5e31c, type: 3}
   menu: 0
 --- !u!114 &48023145
@@ -252,6 +256,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 48023137}
+--- !u!114 &48023148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48023136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f49ed3cd77f7d547a307cea8a230ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 48023137}
+--- !u!114 &48023149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48023136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b3dde99408dea64a921b69ccd145280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 48023137}
+--- !u!114 &48023150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48023136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cece9e4cdb8025a42a9bcf41b374ad20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIDocument: {fileID: 48023137}
 --- !u!1 &185090691
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,6 +1157,7 @@ Transform:
   - {fileID: 938270508}
   - {fileID: 185090692}
   - {fileID: 1334559493}
+  - {fileID: 1631863392}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1329397982
@@ -1283,6 +1327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uIGBElements: {fileID: 48023139}
   moveSelectionUIElements: {fileID: 48023147}
+  opposingPokemonDamagedUIElements: {fileID: 48023148}
 --- !u!114 &1334559495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1297,6 +1342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uIGBElements: {fileID: 48023139}
   moveSelectionUIElements: {fileID: 48023147}
+  pokemonDamageUIElements: {fileID: 48023149}
 --- !u!1 &1429686766 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
@@ -1363,6 +1409,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080cf6846cf343249aa6617407b98584, type: 3}
+--- !u!1 &1631863391
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1631863392}
+  - component: {fileID: 1631863393}
+  m_Layer: 0
+  m_Name: DialogueControllers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1631863392
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631863391}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1327382658}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1631863393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631863391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 210d75d5e5ab87d4e9e014f3c2655501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueUIElements: {fileID: 0}
 --- !u!1 &2044077804
 GameObject:
   m_ObjectHideFlags: 0

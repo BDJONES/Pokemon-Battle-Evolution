@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="DialogueBox" src="project://database/Assets/UI/UXML/Assets/DamageCalulation/DialogueBox.uxml?fileID=9197481963319205126&amp;guid=2db53d986608dca448b1b122af1201d5&amp;type=3#DialogueBox" />
+    <ui:VisualElement name="Screen" style="flex-grow: 1; align-items: flex-end; flex-direction: row; align-self: auto;">
+        <ui:VisualElement name="Content" style="flex-grow: 1;">
+            <ui:Instance template="DialogueBox" name="DialogueBox" style="align-items: auto; justify-content: flex-end; align-self: auto; position: absolute; right: 245px; bottom: 10px; top: auto; height: 150px; width: 600px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

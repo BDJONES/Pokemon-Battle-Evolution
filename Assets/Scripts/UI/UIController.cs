@@ -18,6 +18,7 @@ public class UIController : Singleton<UIController>
     [SerializeField] private UIDocument moveInfoUI;
     [SerializeField] public VisualTreeAsset forfietUI;
     [SerializeField] public VisualTreeAsset pokemonDamagedScreen;
+    [SerializeField] public VisualTreeAsset dialogueScreen;
     [SerializeField] public VisualTreeAsset opposingPokemonDamagedScreen;
     [SerializeField] private Menus menu;
     public static event Action<Menus> OnMenuChange;
