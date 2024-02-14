@@ -17,10 +17,10 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private PokemonButtonController pokemonButtonController;
     UIInputGrabber uIGrabber;
 
-    private void OnEnable()
-    {
-        TimeManager.MatchTimerEnd += HandleMatchTimeout;
-    }
+    //private void OnEnable()
+    //{
+        
+    //}
 
 
 
@@ -30,38 +30,47 @@ public class GameManager : Singleton<GameManager>
         uIGrabber = new UIInputGrabber();
         uiDocument.rootVisualElement.style.display = DisplayStyle.None;
         float time = 0f;
-
         while (time < 3f)
         {
             time += Time.deltaTime;
             await UniTask.Yield();
         }
-        time = 0f;
         UpdateGameState(GameState.LoadingPokemonInfo);
+        time = 0f;
         while (time < 2f)
         {
             time += Time.deltaTime;
             await UniTask.Yield();
         }
         UpdateGameState(GameState.BattleStart);
+        TimeManager.MatchTimerEnd += HandleMatchTimeout;
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
         TurnSystem();
     }
 
     private async void TurnSystem()
     {
+        float time = 0f;
         while (gameState != GameState.BattleEnd)
         {
             UpdateGameState(GameState.TurnStart);
-            UpdateGameState(GameState.WaitingOnPlayerInput);
-            UpdateGameState(GameState.ProcessingInput);
+            while (time < 3f)
+            {
+                time += Time.deltaTime;
+                await UniTask.Yield();
+            }
+            time = 0f;
+            //UpdateGameState(GameState.WaitingOnPlayerInput);
+            
             var (player1Move, player2Move) = await UniTask.WhenAll(SelectMove(), SelectMove());
+            UpdateGameState(GameState.ProcessingInput);
             DecideWhoGoesFirst(player1Move, player2Move);
             UpdateGameState(GameState.TurnEnd);
         }
     }
     public void UpdateGameState(GameState newState)
     {
+        Debug.Log($"Changing GameState to {newState}");
         gameState = newState;
         switch (newState)
         {
@@ -228,26 +237,33 @@ public class GameManager : Singleton<GameManager>
                     if (speedTie < 50)
                     {
                         Debug.Log("Trainer 1 won the speed tie");
+                        UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                         ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
                         UpdateGameState(GameState.FirstAttack);
-                        UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                        //
                         await opposingPokemonInfoBarController.UpdateHealthBar(Menus.GeneralBattleMenu);
-                        ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
                         UIController.Instance.UpdateMenu(Menus.PokemonDamagedScreen);
+                        ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                        //
                         await pokemonInfoController.UpdateHealthBar(Menus.GeneralBattleMenu);
-                        UpdateGameState(GameState.SecondAttack);
+                        //UpdateGameState(GameState.SecondAttack);
+                        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                        
                     }
                     else
                     {
                         Debug.Log("Trainer 2 won the speed tie");
-                        ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
                         UIController.Instance.UpdateMenu(Menus.PokemonDamagedScreen);
+                        ExecuteAttack(convertedTrainer2Action, trainer2.activePokemon, trainer1.activePokemon);
+                        //
                         await pokemonInfoController.UpdateHealthBar(Menus.GeneralBattleMenu);
-                        UpdateGameState(GameState.FirstAttack);
-                        ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
+                        //UpdateGameState(GameState.FirstAttack);
                         UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                        ExecuteAttack(convertedTrainer1Action, trainer1.activePokemon, trainer2.activePokemon);
+                        //
+                        //UpdateGameState(GameState.SecondAttack);
                         await opposingPokemonInfoBarController.UpdateHealthBar(Menus.GeneralBattleMenu);
-                        UpdateGameState(GameState.SecondAttack);
+                        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
                     }
                 }
             }
