@@ -9,5 +9,7 @@ public enum EventsToTrigger
     PokemonSwitch,
     OpposingPokemonSwitch,
     OnAbilityTrigger,
-    OnItemTrigger
+    OnItemTrigger,
+    OnSuperEffectiveHit,
+    OnResistedHit
 }

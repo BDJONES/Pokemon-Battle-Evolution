@@ -7,8 +7,8 @@ using UnityEngine.InputSystem.LowLevel;
 
 public class TimeManager : Singleton<TimeManager>
 {
-    private float matchTimer;
-    private float turnTimer;
+    private float matchTimer = 100f;
+    private float turnTimer = 100f;
     private bool matchTimerActive = false;
     private bool turnTimerActive = false;
     public static event Action MatchTimerEnd;
@@ -41,6 +41,10 @@ public class TimeManager : Singleton<TimeManager>
         else if (state == GameState.TurnStart)
         {
             StartTurnTimer();
+        }
+        else if (state == GameState.ProcessingInput)
+        {
+            turnTimerActive = false;
         }
     }
 
@@ -85,6 +89,7 @@ public class TimeManager : Singleton<TimeManager>
     {
         if (matchTimer == 0)
         {
+            //Debug.Log("Match timer Ending");
             MatchTimerEnd.Invoke();
         }
     }
@@ -106,4 +111,6 @@ public class TimeManager : Singleton<TimeManager>
     {
         return turnTimerActive;
     }
+
+
 }
