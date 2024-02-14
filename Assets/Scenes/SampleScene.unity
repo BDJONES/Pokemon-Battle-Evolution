@@ -162,7 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: 6ac6cf0de4e7ef949bb62f8082551f5b, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 5a18e687ea3099948b8315c1e93e6feb, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: d97eb202a2ea55743a1f3d1ce4a5e31c, type: 3}
   m_SortingOrder: 0
 --- !u!4 &48023138
 Transform:
@@ -204,7 +204,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee014b3c0fa5ac04e8e8232bb7bb17b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiElements: {fileID: 48023139}
   currentUI: {fileID: 48023137}
   generalBattleUI: {fileID: 9197481963319205126, guid: 5a18e687ea3099948b8315c1e93e6feb, type: 3}
   moveSelectUI: {fileID: 9197481963319205126, guid: b0d7e480cd9ffe347b8c00280ab28385, type: 3}
@@ -216,7 +215,7 @@ MonoBehaviour:
   pokemonDamagedScreen: {fileID: 9197481963319205126, guid: 8b36f6b095cf0c54eaf8476fe9477bc4, type: 3}
   dialogueScreen: {fileID: 9197481963319205126, guid: f85fb5a6c7e20ac4f9cc537475ff284f, type: 3}
   opposingPokemonDamagedScreen: {fileID: 9197481963319205126, guid: d97eb202a2ea55743a1f3d1ce4a5e31c, type: 3}
-  menu: 0
+  menu: 4
 --- !u!114 &48023145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,7 +614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bae845c3411dc846809c3e84e8efac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  team:
+  teamObjects:
   - {fileID: 751706185}
   - {fileID: 449583050}
   - {fileID: 0}
@@ -983,7 +982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bae845c3411dc846809c3e84e8efac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  team:
+  teamObjects:
   - {fileID: 2099316858}
   - {fileID: 1429686766}
   - {fileID: 0}
@@ -1453,7 +1452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 210d75d5e5ab87d4e9e014f3c2655501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueUIElements: {fileID: 0}
+  dialogueUIElements: {fileID: 48023150}
 --- !u!1 &2044077804
 GameObject:
   m_ObjectHideFlags: 0
