@@ -8,7 +8,6 @@ using UnityEngine.UIElements;
 
 public class UIController : Singleton<UIController>
 {
-    [SerializeField] private GeneralBattleUIElements uiElements;
     [SerializeField] public UIDocument currentUI;
     [SerializeField] public VisualTreeAsset generalBattleUI; // Your HP, Opponent HP, Fight Button, Pokemon Button, Forfiet Button
     [SerializeField] public VisualTreeAsset moveSelectUI;
@@ -24,7 +23,15 @@ public class UIController : Singleton<UIController>
     public static event Action<Menus> OnMenuChange;
     private void OnEnable()
     {
-        //uiElements.FightButton.clicked += HandleUIInput;   
+        GameManager.OnStateChange += HandleStateChange;
+    }
+
+    private void HandleStateChange(GameState state)
+    {
+        if (state == GameState.BattleStart)
+        {
+            UpdateMenu(Menus.GeneralBattleMenu);
+        }
     }
 
     //private void HandleUIInput()
@@ -67,6 +74,11 @@ public class UIController : Singleton<UIController>
             case Menus.OpposingPokemonDamagedScreen:
                 currentUI.rootVisualElement.style.display = DisplayStyle.None;
                 currentUI.visualTreeAsset = opposingPokemonDamagedScreen;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.DialogueScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = dialogueScreen;
                 currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
                 break;
         }
