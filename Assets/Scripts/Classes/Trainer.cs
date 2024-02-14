@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Trainer : MonoBehaviour
 {
-    [SerializeField] private GameObject[] team = new GameObject[6];
+    [SerializeField] private GameObject[] teamObjects = new GameObject[6];
     [SerializeField] private GameObject activePokemonGameObject;
     public Pokemon[] pokemonTeam = new Pokemon[6];
     public Pokemon activePokemon;
@@ -13,9 +13,9 @@ public class Trainer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        activePokemonGameObject = team[0];
+        activePokemonGameObject = teamObjects[0];
         int i = 0;
-        foreach (var go in team)
+        foreach (var go in teamObjects)
         {
             if (go == null)
             {
@@ -42,14 +42,33 @@ public class Trainer : MonoBehaviour
             Debug.LogError("Invalid Switch");
             return;
         }
-        GameObject newPokemon = team[index];
-        GameObject temp = activePokemonGameObject;
+        GameObject newObject = teamObjects[index];
+        Pokemon newPokemon = pokemonTeam[index];
+        SwapPokemon(newObject, newPokemon, index);
+        
+    }
+
+    private void SwapPokemon(GameObject newObject, Pokemon newPokemon, int index)
+    {
         // Play animation
-        team[index] = temp;
-        activePokemonGameObject = newPokemon;
-        activePokemon = activePokemonGameObject.GetComponent<Pokemon>();
-        temp.SetActive(false);
-        activePokemonGameObject.SetActive(true);
-        activePokemonGameObject.transform.position = temp.transform.position;
+        GameObject tempGameObject = activePokemonGameObject;
+        Pokemon tempPokemon = activePokemon;        
+        teamObjects[index] = tempGameObject;
+        pokemonTeam[index] = tempPokemon;
+        activePokemonGameObject = newObject;
+        activePokemon = newPokemon;
+        pokemonTeam[0] = newPokemon;
+        teamObjects[0] = newObject;
+        SetLocation(tempGameObject, newObject);
+    }
+
+    private void SetLocation(GameObject oldPokemon, GameObject newPokemon)
+    {
+        oldPokemon.SetActive(false);
+        newPokemon.SetActive(true);
+        float oldX = oldPokemon.transform.position.x;
+        float oldZ = oldPokemon.transform.position.z;
+        float newPokemonHeight = newPokemon.GetComponent<Collider>().bounds.size.y;
+        newPokemon.transform.position = new Vector3(oldX, 40.42f + (newPokemonHeight / 2), oldZ); 
     }
 }
