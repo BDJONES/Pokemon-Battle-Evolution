@@ -35,75 +35,96 @@ public class UIInputGrabber //: IDisposable
         attack4Controller.AttackSelected -= Attack4Selected;
     }
 
-    private void Attack1Selected(object sender, OnAttackSelectedEventArgs args)
+    private async void Attack1Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+
     }
 
-    private void Attack2Selected(object sender, OnAttackSelectedEventArgs args)
+    private async void Attack2Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Attack3Selected(object sender, OnAttackSelectedEventArgs args)
+    private async void Attack3Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Attack4Selected(object sender, OnAttackSelectedEventArgs args)
+    private async void Attack4Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Switch1Selected(object sender, OnSwitchEventArgs e)
+    private async void Switch1Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log("Clicking Switch 1");
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Switch2Selected(object sender, OnSwitchEventArgs e)
+    private async void Switch2Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log("Clicking Switch 2");
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Switch3Selected(object sender, OnSwitchEventArgs e)
+    private async void Switch3Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Switch4Selected(object sender, OnSwitchEventArgs e)
+    private async void Switch4Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Switch5Selected(object sender, OnSwitchEventArgs e)
+    private async void Switch5Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 
-    private void Switch6Selected(object sender, OnSwitchEventArgs e)
+    private async void Switch6Selected(object sender, OnSwitchEventArgs e)
     {
         Debug.Log(e.Switch.pokemon.GetSpeciesName());
         selectedAction = e.Switch;
+        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
     }
 

@@ -31,7 +31,6 @@ public class PokemonInfoController : MonoBehaviour
     {
         GameManager.OnStateChange += HandleGameStateChange;
         UIController.OnMenuChange += HandleMenuChange;
-        //uiElements.PokemonButton.clicked += UpdateInfo;
     }
 
     private void OnDisable()
@@ -81,7 +80,8 @@ public class PokemonInfoController : MonoBehaviour
 
     private void Start()
     {
-        InitializeFields();
+        Debug.Log("Starting In Pokemon");
+        //InitializeFields();
     }
 
     public async UniTask UpdateHealthBar(Menus menu)
@@ -136,6 +136,11 @@ public class PokemonInfoController : MonoBehaviour
                 await UniTask.WaitForSeconds(0.02f);
             }
         }
+        if (newHPValue == 0)
+        {
+            //Debug.Log("Pokemon has fainted");
+            YourPokemonDeathEventManager.AlertOfDeath();
+        }
         // If the pokemon reaches 0 hp, then play animation of faint
         return;
     }
@@ -161,7 +166,7 @@ public class PokemonInfoController : MonoBehaviour
     {
         if (menu == Menus.GeneralBattleMenu || menu == Menus.MoveSelectionMenu || menu == Menus.PokemonDamagedScreen) 
         {
-            Debug.Log("The menu has changed back to normal");
+            //Debug.Log("The menu has changed back to normal");
             InitializeFields();
             UpdateInfo(menu);
         }
@@ -171,12 +176,14 @@ public class PokemonInfoController : MonoBehaviour
     {
         if (menu == Menus.GeneralBattleMenu)
         {
+            Debug.Log("Perfectly fine");
             pokemonNameLabelGB.text = GameManager.Instance.trainer1.activePokemon.GetSpeciesName();
             pokemonLevelLabelGB.text = $"Lv. {GameManager.Instance.trainer1.activePokemon.GetLevel()}";
             //Debug.Log(hpBarGB.highValue);
             hpBarGB.highValue = GameManager.Instance.trainer1.activePokemon.GetMaxHPStat();
             hpBarGB.value = GameManager.Instance.trainer1.activePokemon.GetHPStat();
             hpStatLabelGB.text = $"{GameManager.Instance.trainer1.activePokemon.GetHPStat()}/{GameManager.Instance.trainer1.activePokemon.GetMaxHPStat()}";
+            Debug.Log("Perfectly fine");
         }
         else if (menu == Menus.MoveSelectionMenu)
         {

@@ -11,7 +11,7 @@ public class PokemonButtonController : MonoBehaviour
     private void OnEnable()
     {
         UIController.OnMenuChange += HandleMenuChange;
-        UIEventSubscriptionManager.Subscribe(uiElements.PokemonButton, PokemonButtonClicked);
+        //UIEventSubscriptionManager.Subscribe(uiElements.PokemonButton, PokemonButtonClicked);
     }
 
 
@@ -28,7 +28,7 @@ public class PokemonButtonController : MonoBehaviour
     {
         if (menu == Menus.GeneralBattleMenu)
         {
-            uiElements.PokemonButton.clicked += PokemonButtonClicked;
+            UIEventSubscriptionManager.Subscribe(uiElements.PokemonButton, PokemonButtonClicked);
         }
     }
     private void PokemonButtonClicked()

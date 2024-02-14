@@ -12,7 +12,6 @@ public class FightButtonController : MonoBehaviour
     private void OnEnable()
     {
         UIController.OnMenuChange += HandleMenuChange;
-        UIEventSubscriptionManager.Subscribe(uiElements.FightButton, FightButtonClicked);
     }
 
 

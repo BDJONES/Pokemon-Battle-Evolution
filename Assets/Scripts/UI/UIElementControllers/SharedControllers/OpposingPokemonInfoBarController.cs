@@ -33,6 +33,7 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
     private void OnDisable()
     {
         GameManager.OnStateChange -= HandleGameStateChange;
+        UIController.OnMenuChange -= HandleMenuChange;
     }
 
     private void InitializeFields()
@@ -74,7 +75,8 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
 
     private void Start()
     {
-        InitializeFields();
+        Debug.Log("Starting Opposing Pokemon");
+        //InitializeFields();
     }
 
     public async UniTask UpdateHealthBar(Menus menu)
@@ -120,14 +122,25 @@ public class OpposingPokemonInfoBarController : MonoBehaviour
                     await UniTask.WaitForSeconds(0.02f);
                 }
             }
+            if (newHPValue == 0)
+            {
+                OpponentPokemonDeathEventManager.AlertOfDeath();
+            }
+                
         }
+        
         return;
     }
 
     public void HandleGameStateChange(GameState state)
     {
+        //if (state == GameState.LoadingPokemonInfo)
+        //{
+        //    
+        //}
         if (state == GameState.BattleStart)
         {
+            InitializeFields();
             UpdateInfo(Menus.GeneralBattleMenu);
         }
     }

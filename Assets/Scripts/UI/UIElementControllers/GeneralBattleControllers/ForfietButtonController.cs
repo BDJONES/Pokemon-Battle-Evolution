@@ -11,7 +11,7 @@ public class ForfietButtonController : MonoBehaviour
 	private void OnEnable()
 	{
 		UIController.OnMenuChange += HandleMenuChange;
-        UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
+        //UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
     }
 
 
