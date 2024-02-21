@@ -30,6 +30,12 @@ public class TimeManager : Singleton<TimeManager>
     private void OnEnable()
     {
         GameManager.OnStateChange += HandleStateChange;
+        UIInputGrabber.MoveSelected += ChangeTimerToInactive;
+    }
+
+    private void ChangeTimerToInactive()
+    {
+        turnTimerActive = false;
     }
 
     private void HandleStateChange(GameState state)
@@ -46,6 +52,10 @@ public class TimeManager : Singleton<TimeManager>
         {
             turnTimerActive = false;
         }
+        else if (state == GameState.WaitingOnPlayerInput)
+        {
+            StartTurnTimer();
+        }
     }
 
     private void StartMatchTimer()
@@ -57,7 +67,7 @@ public class TimeManager : Singleton<TimeManager>
     private void StartTurnTimer()
     {
         turnTimerActive = true;
-        turnTimer = 8f;
+        turnTimer = 5f;
     }
 
     private void Update()
@@ -87,6 +97,7 @@ public class TimeManager : Singleton<TimeManager>
 
     private void UpdateMatchState()
     {
+
         if (matchTimer == 0)
         {
             //Debug.Log("Match timer Ending");

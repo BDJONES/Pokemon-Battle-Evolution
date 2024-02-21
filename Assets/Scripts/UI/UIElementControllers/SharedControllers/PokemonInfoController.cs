@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 
 public class PokemonInfoController : MonoBehaviour
 {
+    [SerializeField] private TrainerController trainerController;
     [SerializeField] private GeneralBattleUIElements uIGBElements;
     [SerializeField] private MoveSelectionUIElements moveSelectionUIElements;
     [SerializeField] private PokemonDamagedUIElements pokemonDamageUIElements;
@@ -76,6 +77,7 @@ public class PokemonInfoController : MonoBehaviour
         hpBarPD = hpBarVE.Query<ProgressBar>();
         hpStatLabelPD = hpBarVE.Query<Label>("HPStat");
         infoButtonPD = battleInfoVE.Query<Button>("OpposingPokemonInfoButton");
+        
     }
 
     private void Start()
@@ -107,39 +109,41 @@ public class PokemonInfoController : MonoBehaviour
         {
             return;
         }
-        int oldHPValue = Mathf.FloorToInt(hpBar.value);
-        //Debug.Log($"oldHPValue = {oldHPValue}");
-        int newHPValue = GameManager.Instance.trainer1.activePokemon.GetHPStat();
-        //Debug.Log($"newHPValue = {newHPValue}");
-        if (oldHPValue > newHPValue)
+        if (menu == Menus.PokemonDamagedScreen || menu == Menus.GeneralBattleMenu)
         {
-            while (hpBar.value > newHPValue)
+            int oldHPValue = Mathf.FloorToInt(hpBar.value);
+            //Debug.Log($"oldHPValue = {oldHPValue}");
+            int newHPValue = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
+            //Debug.Log($"newHPValue = {newHPValue}");
+            if (oldHPValue > newHPValue)
             {
-                //hpBar.schedule.Execute(() =>
-                //{
-                hpBar.value -= 1f;
-                hpStatLabel.text = $"{hpBar.value}/{GameManager.Instance.trainer1.activePokemon.GetMaxHPStat()}";
-                //}).Every(30).Until(() => hpBar.value <= newHPValue);
-                await UniTask.WaitForSeconds(0.02f);
-            }
+                while (hpBar.value > newHPValue)
+                {
+                    //hpBar.schedule.Execute(() =>
+                    //{
+                    hpBar.value -= 1f;
+                    hpStatLabel.text = $"{hpBar.value}/{trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat()}";
+                    //}).Every(30).Until(() => hpBar.value <= newHPValue);
+                    await UniTask.WaitForSeconds(0.02f);
+                }
 
-        }
-        else
-        {
-            while (hpBar.value < newHPValue)
+            }
+            else
             {
-                //hpBar.schedule.Execute(() =>
-                //{
-                    hpBar.value += 1f;
+                while (hpBar.value < newHPValue)
+                {
+                    //hpBar.schedule.Execute(() =>
+                    //{
+                        hpBar.value += 1f;
 
-                //}).Every(50).Until(() => hpBar.value >= newHPValue);
-                await UniTask.WaitForSeconds(0.02f);
+                    //}).Every(50).Until(() => hpBar.value >= newHPValue);
+                    await UniTask.WaitForSeconds(0.02f);
+                }
             }
-        }
-        if (newHPValue == 0)
-        {
-            //Debug.Log("Pokemon has fainted");
-            YourPokemonDeathEventManager.AlertOfDeath();
+            if (newHPValue == 0)
+            {
+                YourPokemonDeathEventManager.AlertOfDeath();
+            }
         }
         // If the pokemon reaches 0 hp, then play animation of faint
         return;
@@ -147,16 +151,17 @@ public class PokemonInfoController : MonoBehaviour
 
     public void HandleGameStateChange(GameState state)
     {
-        if (state == GameState.BattleStart)
-        {
-            UpdateInfo(Menus.GeneralBattleMenu);
-        }
+        //if (state == GameState.BattleStart)
+        //{
+        //    //InitializeFields();
+        //    UpdateInfo(Menus.GeneralBattleMenu);
+        //}
         //else if (state == GameState.FirstAttack ||  state == GameState.SecondAttack)
         //{
         //    Debug.Log("The correct game state has been achieved");
         //int oldHPValue = Mathf.FloorToInt(hpBar.value);
         //Debug.Log($"oldHPValue = {oldHPValue}");
-        //int newHPValue = GameManager.Instance.trainer1.activePokemon.GetHPStat();
+        //int newHPValue = GameManager.Instance.trainer1.GetActivePokemon().GetHPStat();
         //Debug.Log($"newHPValue = {newHPValue}");
         //    await UpdateHealthBar(oldHPValue, newHPValue);
         //}
@@ -166,8 +171,8 @@ public class PokemonInfoController : MonoBehaviour
     {
         if (menu == Menus.GeneralBattleMenu || menu == Menus.MoveSelectionMenu || menu == Menus.PokemonDamagedScreen) 
         {
-            //Debug.Log("The menu has changed back to normal");
             InitializeFields();
+            Debug.Log("Just initialized the fields");
             UpdateInfo(menu);
         }
     }
@@ -176,30 +181,29 @@ public class PokemonInfoController : MonoBehaviour
     {
         if (menu == Menus.GeneralBattleMenu)
         {
-            Debug.Log("Perfectly fine");
-            pokemonNameLabelGB.text = GameManager.Instance.trainer1.activePokemon.GetSpeciesName();
-            pokemonLevelLabelGB.text = $"Lv. {GameManager.Instance.trainer1.activePokemon.GetLevel()}";
+            //Debug.Log("Perfectly fine");
+            pokemonNameLabelGB.text = trainerController.GetPlayer().GetActivePokemon().GetNickname();
+            pokemonLevelLabelGB.text = $"Lv. {trainerController.GetPlayer().GetActivePokemon().GetLevel()}";
             //Debug.Log(hpBarGB.highValue);
-            hpBarGB.highValue = GameManager.Instance.trainer1.activePokemon.GetMaxHPStat();
-            hpBarGB.value = GameManager.Instance.trainer1.activePokemon.GetHPStat();
-            hpStatLabelGB.text = $"{GameManager.Instance.trainer1.activePokemon.GetHPStat()}/{GameManager.Instance.trainer1.activePokemon.GetMaxHPStat()}";
-            Debug.Log("Perfectly fine");
+            hpBarGB.highValue = trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat();
+            hpBarGB.value = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
+            hpStatLabelGB.text = $"{trainerController.GetPlayer().GetActivePokemon().GetHPStat()}/{trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat()}";
         }
         else if (menu == Menus.MoveSelectionMenu)
         {
-            pokemonNameLabelMS.text = GameManager.Instance.trainer1.activePokemon.GetSpeciesName();
-            pokemonLevelLabelMS.text = $"Lv. {GameManager.Instance.trainer1.activePokemon.GetLevel()}";
-            hpBarMS.highValue = GameManager.Instance.trainer1.activePokemon.GetMaxHPStat();
-            hpBarMS.value = GameManager.Instance.trainer1.activePokemon.GetHPStat();
-            hpStatLabelMS.text = $"{GameManager.Instance.trainer1.activePokemon.GetHPStat()}/{GameManager.Instance.trainer1.activePokemon.GetMaxHPStat()}";
+            pokemonNameLabelMS.text = trainerController.GetPlayer().GetActivePokemon().GetSpeciesName();
+            pokemonLevelLabelMS.text = $"Lv. {trainerController.GetPlayer().GetActivePokemon().GetLevel()}";
+            hpBarMS.highValue = trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat();
+            hpBarMS.value = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
+            hpStatLabelMS.text = $"{trainerController.GetPlayer().GetActivePokemon().GetHPStat()}/{trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat()}";
         }
         else if (menu == Menus.PokemonDamagedScreen)
         {
-            pokemonNameLabelPD.text = GameManager.Instance.trainer1.activePokemon.GetSpeciesName();
-            pokemonLevelLabelPD.text = $"Lv. {GameManager.Instance.trainer1.activePokemon.GetLevel()}";
-            hpBarPD.highValue = GameManager.Instance.trainer1.activePokemon.GetMaxHPStat();
-            hpBarPD.value = GameManager.Instance.trainer1.activePokemon.GetHPStat();
-            hpStatLabelPD.text = $"{GameManager.Instance.trainer1.activePokemon.GetHPStat()}/{GameManager.Instance.trainer1.activePokemon.GetMaxHPStat()}";
+            pokemonNameLabelPD.text = trainerController.GetPlayer().GetActivePokemon().GetSpeciesName();
+            pokemonLevelLabelPD.text = $"Lv. {trainerController.GetPlayer().GetActivePokemon().GetLevel()}";
+            hpBarPD.highValue = trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat();
+            hpBarPD.value = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
+            hpStatLabelPD.text = $"{trainerController.GetPlayer().GetActivePokemon().GetHPStat()}/{trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat()}";
         }
     }
 }

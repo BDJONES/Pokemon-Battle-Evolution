@@ -40,7 +40,7 @@ public class DialogueBoxController : MonoBehaviour
 
     public async static UniTask RequestForTextChange(string text)
     {
-        Debug.Log(dialogueBoxText.text);
+        //Debug.Log(dialogueBoxText.text);
         string newString = "";
         foreach (var c in text)
         {

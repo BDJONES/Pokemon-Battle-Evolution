@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 public class Attack2Controller : MoveSelectButton
 {
+    [SerializeField] TrainerController trainerController;
     private void OnEnable()
     {
         UIController.OnMenuChange += HandleMenuChange;
@@ -12,7 +13,7 @@ public class Attack2Controller : MoveSelectButton
 
     protected override void InitializeButton(Button attackButton)
     {
-        attack = GameManager.Instance.trainer1.activePokemon.GetMoveset()[1];
+        attack = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[1];
         base.InitializeButton(attackButton);
     }
 

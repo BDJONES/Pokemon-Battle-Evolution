@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 public class ViewBuilder : MonoBehaviour
 {
     [SerializeField] private VisualTreeAsset InBattlePartyWidget;
+    [SerializeField] TrainerController trainerController;
     private Menus previousMenu;
     
     private void OnEnable()
@@ -23,7 +24,7 @@ public class ViewBuilder : MonoBehaviour
     private void HandleMenuChange(Menus menu)
     {
         
-        if (menu == Menus.InBattlePartyMenu)
+        if (menu == Menus.InBattlePartyMenu || menu == Menus.PokemonFaintedScreen)
         {
             PopulateUI();
         }
@@ -58,7 +59,7 @@ public class ViewBuilder : MonoBehaviour
         {
             name = "WidgetHolder"
         };
-        foreach (Pokemon pokemon in GameManager.Instance.trainer1.pokemonTeam)
+        foreach (Pokemon pokemon in trainerController.GetPlayer().GetPokemonTeam())
         {
             TemplateContainer newWidget = InBattlePartyWidget.Instantiate();
             newWidget.name = $"Pokemon{index}";
@@ -83,14 +84,17 @@ public class ViewBuilder : MonoBehaviour
                 if (index == 1 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon1Controller>();
+                    WidgetHolder.GetComponent<Pokemon1Controller>().SetTrainerController(trainerController);
                 }
                 else if (index == 2 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon2Controller>();
+                    WidgetHolder.GetComponent<Pokemon2Controller>().SetTrainerController(trainerController);
                 }
                 else if (index == 3 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon3Controller>();
+                    WidgetHolder.GetComponent<Pokemon3Controller>().SetTrainerController(trainerController);
                 }
             }
             else
@@ -99,14 +103,17 @@ public class ViewBuilder : MonoBehaviour
                 if (index == 4 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon4Controller>();
+                    WidgetHolder.GetComponent<Pokemon4Controller>().SetTrainerController(trainerController);
                 }
                 else if (index == 5 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon5Controller>();
+                    WidgetHolder.GetComponent<Pokemon5Controller>().SetTrainerController(trainerController);
                 }
                 else if (index == 6 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon6Controller>();
+                    WidgetHolder.GetComponent<Pokemon6Controller>().SetTrainerController(trainerController);
                 }
             }
             index++;

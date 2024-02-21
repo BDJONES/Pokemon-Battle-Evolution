@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 public class UIInputGrabber //: IDisposable
 {
     private IPlayerAction selectedAction;
+    public static event Action MoveSelected;
     Attack1Controller attack1Controller;
     Attack2Controller attack2Controller;
     Attack3Controller attack3Controller;
@@ -42,7 +43,7 @@ public class UIInputGrabber //: IDisposable
         UIController.Instance.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-
+        HandleInput();
     }
 
     private async void Attack2Selected(object sender, OnAttackSelectedEventArgs args)
@@ -52,6 +53,7 @@ public class UIInputGrabber //: IDisposable
         UIController.Instance.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        HandleInput();
     }
 
     private async void Attack3Selected(object sender, OnAttackSelectedEventArgs args)
@@ -61,6 +63,7 @@ public class UIInputGrabber //: IDisposable
         UIController.Instance.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        HandleInput();
     }
 
     private async void Attack4Selected(object sender, OnAttackSelectedEventArgs args)
@@ -70,75 +73,99 @@ public class UIInputGrabber //: IDisposable
         UIController.Instance.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
         UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        HandleInput();
     }
 
     private async void Switch1Selected(object sender, OnSwitchEventArgs e)
     {
-        Debug.Log("Clicking Switch 1");
-        Debug.Log(e.Switch.pokemon.GetSpeciesName());
+        var prevMenu = UIController.Instance.GetCurrentMenu();
         selectedAction = e.Switch;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        if (prevMenu != Menus.PokemonFaintedScreen)
+        {
+            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        }
+        HandleInput();
     }
 
     private async void Switch2Selected(object sender, OnSwitchEventArgs e)
     {
-        Debug.Log("Clicking Switch 2");
-        Debug.Log(e.Switch.pokemon.GetSpeciesName());
+        var prevMenu = UIController.Instance.GetCurrentMenu();
         selectedAction = e.Switch;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        if (prevMenu != Menus.PokemonFaintedScreen)
+        {
+            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        }
+        HandleInput();
     }
 
     private async void Switch3Selected(object sender, OnSwitchEventArgs e)
     {
-        Debug.Log(e.Switch.pokemon.GetSpeciesName());
+        var prevMenu = UIController.Instance.GetCurrentMenu();
         selectedAction = e.Switch;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        if (prevMenu != Menus.PokemonFaintedScreen)
+        {
+            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        }
+        HandleInput();
     }
 
     private async void Switch4Selected(object sender, OnSwitchEventArgs e)
     {
-        Debug.Log(e.Switch.pokemon.GetSpeciesName());
+        var prevMenu = UIController.Instance.GetCurrentMenu();
         selectedAction = e.Switch;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        if (prevMenu != Menus.PokemonFaintedScreen)
+        {
+            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        }
+        HandleInput();
     }
 
     private async void Switch5Selected(object sender, OnSwitchEventArgs e)
     {
-        Debug.Log(e.Switch.pokemon.GetSpeciesName());
+        var prevMenu = UIController.Instance.GetCurrentMenu();
         selectedAction = e.Switch;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        if (prevMenu != Menus.PokemonFaintedScreen)
+        {
+            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        }
+        HandleInput();
     }
 
     private async void Switch6Selected(object sender, OnSwitchEventArgs e)
     {
-        Debug.Log(e.Switch.pokemon.GetSpeciesName());
+        var prevMenu = UIController.Instance.GetCurrentMenu();
         selectedAction = e.Switch;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        if (prevMenu != Menus.PokemonFaintedScreen)
+        {
+            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        }
+        HandleInput();
     }
 
     public IPlayerAction GetSelectedAction()
     {
+        
         return selectedAction;
     }
 
-    public IPlayerAction HandleInput(IPlayerAction input)
+    private void HandleInput()
     {
         // Handle the input and return a string
-        return input;
-    }    
-    
+        MoveSelected.Invoke();
+    }
+
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.MoveSelectionMenu)
@@ -164,7 +191,7 @@ public class UIInputGrabber //: IDisposable
                 attack4Controller.AttackSelected += Attack4Selected;
             }
         }
-        else if (menu == Menus.InBattlePartyMenu)
+        else if (menu == Menus.InBattlePartyMenu || menu == Menus.PokemonFaintedScreen)
         {
             pokemon1Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon1Controller>();
             pokemon2Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon2Controller>();
@@ -175,32 +202,32 @@ public class UIInputGrabber //: IDisposable
 
             if (pokemon1Controller != null)
             {
-                Debug.Log("Subscribing to Controller1");
+                //Debug.Log("Subscribing to Controller1");
                 pokemon1Controller.SwitchSelected += Switch1Selected;
             }
             if (pokemon2Controller != null)
             {
-                Debug.Log("Subscribing to Controller2");
+                //Debug.Log("Subscribing to Controller2");
                 pokemon2Controller.SwitchSelected += Switch2Selected;
             }
             if (pokemon3Controller != null)
             {
-                Debug.Log("Subscribing to Controller3");
+                //Debug.Log("Subscribing to Controller3");
                 pokemon3Controller.SwitchSelected += Switch3Selected;
             }
             if (pokemon4Controller != null)
             {
-                Debug.Log("Subscribing to Controller4");
+                //Debug.Log("Subscribing to Controller4");
                 pokemon4Controller.SwitchSelected += Switch4Selected;
             }
             if (pokemon5Controller != null)
             {
-                Debug.Log("Subscribing to Controller5");
+                //Debug.Log("Subscribing to Controller5");
                 pokemon5Controller.SwitchSelected += Switch5Selected;
             }
             if (pokemon6Controller != null)
             {
-                Debug.Log("Subscribing to Controller6");
+                //Debug.Log("Subscribing to Controller6");
                 pokemon6Controller.SwitchSelected += Switch6Selected;
             }
         }
@@ -225,16 +252,16 @@ public class UIInputGrabber //: IDisposable
                     attack4Controller.AttackSelected -= Attack4Selected;
                 }
             }
-            else if (previousMenu == Menus.InBattlePartyMenu)
+            else if (previousMenu == Menus.InBattlePartyMenu || previousMenu == Menus.PokemonFaintedScreen)
             {
                 if (pokemon1Controller != null)
                 {
-                    Debug.Log("Unsubscribing from Controller 1");
+                    //Debug.Log("Unsubscribing from Controller 1");
                     pokemon1Controller.SwitchSelected -= Switch1Selected;
                 }
                 if (pokemon2Controller != null)
                 {
-                    Debug.Log("Unsubscribing from Controller 2");
+                    //Debug.Log("Unsubscribing from Controller 2");
                     pokemon2Controller.SwitchSelected -= Switch2Selected;
                 }
                 if (pokemon3Controller != null)

@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 
 public abstract class PartyPokemonController : MonoBehaviour
 {
+    [SerializeField] protected TrainerController trainerController;
     public static event Action<IPlayerAction> InputReceived;
     public void ReceiveInput(IPlayerAction input)
     {
@@ -27,18 +28,23 @@ public abstract class PartyPokemonController : MonoBehaviour
     protected abstract void AttachButton();
     protected void InitializeSwitch(Pokemon pokemon)
     {
-        switchPA = new Switch(GameManager.Instance.trainer1, pokemon);
+        switchPA = new Switch(trainerController.GetPlayer(), pokemon);
     }
 
 
     protected void PartyPokemonClicked()
     {
-        Debug.Log("PartyPokemon Clicked");
+        //Debug.Log("PartyPokemon Clicked");
         var args = new OnSwitchEventArgs
         {
             Switch = this.switchPA
         };
         SwitchSelected?.Invoke(this, args);
         ReceiveInput(switchPA);
+    }
+
+    public void SetTrainerController(TrainerController tc)
+    {
+        trainerController = tc;
     }
 }

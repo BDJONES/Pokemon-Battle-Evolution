@@ -7,6 +7,19 @@ using UnityEngine.VFX;
 public class MoveSelectionUIElements : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
+    
+    public VisualElement Timer
+    {
+        get
+        {
+            if (uiDocument.rootVisualElement == null)
+            {
+                Debug.Log("The root is null");
+                return null;
+            }
+            return uiDocument.rootVisualElement.Query<VisualElement>("Timer");
+        }
+    }
 
     public VisualElement PokemonInfoBar
     {

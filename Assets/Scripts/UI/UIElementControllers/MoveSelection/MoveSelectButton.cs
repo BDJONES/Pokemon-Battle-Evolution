@@ -6,15 +6,6 @@ using UnityEngine.UIElements;
 
 public abstract class MoveSelectButton : MonoBehaviour
 {
-    public static event Action<IPlayerAction> InputReceived;
-    public void ReceiveInput(IPlayerAction input)
-    {
-        // Process the input
-        Console.WriteLine("Input received: " + input);
-
-        // Raise the event with the received input
-        InputReceived?.Invoke(input);
-    }
     [SerializeField] protected MoveSelectionUIElements moveSelectionUIElements;
     protected Attack attack;
     public event EventHandler<OnAttackSelectedEventArgs> AttackSelected;
@@ -33,15 +24,21 @@ public abstract class MoveSelectButton : MonoBehaviour
         Type = moveInfo.Query<Label>("Type");
 
         attackName.text = attack.GetAttackName();
+        if (attack.GetCurrentPP() < attack.GetMaxPP())
+        {
+            PP.text = "Booty Butt Cheeks";
+        }
         PP.text = $"{attack.GetCurrentPP()}/{attack.GetMaxPP()}";
         Type.text = $"{attack.GetAttackType().GetType().Name}";
     }
 
     protected void OnAttackSelected()
     {
-        OnAttackSelectedEventArgs args = new OnAttackSelectedEventArgs();
-        args.Attack = this.attack;
+        OnAttackSelectedEventArgs args = new()
+        {
+            Attack = this.attack
+        };
         AttackSelected?.Invoke(this, args);
-        ReceiveInput(attack);
+        //ReceiveInput(attack);
     }
 }

@@ -66,6 +66,7 @@ public abstract class Attack : IPlayerAction
             {
                 return true;
             }
+            // Some effects trigger after KO
             TriggerEffect(attacker, target);
         }
         else
@@ -88,12 +89,11 @@ public abstract class Attack : IPlayerAction
                 TriggerEffect(attacker, target);
             }
         }
-        Debug.Log("The Attack Landed");
+        //Debug.Log("The Attack Landed");
         return true;
     }
     protected virtual void TriggerEffect(Pokemon attacker, Pokemon target)
     {
-        Debug.Log($"Triggering Effect {currPowerPoints}");
         currPowerPoints -= 1;
         return;
     }
@@ -108,7 +108,7 @@ public abstract class Attack : IPlayerAction
         // Visual for Formula https://gamerant.com/pokemon-damage-calculation-help-guide/
         if (attack.GetAttackCategory() == AttackCategory.Physical)
         {
-            Debug.Log($"Fired a Physical Attack = {attack.attackName}");
+            //Debug.Log($"Fired a Physical Attack = {attack.attackName}");
             int step1 = (2 * attacker.GetLevel() / 5 + 2);
             //Debug.Log($"Step 1 = {step1}");
             int step2 = step1 * attacker.GetAttackStat() * attack.GetAttackPower();
@@ -135,7 +135,6 @@ public abstract class Attack : IPlayerAction
             }
             if (critChance == 1)
             {
-                Debug.Log("You landed a critical hit");
                 damage = Mathf.FloorToInt(damage * 1.5f);
             }
         }
@@ -205,7 +204,7 @@ public abstract class Attack : IPlayerAction
     protected virtual float IsStab(Pokemon pokemon)
     {
         if (this.type == pokemon.GetType1() || (pokemon.GetType2() != null && this.type == pokemon.GetType2())) {
-            Debug.Log($"{this.GetAttackName()} is STAB");
+            //Debug.Log($"{this.GetAttackName()} is STAB");
             return 1.5f;
         }
         else
@@ -233,13 +232,13 @@ public abstract class Attack : IPlayerAction
         //Debug.Log("Checking for move effectiveness");
         if (target.GetType1().immunities.Contains(this.type) || (target.GetType2() != null && target.GetType2().immunities.Contains(this.type)))
         {
-            Debug.Log($"{target.GetSpeciesName()} is unaffected.");
+            //Debug.Log($"{target.GetSpeciesName()} is unaffected.");
             return 0;
         }
 
         if (target.GetType1().weaknesses.Contains(this.type))
         {
-            Debug.Log($"{target.GetType1().GetType().Name} is weak to {this.type.GetType().Name}");
+            //Debug.Log($"{target.GetType1().GetType().Name} is weak to {this.type.GetType().Name}");
             effectiveness *= 2;
         }
 
@@ -251,13 +250,13 @@ public abstract class Attack : IPlayerAction
 
         if (target.GetType1().resistances.Contains(this.type))
         {
-            Debug.Log($"{target.GetType1().GetType().Name} resists {this.type.GetType().Name}");
+            //Debug.Log($"{target.GetType1().GetType().Name} resists {this.type.GetType().Name}");
             effectiveness /= 2;
         }
 
         if (target.GetType2() != null && target.GetType2().resistances.Contains(this.type))
         {
-            Debug.Log($"{target.GetType2().GetType().Name} resists {this.type.GetType().Name}");
+            //Debug.Log($"{target.GetType2().GetType().Name} resists {this.type.GetType().Name}");
             effectiveness /= 2;
         }
 

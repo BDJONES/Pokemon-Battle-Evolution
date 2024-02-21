@@ -1,11 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="MatchTimer" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/TimerBar.uxml?fileID=9197481963319205126&amp;guid=d366973f8ecff5548a89393013da5a9c&amp;type=3#TimerBar" />
+    <ui:Template name="PokemonInfoBar" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/PokemonInfoBar.uxml?fileID=9197481963319205126&amp;guid=dc24fdffd3da14d4984838b0650899b9&amp;type=3#PokemonInfoBar" />
+    <ui:Template name="OpposingPokemonInfoBar" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/OpposingPokemonInfoBar.uxml?fileID=9197481963319205126&amp;guid=f7fe7a5fa331bc8449a2b36b95e3e37e&amp;type=3#OpposingPokemonInfoBar" />
     <ui:Template name="FightButton" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/FightButton.uxml?fileID=9197481963319205126&amp;guid=c7615024b14c43a4aad80aa2cfc4fc5a&amp;type=3#FightButton" />
     <ui:Template name="PokemonButton" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/PokemonButton.uxml?fileID=9197481963319205126&amp;guid=dec9a0bb3aefe244fa99032c52280f84&amp;type=3#PokemonButton" />
     <ui:Template name="ForfietButton" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/ForfietButton.uxml?fileID=9197481963319205126&amp;guid=3add311f1847f1344a0ffc76dc0db8c4&amp;type=3#ForfietButton" />
-    <ui:Template name="PokemonInfoBar" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/PokemonInfoBar.uxml?fileID=9197481963319205126&amp;guid=dc24fdffd3da14d4984838b0650899b9&amp;type=3#PokemonInfoBar" />
-    <ui:Template name="OpposingPokemonInfoBar" src="project://database/Assets/UI/UXML/Assets/General%20Battle%20UI/OpposingPokemonInfoBar.uxml?fileID=9197481963319205126&amp;guid=f7fe7a5fa331bc8449a2b36b95e3e37e&amp;type=3#OpposingPokemonInfoBar" />
     <ui:VisualElement name="Screen" style="flex-grow: 1;">
         <ui:VisualElement name="Content" style="flex-grow: 1; justify-content: flex-end; align-items: flex-end;">
+            <ui:Instance template="MatchTimer" name="TimeInfo" style="position: absolute; left: 20px; top: 30px;" />
             <ui:VisualElement name="TrainerInfo" style="flex-grow: 1; position: absolute; left: 0; bottom: 0; top: auto; flex-direction: row; width: 40%; height: 27%;">
                 <ui:VisualElement name="TeamHealth" style="flex-grow: 1;" />
                 <ui:Instance template="PokemonInfoBar" name="PokemonInfoBar" style="height: 100%; width: 100%; position: relative; left: auto; bottom: auto;">

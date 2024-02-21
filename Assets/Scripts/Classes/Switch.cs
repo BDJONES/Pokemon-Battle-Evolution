@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Switch : IPlayerAction
 {
-    public Trainer trainer;
-    public Pokemon pokemon;
+    private Trainer trainer;
+    private Pokemon pokemon;
 
     public Switch(Trainer trainer, Pokemon pokemon)
     {
@@ -14,22 +14,35 @@ public class Switch : IPlayerAction
     }
     public void SwitchPokemon(Trainer trainer, Pokemon newPokemon)
     {
-        //if (newPokemon == trainer.activePokemon)
+        //if (newPokemon == trainer.GetActivePokemon())
         //{
         //    Debug.Log("You can't swap with the Pokemon that is already out.");
         //    return;
         //}
-        trainer.Switch(1);
-        return;
-        //for (int i = 0; i < trainer.team.Length; i++)
-        //{
-        //    if (trainer.team[i].GetComponent<Pokemon>().GetNickname() == newPokemon.GetNickname())
-        //    {
-        //        trainer.Switch(i);
-        //    }
-        //}
-        
+        for (int i = 1; i < trainer.GetPokemonTeam().Length; i++)
+        {
+            //Debug.Log($"Name = {trainer.trainerName}, Number of Pokemon = {trainer.GetPokemonTeam().Length}");
+            if (trainer.GetPokemonTeam()[i] == null)
+            {
+                break;
+            }
+            if (trainer.GetPokemonTeam()[i].GetSpeciesName() == newPokemon.GetSpeciesName())
+            {
+                trainer.Switch(i);
+                return;
+            }
+        }
+        Debug.Log("Failed to find something to switch with");
+    }
 
+    public Trainer GetTrainer()
+    {
+        return trainer;
+    }
+
+    public Pokemon GetPokemon()
+    {
+        return pokemon;
     }
 
     public IPlayerAction PerformAction()

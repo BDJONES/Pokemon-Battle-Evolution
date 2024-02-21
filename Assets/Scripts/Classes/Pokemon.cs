@@ -229,6 +229,10 @@ public abstract class Pokemon: MonoBehaviour
     {
         return this.status == StatusConditions.Asleep;
     }
+    public bool IsDead()
+    {
+        return this.hpStat == 0;
+    }
     public List<Attack> GetMoveset()
     {
         return moveSet;

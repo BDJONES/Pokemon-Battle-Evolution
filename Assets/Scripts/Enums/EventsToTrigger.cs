@@ -4,12 +4,14 @@ using UnityEngine;
 
 public enum EventsToTrigger
 {
-    PokemonDamage,
-    OpposingPokemonDamage,
-    PokemonSwitch,
-    OpposingPokemonSwitch,
-    OnAbilityTrigger,
-    OnItemTrigger,
+    YourPokemonDamaged,
+    OpposingPokemonDamaged,
+    YourPokemonSwitched,
+    OpposingPokemonSwitched,
+    YourPokemonAbilityTriggered,
+    OpposingPokemonAbilityTriggered,
+    YourPokemonItemTriggered,
+    OpposingPokemonItemTriggered,
     OnSuperEffectiveHit,
     OnResistedHit
 }

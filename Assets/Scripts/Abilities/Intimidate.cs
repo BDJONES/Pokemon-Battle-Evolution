@@ -28,13 +28,13 @@ public class Intimidate : Ability
     {
         if (state == GameState.BattleStart)
         {
-            if (this.abilityUser == GameManager.Instance.trainer1.activePokemon)
+            if (this.abilityUser == GameManager.Instance.trainer1.GetActivePokemon())
             {
-                TriggerEffect(this.abilityUser, GameManager.Instance.trainer2.activePokemon);
+                TriggerEffect(this.abilityUser, GameManager.Instance.trainer2.GetActivePokemon());
             }
             else
             {
-                TriggerEffect(this.abilityUser, GameManager.Instance.trainer1.activePokemon);
+                TriggerEffect(this.abilityUser, GameManager.Instance.trainer1.GetActivePokemon());
             }
         }
     }

@@ -7,6 +7,20 @@ using UnityEngine.UIElements;
 public class GeneralBattleUIElements : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
+
+    public VisualElement Timer
+    {
+        get
+        {
+            if (uiDocument.rootVisualElement == null)
+            {
+                Debug.Log("The root is null");
+                return null;
+            }
+            return uiDocument.rootVisualElement.Query<VisualElement>("Timer");
+        }
+    }
+
     public VisualElement PokemonInfoBar
     {
         get
@@ -56,20 +70,25 @@ public class GeneralBattleUIElements : MonoBehaviour
                 if (content != null)
                 {
                     VisualElement opposingTrainerInfo = content.Query<VisualElement>("OpposingTrainerInfo");
+                    
                     if (opposingTrainerInfo != null)
                     {
                         TemplateContainer opposingPokemonInfoBarWidget = opposingTrainerInfo.Query<TemplateContainer>("OpposingPokemonInfoBar");
+                        
                         if (opposingPokemonInfoBarWidget != null)
                         {
                             VisualElement opposingPokemonInfoBar = opposingPokemonInfoBarWidget.Query<VisualElement>("OpposingPokemonInfo");
+                            //Debug.Log("Info queried");
                             if (opposingPokemonInfoBar != null)
                             {
+                                
                                 return opposingPokemonInfoBar;
                             }
                         }
                     }
                 }
             }
+            Debug.Log("Info not found");
             return null;
         }
     }
@@ -130,5 +149,4 @@ public class GeneralBattleUIElements : MonoBehaviour
             return uiDocument.rootVisualElement.Query<Button>("ForfietButton");
         }
     }
-    
 }

@@ -8,7 +8,6 @@ using UnityEngine.UIElements;
 public class FightButtonController : MonoBehaviour
 {
     [SerializeField] private GeneralBattleUIElements uiElements;
-    Attack attack;
     private void OnEnable()
     {
         UIController.OnMenuChange += HandleMenuChange;
@@ -35,8 +34,8 @@ public class FightButtonController : MonoBehaviour
 
     private void FightButtonClicked()
     {
-        //attack = GameManager.Instance.trainer1.activePokemon.GetMoveset()[2]; //Earthquake
-        //attack.PerformAction(GameManager.Instance.trainer1.activePokemon, GameManager.Instance.trainer2.activePokemon);
+        //attack = GameManager.Instance.trainer1.GetActivePokemon().GetMoveset()[2]; //Earthquake
+        //attack.PerformAction(GameManager.Instance.trainer1.GetActivePokemon(), GameManager.Instance.trainer2.GetActivePokemon());
         //OpposingPokemonInfoBarController opposingPokemonInfoBarController = GameObject.Find("UI Controller").GetComponent<OpposingPokemonInfoBarController>();
         //await opposingPokemonInfoBarController.UpdateHealthBar();
         //Debug.Log("Fight button Clicked");

@@ -6,7 +6,7 @@ public class Pokemon6Controller : PartyPokemonController
 {
     protected override void AttachButton()
     {
-        InitializeSwitch(GameManager.Instance.trainer1.pokemonTeam[5]);
+        InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[5]);
         UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon6Button, PartyPokemonClicked);
     }
 }
