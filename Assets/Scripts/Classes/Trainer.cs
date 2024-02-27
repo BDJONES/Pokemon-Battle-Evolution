@@ -36,6 +36,18 @@ public class Trainer : MonoBehaviour
         
     }
 
+    public bool isTeamDead()
+    {
+        foreach (Pokemon pokemon in pokemonTeam)
+        {
+            if (pokemon.GetHPStat() > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Pokemon[] GetPokemonTeam()
     {
         return pokemonTeam;
@@ -46,6 +58,11 @@ public class Trainer : MonoBehaviour
         return activePokemon;
     }
 
+    public GameObject GetActivePokemonGameObject()
+    {
+        return activePokemonGameObject;
+    }
+
     public void Switch(int index)
     {
         if (index == 0)
@@ -53,10 +70,11 @@ public class Trainer : MonoBehaviour
             Debug.LogError("Invalid Switch");
             return;
         }
+        activePokemon.ResetStatStages();
         GameObject newObject = teamObjects[index];
         Pokemon newPokemon = pokemonTeam[index];
         SwapPokemon(newObject, newPokemon, index);
-        
+ 
     }
 
     private void SwapPokemon(GameObject newObject, Pokemon newPokemon, int index)
