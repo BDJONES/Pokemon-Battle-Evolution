@@ -345,4 +345,12 @@ public abstract class Pokemon: MonoBehaviour
             this.SetSpeedStat(Mathf.FloorToInt(this.speedStat * stageConversionDictionary[speedStage]));
         }
     }
+    public void ResetStatStages()
+    {
+        this.AttackStage = 0;
+        this.DefenseStage = 0;
+        this.SpecialAttackStage = 0;
+        this.SpecialDefenseStage = 0;
+        this.SpeedStage = 0;
+    }
 }
