@@ -12,7 +12,7 @@ public class TrainerController : MonoBehaviour
     [SerializeField] private Trainer opponent;
     private UIInputGrabber uIGrabber;
     int inactiveTurnCount;
-    public static event Action playerTooInactive;
+    public event Action playerTooInactive;
 
     private void Start()
     {
@@ -48,7 +48,7 @@ public class TrainerController : MonoBehaviour
                 await UniTask.Yield();
             }
             UIInputGrabber.MoveSelected -= anonFunc;
-        } 
+        }
         // If a move was selected return that value
         if (selection != null)
         {
@@ -60,7 +60,7 @@ public class TrainerController : MonoBehaviour
             inactiveTurnCount++;
             if (inactiveTurnCount >= 3)
             {
-                playerTooInactive.Invoke();
+                playerTooInactive?.Invoke();
             }
             var attacks = player.GetActivePokemon().GetMoveset();
             int randomMove = UnityEngine.Random.Range(0, 3);
