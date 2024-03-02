@@ -67,7 +67,7 @@ public class TimeManager : Singleton<TimeManager>
     private void StartTurnTimer()
     {
         turnTimerActive = true;
-        turnTimer = 5f;
+        turnTimer = 10f;
     }
 
     private void Update()
@@ -122,6 +122,4 @@ public class TimeManager : Singleton<TimeManager>
     {
         return turnTimerActive;
     }
-
-
 }
