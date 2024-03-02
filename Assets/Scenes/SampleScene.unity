@@ -141,6 +141,8 @@ GameObject:
   - component: {fileID: 48023149}
   - component: {fileID: 48023148}
   - component: {fileID: 48023150}
+  - component: {fileID: 48023151}
+  - component: {fileID: 48023152}
   m_Layer: 0
   m_Name: UI Controller
   m_TagString: Untagged
@@ -209,9 +211,9 @@ MonoBehaviour:
   generalBattleUI: {fileID: 9197481963319205126, guid: 5a18e687ea3099948b8315c1e93e6feb, type: 3}
   moveSelectUI: {fileID: 9197481963319205126, guid: b0d7e480cd9ffe347b8c00280ab28385, type: 3}
   teamUI: {fileID: 9197481963319205126, guid: 54f2370bb3db3754fa99d72645ff2ad7, type: 3}
-  pokemonInfoUI: {fileID: 0}
-  opposingPokemonInfoUI: {fileID: 0}
-  moveInfoUI: {fileID: 0}
+  pokemonInfoUI: {fileID: 9197481963319205126, guid: 620d7f8005b4ca0478836f0f7ab2c105, type: 3}
+  opposingPokemonInfoUI: {fileID: 9197481963319205126, guid: e103133f852820c4fabb57866ecb7392, type: 3}
+  attackInfoUI: {fileID: 9197481963319205126, guid: 824b0214d9665b143933488cf2e57422, type: 3}
   forfietUI: {fileID: 9197481963319205126, guid: d95bbceb232f0d840b3c3e3bc5b8d604, type: 3}
   pokemonDamagedUI: {fileID: 9197481963319205126, guid: 8b36f6b095cf0c54eaf8476fe9477bc4, type: 3}
   dialogueUI: {fileID: 9197481963319205126, guid: f85fb5a6c7e20ac4f9cc537475ff284f, type: 3}
@@ -292,6 +294,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cece9e4cdb8025a42a9bcf41b374ad20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIDocument: {fileID: 48023137}
+--- !u!114 &48023151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48023136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 391818d1e2938a9458a2cd803da66966, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIDocument: {fileID: 48023137}
+--- !u!114 &48023152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48023136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf1bebe29804d443b761774d499fbd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uIDocument: {fileID: 48023137}
@@ -546,11 +574,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3436308782030927310, guid: 080cf6846cf343249aa6617407b98584, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 41.048
+      value: 45.72
       objectReference: {fileID: 0}
     - target: {fileID: 3436308782030927310, guid: 080cf6846cf343249aa6617407b98584, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 50.427204
+      value: 53.65
       objectReference: {fileID: 0}
     - target: {fileID: 3436308782030927310, guid: 080cf6846cf343249aa6617407b98584, type: 3}
       propertyPath: m_LocalRotation.w
@@ -769,11 +797,135 @@ Transform:
   - {fileID: 1177124749}
   m_Father: {fileID: 491376185}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &750274935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 750274936}
+  m_Layer: 0
+  m_Name: Focal Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &750274936
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750274935}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 694.501, y: 40.61, z: 50.662}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &751706185 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
   m_PrefabInstance: {fileID: 997972029}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &787859546
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 787859547}
+  - component: {fileID: 787859548}
+  m_Layer: 0
+  m_Name: AttackInfoControllers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &787859547
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787859546}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1327382658}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &787859548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787859546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eff253e26dfca9d47ad87b3ac5db15cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trainerController: {fileID: 1225661881}
+  moveSelectionUIElements: {fileID: 48023147}
+  attackInfoUIElements: {fileID: 48023152}
+--- !u!1 &816932634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 816932635}
+  - component: {fileID: 816932636}
+  m_Layer: 0
+  m_Name: PokemonInfoControllers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &816932635
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816932634}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1327382658}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &816932636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816932634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0c18d6888ddb6d45aed37734afd7a3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trainerController: {fileID: 1225661881}
+  pokemonInfoUIElements: {fileID: 48023151}
 --- !u!1 &839839086
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,6 +1028,7 @@ GameObject:
   - component: {fileID: 886952939}
   - component: {fileID: 886952938}
   - component: {fileID: 886952937}
+  - component: {fileID: 886952940}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -951,12 +1104,26 @@ Transform:
   m_GameObject: {fileID: 886952936}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.24508366, z: -0, w: 0.969502}
-  m_LocalPosition: {x: 695.238, y: 40.67, z: 48.352}
+  m_LocalPosition: {x: 695.373, y: 40.61, z: 48.425}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -28.374, z: 0}
+--- !u!114 &886952940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886952936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc66ac8f51e280146aa8bcf77fb229ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trainerController: {fileID: 1225661881}
+  speed: 5
 --- !u!1 &938270506
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,6 +1358,7 @@ MonoBehaviour:
   uIGBElements: {fileID: 48023139}
   moveSelectionUIElements: {fileID: 48023147}
   opposingPokemonDamagedUIElements: {fileID: 48023148}
+  pokemonInfoUIElements: {fileID: 0}
 --- !u!114 &1203385676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1207,6 +1375,7 @@ MonoBehaviour:
   uIGBElements: {fileID: 48023139}
   moveSelectionUIElements: {fileID: 48023147}
   pokemonDamageUIElements: {fileID: 48023149}
+  pokemonInfoUIElements: {fileID: 0}
 --- !u!114 &1203385677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1221,6 +1390,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uIInBattleParty: {fileID: 48023146}
   uIMoveSelection: {fileID: 48023147}
+  pokemonInfoUIElements: {fileID: 0}
+  attackInfoUIElements: {fileID: 0}
 --- !u!1 &1225661878
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,6 +1607,8 @@ Transform:
   - {fileID: 185090692}
   - {fileID: 1334559493}
   - {fileID: 1631863392}
+  - {fileID: 816932635}
+  - {fileID: 787859547}
   m_Father: {fileID: 1225661880}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1329397982
@@ -1576,6 +1749,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uIInBattleParty: {fileID: 48023146}
   uIMoveSelection: {fileID: 48023147}
+  pokemonInfoUIElements: {fileID: 48023151}
+  attackInfoUIElements: {fileID: 48023152}
 --- !u!4 &1334559493
 Transform:
   m_ObjectHideFlags: 0
@@ -1607,6 +1782,7 @@ MonoBehaviour:
   uIGBElements: {fileID: 48023139}
   moveSelectionUIElements: {fileID: 48023147}
   opposingPokemonDamagedUIElements: {fileID: 48023148}
+  pokemonInfoUIElements: {fileID: 48023151}
 --- !u!114 &1334559495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1623,6 +1799,7 @@ MonoBehaviour:
   uIGBElements: {fileID: 48023139}
   moveSelectionUIElements: {fileID: 48023147}
   pokemonDamageUIElements: {fileID: 48023149}
+  pokemonInfoUIElements: {fileID: 48023151}
 --- !u!1 &1429686766 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3433140257347716437, guid: 080cf6846cf343249aa6617407b98584, type: 3}
@@ -1650,11 +1827,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3436308782030927310, guid: 080cf6846cf343249aa6617407b98584, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 41.048
+      value: 45.72
       objectReference: {fileID: 0}
     - target: {fileID: 3436308782030927310, guid: 080cf6846cf343249aa6617407b98584, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 50.427204
+      value: 47.65
       objectReference: {fileID: 0}
     - target: {fileID: 3436308782030927310, guid: 080cf6846cf343249aa6617407b98584, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2054,3 +2231,4 @@ SceneRoots:
   - {fileID: 48023138}
   - {fileID: 408927992}
   - {fileID: 2044077806}
+  - {fileID: 750274936}
