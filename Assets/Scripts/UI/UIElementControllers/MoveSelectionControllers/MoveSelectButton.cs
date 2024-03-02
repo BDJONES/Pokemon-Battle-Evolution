@@ -24,10 +24,6 @@ public abstract class MoveSelectButton : MonoBehaviour
         Type = moveInfo.Query<Label>("Type");
 
         attackName.text = attack.GetAttackName();
-        if (attack.GetCurrentPP() < attack.GetMaxPP())
-        {
-            PP.text = "Booty Butt Cheeks";
-        }
         PP.text = $"{attack.GetCurrentPP()}/{attack.GetMaxPP()}";
         Type.text = $"{attack.GetAttackType().GetType().Name}";
     }

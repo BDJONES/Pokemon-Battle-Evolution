@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Attack3Controller : MoveSelectButton
+public class Attack4Controller : MoveSelectButton
 {
     [SerializeField] TrainerController trainerController;
     private void OnEnable()
@@ -11,9 +11,14 @@ public class Attack3Controller : MoveSelectButton
         UIController.OnMenuChange += HandleMenuChange;
     }
 
+    private void OnDisable()
+    {
+        UIController.OnMenuChange -= HandleMenuChange;
+    }
+
     protected override void InitializeButton(Button attackButton)
     {
-        attack = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[2];
+        attack = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[3];
         base.InitializeButton(attackButton);
     }
 
@@ -21,8 +26,8 @@ public class Attack3Controller : MoveSelectButton
     {
         if (menu == Menus.MoveSelectionMenu)
         {
-            InitializeButton(moveSelectionUIElements.Attack3Button);
-            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3Button, OnAttackSelected);
+            InitializeButton(moveSelectionUIElements.Attack4Button);
+            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack4Button, OnAttackSelected);
         }
     }
 }
