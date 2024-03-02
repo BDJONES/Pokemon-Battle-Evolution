@@ -1,8 +1,11 @@
 public enum Menus
 {
     GeneralBattleMenu,
-    MoveSelectionMenu,
-    AwaitingPlayerInputMenu,
+    MoveSelectionMenu,    
+    PokemonInfoScreen,
+    OpposingPokemonInfoScreen,
+    AttackInfoScreen,
+    AwaitingPlayerInputScreen,
     PokemonDamagedScreen,
     OpposingPokemonDamagedScreen,
     InBattlePartyMenu,

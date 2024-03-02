@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="MoveInfoWidget" src="project://database/Assets/UI/UXML/Assets/Attack%20Info%20UI/AttackInfoWidget.uxml?fileID=9197481963319205126&amp;guid=88bc95458e222054db3430f48129b8f4&amp;type=3#AttackInfoWidget" />
+    <ui:VisualElement name="Content" style="flex-grow: 1; align-items: center; justify-content: center; height: auto; width: 50%; align-self: center;">
+        <ui:Instance template="MoveInfoWidget" name="AttackInfoWidget" />
+    </ui:VisualElement>
+</ui:UXML>
