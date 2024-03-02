@@ -13,9 +13,9 @@ public class UIController : Singleton<UIController>
     [SerializeField] public VisualTreeAsset generalBattleUI; // Your HP, Opponent HP, Fight Button, Pokemon Button, Forfiet Button
     [SerializeField] public VisualTreeAsset moveSelectUI;
     [SerializeField] public VisualTreeAsset teamUI;
-    [SerializeField] private UIDocument pokemonInfoUI;
-    [SerializeField] private UIDocument opposingPokemonInfoUI;
-    [SerializeField] private UIDocument moveInfoUI;
+    [SerializeField] public VisualTreeAsset pokemonInfoUI;
+    [SerializeField] public VisualTreeAsset opposingPokemonInfoUI;
+    [SerializeField] public VisualTreeAsset attackInfoUI;
     [SerializeField] public VisualTreeAsset forfietUI;
     [SerializeField] public VisualTreeAsset pokemonDamagedUI;
     [SerializeField] public VisualTreeAsset dialogueUI;
@@ -23,6 +23,7 @@ public class UIController : Singleton<UIController>
     [SerializeField] public VisualTreeAsset pokemonFaintedUI;
     [SerializeField] private Menus? menu;
     public static event Action<Menus> OnMenuChange;
+    private Menus? prevMenu;
 
     private void OnEnable()
     {
@@ -58,6 +59,7 @@ public class UIController : Singleton<UIController>
         {        
             UIEventSubscriptionManager.UnsubscribeAll();
             //Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {menu}");
+            prevMenu = menu;
             menu = newMenu;
             switch (newMenu)
             {
@@ -74,6 +76,11 @@ public class UIController : Singleton<UIController>
                 case Menus.MoveSelectionMenu:
                     currentUI.rootVisualElement.style.display = DisplayStyle.None;
                     currentUI.visualTreeAsset = moveSelectUI;
+                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                    break;
+                case Menus.AttackInfoScreen:
+                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                    currentUI.visualTreeAsset = attackInfoUI;
                     currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
                     break;
                 case Menus.ForfietMenu:
@@ -101,6 +108,16 @@ public class UIController : Singleton<UIController>
                     currentUI.visualTreeAsset = pokemonFaintedUI;
                     currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
                     break;
+                case Menus.PokemonInfoScreen:
+                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                    currentUI.visualTreeAsset = pokemonInfoUI;
+                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                    break;
+                case Menus.OpposingPokemonInfoScreen:
+                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                    currentUI.visualTreeAsset = opposingPokemonInfoUI;
+                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                    break;
             }
             if (OnMenuChange != null && menu != null)
             {
@@ -117,5 +134,9 @@ public class UIController : Singleton<UIController>
     public Menus? GetCurrentMenu()
     {
         return menu;
+    }
+    public Menus? GetPreviousMenu()
+    {
+        return prevMenu;
     }
 }

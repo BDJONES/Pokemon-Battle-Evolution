@@ -12,6 +12,7 @@ public class PokemonInfoController : MonoBehaviour
     [SerializeField] private GeneralBattleUIElements uIGBElements;
     [SerializeField] private MoveSelectionUIElements moveSelectionUIElements;
     [SerializeField] private PokemonDamagedUIElements pokemonDamageUIElements;
+    [SerializeField] private PokemonInfoUIElements pokemonInfoUIElements;
     private Label pokemonNameLabelGB;
     private Label pokemonLevelLabelGB;
     private ProgressBar hpBarGB;
@@ -25,8 +26,11 @@ public class PokemonInfoController : MonoBehaviour
     private Label pokemonNameLabelPD;
     private Label pokemonLevelLabelPD;
     private ProgressBar hpBarPD;
-    private Button infoButtonPD;
     private Label hpStatLabelPD;
+    private Label pokemonNameLabelPI;
+    private Label pokemonLevelLabelPI;
+    private ProgressBar hpBarPI;
+    private Label hpStatLabelPI;
 
     private void OnEnable()
     {
@@ -44,45 +48,72 @@ public class PokemonInfoController : MonoBehaviour
         //}
     }
 
-    private void InitializeFields() {
-        VisualElement battleInfoVE = uIGBElements.PokemonInfoBar.Query<VisualElement>("Battle_Info");
-        VisualElement nameAndGenderVE = battleInfoVE.Query<VisualElement>("Name_And_Gender");
-        VisualElement levelInfoVE = battleInfoVE.Query<VisualElement>("LevelInfo");
-        VisualElement hpBarVE = battleInfoVE.Query<VisualElement>("HPInfo");
-        // General Battle Section
-        pokemonNameLabelGB = nameAndGenderVE.Query<Label>("Name");
-        pokemonLevelLabelGB = levelInfoVE.Query<Label>("Level");
-        hpBarGB = hpBarVE.Query<ProgressBar>();
-        hpStatLabelGB = hpBarGB.Query<Label>("HPStat");
-        infoButtonGB = battleInfoVE.Query<Button>("OpposingPokemonInfoButton");
-        // Move Selection Section
-        battleInfoVE = moveSelectionUIElements.PokemonInfoBar.Query<VisualElement>("Battle_Info");
-        nameAndGenderVE = battleInfoVE.Query<VisualElement>("Name_And_Gender");
-        levelInfoVE = battleInfoVE.Query<VisualElement>("LevelInfo");
-        hpBarVE = battleInfoVE.Query<VisualElement>("HPInfo");
+    private void InitializeFields(Menus menu) {
+        VisualElement battleInfoVE;
+        VisualElement nameAndGenderVE;
+        VisualElement levelInfoVE;
+        VisualElement hpBarVE;
+        if (menu == Menus.GeneralBattleMenu)
+        {
+            // General Battle Section
+            battleInfoVE = uIGBElements.PokemonInfoBar.Query<VisualElement>("Battle_Info");
+            nameAndGenderVE = battleInfoVE.Query<VisualElement>("Name_And_Gender");
+            levelInfoVE = battleInfoVE.Query<VisualElement>("LevelInfo");
+            hpBarVE = battleInfoVE.Query<VisualElement>("HPInfo");
+            
+            pokemonNameLabelGB = nameAndGenderVE.Query<Label>("Name");
+            pokemonLevelLabelGB = levelInfoVE.Query<Label>("Level");
+            hpBarGB = hpBarVE.Query<ProgressBar>();
+            hpStatLabelGB = hpBarGB.Query<Label>("HPStat");
+            infoButtonGB = uIGBElements.PokemonInfoBar.Query<Button>("PokemonInfoButton");
+        }
+        if (menu == Menus.MoveSelectionMenu)
+        {
+            // Move Selection Section
+            battleInfoVE = moveSelectionUIElements.PokemonInfoBar.Query<VisualElement>("Battle_Info");
+            nameAndGenderVE = battleInfoVE.Query<VisualElement>("Name_And_Gender");
+            levelInfoVE = battleInfoVE.Query<VisualElement>("LevelInfo");
+            hpBarVE = battleInfoVE.Query<VisualElement>("HPInfo");
 
-        pokemonNameLabelMS = nameAndGenderVE.Query<Label>("Name");
-        pokemonLevelLabelMS = levelInfoVE.Query<Label>("Level");
-        hpBarMS = hpBarVE.Query<ProgressBar>();
-        hpStatLabelMS = hpBarVE.Query<Label>("HPStat");
-        infoButtonMS = battleInfoVE.Query<Button>("OpposingPokemonInfoButton");
-        // Pokemon Damaged
-        battleInfoVE = pokemonDamageUIElements.PokemonInfoBar.Query<VisualElement>("Battle_Info");
-        nameAndGenderVE = battleInfoVE.Query<VisualElement>("Name_And_Gender");
-        levelInfoVE = battleInfoVE.Query<VisualElement>("LevelInfo");
-        hpBarVE = battleInfoVE.Query<VisualElement>("HPInfo");
+            pokemonNameLabelMS = nameAndGenderVE.Query<Label>("Name");
+            pokemonLevelLabelMS = levelInfoVE.Query<Label>("Level");
+            hpBarMS = hpBarVE.Query<ProgressBar>();
+            hpStatLabelMS = hpBarVE.Query<Label>("HPStat");
+            infoButtonMS = uIGBElements.PokemonInfoBar.Query<Button>("PokemonInfoButton");
+        }
 
-        pokemonNameLabelPD = nameAndGenderVE.Query<Label>("Name");
-        pokemonLevelLabelPD = levelInfoVE.Query<Label>("Level");
-        hpBarPD = hpBarVE.Query<ProgressBar>();
-        hpStatLabelPD = hpBarVE.Query<Label>("HPStat");
-        infoButtonPD = battleInfoVE.Query<Button>("OpposingPokemonInfoButton");
+        if (menu == Menus.PokemonDamagedScreen)
+        {
+            // Pokemon Damaged
+            battleInfoVE = pokemonDamageUIElements.PokemonInfoBar.Query<VisualElement>("Battle_Info");
+            nameAndGenderVE = battleInfoVE.Query<VisualElement>("Name_And_Gender");
+            levelInfoVE = battleInfoVE.Query<VisualElement>("LevelInfo");
+            hpBarVE = battleInfoVE.Query<VisualElement>("HPInfo");
+
+            pokemonNameLabelPD = nameAndGenderVE.Query<Label>("Name");
+            pokemonLevelLabelPD = levelInfoVE.Query<Label>("Level");
+            hpBarPD = hpBarVE.Query<ProgressBar>();
+            hpStatLabelPD = hpBarVE.Query<Label>("HPStat");
+        }
         
+        if (menu == Menus.PokemonInfoScreen)
+        {
+            // Pokemon Info
+            Debug.Log("Getting the info screen elements");
+            nameAndGenderVE = pokemonInfoUIElements.PokemonInfo.Query<VisualElement>("Name_And_Gender");
+            levelInfoVE = pokemonInfoUIElements.PokemonInfo.Query<VisualElement>("LevelInfo");
+            hpBarVE = pokemonInfoUIElements.PokemonInfo.Query<VisualElement>("HPInfo");
+
+            pokemonNameLabelPI = nameAndGenderVE.Query<Label>("Name");
+            pokemonLevelLabelPI = levelInfoVE.Query<Label>("Level");
+            hpBarPI = hpBarVE.Query<ProgressBar>();
+            hpStatLabelPI = hpBarVE.Query<Label>("HPStat");
+        }
+
     }
 
     private void Start()
     {
-        Debug.Log("Starting In Pokemon");
         //InitializeFields();
     }
 
@@ -105,11 +136,16 @@ public class PokemonInfoController : MonoBehaviour
             hpBar = hpBarPD;
             hpStatLabel = hpStatLabelPD;
         }
+        else if (menu == Menus.PokemonInfoScreen)
+        {
+            hpBar = hpBarPI;
+            hpStatLabel = hpStatLabelPI;
+        }
         else
         {
             return;
         }
-        if (menu == Menus.PokemonDamagedScreen || menu == Menus.GeneralBattleMenu)
+        if (menu == Menus.PokemonDamagedScreen) // || menu == Menus.GeneralBattleMenu
         {
             int oldHPValue = Mathf.FloorToInt(hpBar.value);
             //Debug.Log($"oldHPValue = {oldHPValue}");
@@ -169,12 +205,35 @@ public class PokemonInfoController : MonoBehaviour
 
     private void HandleMenuChange(Menus menu)
     {
-        if (menu == Menus.GeneralBattleMenu || menu == Menus.MoveSelectionMenu || menu == Menus.PokemonDamagedScreen) 
+        if (menu == Menus.GeneralBattleMenu || menu == Menus.MoveSelectionMenu || menu == Menus.PokemonDamagedScreen || menu == Menus.PokemonInfoScreen) 
         {
-            InitializeFields();
-            Debug.Log("Just initialized the fields");
+            InitializeFields(menu);
+            if (menu == Menus.GeneralBattleMenu && infoButtonGB != null)
+            {
+                UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton);
+            }
+            else if (menu == Menus.GeneralBattleMenu && infoButtonGB == null)
+            {
+                Debug.Log("Info Button was null");
+            }
+
+            if (menu == Menus.MoveSelectionMenu && infoButtonMS != null)
+            {
+                UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton);
+            }
+            else if (menu == Menus.MoveSelectionMenu && infoButtonMS == null)
+            {
+                Debug.Log("Info Button was null");
+            }
+            //Debug.Log("Just initialized the fields");
             UpdateInfo(menu);
         }
+    }
+
+    private void ClickedInfoButton()
+    {
+        //Debug.Log("Clicked the infoButton");
+        UIController.Instance.UpdateMenu(Menus.PokemonInfoScreen);
     }
 
     private void UpdateInfo(Menus menu)
@@ -204,6 +263,14 @@ public class PokemonInfoController : MonoBehaviour
             hpBarPD.highValue = trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat();
             hpBarPD.value = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
             hpStatLabelPD.text = $"{trainerController.GetPlayer().GetActivePokemon().GetHPStat()}/{trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat()}";
+        }
+        else if (menu == Menus.PokemonInfoScreen)
+        {
+            pokemonNameLabelPI.text = trainerController.GetPlayer().GetActivePokemon().GetSpeciesName();
+            pokemonLevelLabelPI.text = $"Lv. {trainerController.GetPlayer().GetActivePokemon().GetLevel()}";
+            hpBarPI.highValue = trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat();
+            hpBarPI.value = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
+            hpStatLabelPI.text = $"{trainerController.GetPlayer().GetActivePokemon().GetHPStat()}/{trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat()}";
         }
     }
 }
