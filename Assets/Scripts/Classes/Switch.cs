@@ -26,11 +26,13 @@ public class Switch : IPlayerAction
             {
                 break;
             }
-            if (trainer.GetPokemonTeam()[i].GetSpeciesName() == newPokemon.GetSpeciesName())
+            if (trainer.GetPokemonTeam()[i].GetSpeciesName() == newPokemon.GetSpeciesName() && newPokemon.GetHPStat() != 0)
             {
                 trainer.Switch(i);
+                EventsToTriggerManager.AlertEventTriggered(EventsToTrigger.YourPokemonSwitched);
                 return;
             }
+
         }
         Debug.Log("Failed to find something to switch with");
     }
