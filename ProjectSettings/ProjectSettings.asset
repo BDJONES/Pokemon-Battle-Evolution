@@ -720,11 +720,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 6f47104a-415d-427c-98b5-2b5ee380ee02
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Pokemon-Battle-Evolution
+  organizationId: coalmander
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

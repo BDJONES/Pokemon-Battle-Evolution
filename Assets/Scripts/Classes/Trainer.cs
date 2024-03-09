@@ -28,6 +28,7 @@ public class Trainer : MonoBehaviour
             i++;
         }
         activePokemon = pokemonTeam[0];
+        activePokemon.ActiveState = true;
     }
 
     // Update is called once per frame
@@ -70,11 +71,9 @@ public class Trainer : MonoBehaviour
             Debug.LogError("Invalid Switch");
             return;
         }
-        activePokemon.ResetStatStages();
         GameObject newObject = teamObjects[index];
         Pokemon newPokemon = pokemonTeam[index];
         SwapPokemon(newObject, newPokemon, index);
- 
     }
 
     private void SwapPokemon(GameObject newObject, Pokemon newPokemon, int index)
@@ -84,8 +83,11 @@ public class Trainer : MonoBehaviour
         Pokemon tempPokemon = activePokemon;        
         teamObjects[index] = tempGameObject;
         pokemonTeam[index] = tempPokemon;
+        activePokemon.ResetStatStages();
+        activePokemon.ActiveState = false;
         activePokemonGameObject = newObject;
         activePokemon = newPokemon;
+        activePokemon.ActiveState = true;
         pokemonTeam[0] = newPokemon;
         teamObjects[0] = newObject;
         SetLocation(tempGameObject, newObject);

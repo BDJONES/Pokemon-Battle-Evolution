@@ -30,6 +30,18 @@ public abstract class Pokemon: MonoBehaviour
     }
     [SerializeField] protected List<Attack> moveSet = null!;
     [SerializeField] protected List<Attack> learnSet = null!;
+    protected bool isActive; // Is the pokemon currently on the field
+    public bool ActiveState
+    {
+        get
+        {
+            return isActive;
+        }
+        set
+        {
+            isActive = value;
+        }
+    }
     [SerializeField] protected Item? heldItem;
     protected int baseHP;
     [SerializeField] protected int hpStat;
@@ -240,6 +252,10 @@ public abstract class Pokemon: MonoBehaviour
     public List<Attack> GetLearnset()
     {
         return learnSet;
+    }
+    public bool GetActiveStatus()
+    {
+        return isActive;
     }
     public Item? GetItem()
     {

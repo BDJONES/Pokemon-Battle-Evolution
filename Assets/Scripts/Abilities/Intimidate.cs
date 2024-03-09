@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class Intimidate : Ability
 {
-
-
-    private void Awake()
+    //TrainerController trainerController;
+    protected override void Awake()
     {
-        GameManager.OnStateChange += GameStateOnChangeHandler;
+        //trainerController = this.abilityUser.transform.parent.gameObject.GetComponent<TrainerController>();
+        base.Awake();
+        EventsToTriggerManager.OnTriggerEvent += EventToTriggerHandler;
         this.abilityName = "Intimidate";
         this.description = "When the Pokémon enters a battle, it intimidates opposing Pokémon and makes them cower, lowering their Attack stats.";
     }
@@ -23,19 +24,31 @@ public class Intimidate : Ability
     {
         Debug.Log("You intimidated the target");
         target.AttackStage--;
-    }    
-    protected override void GameStateOnChangeHandler(GameState state)
+    }       
+    
+    private void EventToTriggerHandler(EventsToTrigger trigger)
     {
-        if (state == GameState.BattleStart)
+        if (trigger == EventsToTrigger.YourPokemonSwitched)
         {
-            if (this.abilityUser == GameManager.Instance.trainer1.GetActivePokemon())
+            if (this.abilityUser.ActiveState == true)
             {
-                TriggerEffect(this.abilityUser, GameManager.Instance.trainer2.GetActivePokemon());
-            }
-            else
-            {
-                TriggerEffect(this.abilityUser, GameManager.Instance.trainer1.GetActivePokemon());
+                TriggerEffect(this.abilityUser, trainerController.GetOpponent().GetActivePokemon());
             }
         }
+    }
+    protected override void GameStateOnChangeHandler(GameState state)
+    {
+        return;
+        //if (state == GameState.BattleStart)
+        //{
+        //    if (this.abilityUser == GameManager.Instance.GetTrainer1Controller().GetPlayer().GetActivePokemon())
+        //    {
+        //        TriggerEffect(this.abilityUser, GameManager.Instance.GetTrainer1Controller().GetOpponent().GetActivePokemon());
+        //    }
+        //    else
+        //    {
+        //        TriggerEffect(this.abilityUser, GameManager.Instance.GetTrainer1Controller().GetPlayer().GetActivePokemon());
+        //    }
+        //}
     }
 }

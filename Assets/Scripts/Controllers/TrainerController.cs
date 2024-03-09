@@ -11,11 +11,13 @@ public class TrainerController : MonoBehaviour
     [SerializeField] private Trainer player;
     [SerializeField] private Trainer opponent;
     private UIInputGrabber uIGrabber;
-    int inactiveTurnCount;
+    private int inactiveTurnCount;
     public event Action playerTooInactive;
 
     private void Start()
     {
+        //var go = gameObject;
+        //Debug.Log(go.name);
         uIGrabber = new UIInputGrabber();
         inactiveTurnCount = 0;
     }
@@ -27,6 +29,11 @@ public class TrainerController : MonoBehaviour
 
     public Trainer GetOpponent() { 
         return opponent;
+    }
+
+    public void SetOpponent(Trainer Opponent)
+    {
+        opponent = Opponent;
     }
 
     public async UniTask<IPlayerAction> SelectMove()

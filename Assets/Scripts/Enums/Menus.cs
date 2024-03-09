@@ -1,5 +1,7 @@
 public enum Menus
 {
+    TitleScreen,
+    LoadingScreen,
     GeneralBattleMenu,
     MoveSelectionMenu,    
     PokemonInfoScreen,

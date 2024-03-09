@@ -7,16 +7,18 @@ using UnityEngine.UIElements;
 
 public class GameManager : Singleton<GameManager>
 {
-    public TrainerController trainer1Controller;
-    public TrainerController trainer2Controller;
-    public Trainer trainer1;
-    public Trainer trainer2;
+    [SerializeField] private TrainerController trainer1Controller;
+    [SerializeField] private TrainerController trainer2Controller;
+    private Trainer trainer1;
+    private Trainer trainer2;
+    private UIController trainer1UIController;
+    private UIController trainer2UIController;
     [SerializeField] private GameState gameState;
     public static event Action<GameState> OnStateChange;
     [SerializeField] private GameObject uiController;
     [SerializeField] private PokemonInfoController pokemonInfoController;
     [SerializeField] private OpposingPokemonInfoController opposingPokemonInfoBarController;
-    [SerializeField] private PokemonButtonController pokemonButtonController;
+    private LobbyManager lobbyManager;
     private bool player1Inactive = false;
     private bool player2Inactive = false;
 
@@ -24,21 +26,80 @@ public class GameManager : Singleton<GameManager>
     //{
         
     //}
-
-
-
-    private async void Start()
+    
+    public TrainerController GetTrainer1Controller()
     {
+        return trainer1Controller;
+    }
+
+    public TrainerController GetTrainer2Controller() { 
+        return trainer2Controller;
+    }
+
+    private void SetTrainer1Controller(TrainerController trainerController)
+    {
+        trainer1Controller = trainerController;
         trainer1 = trainer1Controller.GetPlayer();
+    }
+
+    private void SetTrainer2Controller(TrainerController trainerController)
+    {
+        trainer2Controller = trainerController;
         trainer2 = trainer2Controller.GetPlayer();
-        UIDocument uiDocument = uiController.GetComponent<UIDocument>();
-        uiDocument.rootVisualElement.style.display = DisplayStyle.None;
+    }
+
+    private void SetPokemonInfoController(GameObject player)
+    {
+
+        Transform sharedControllers = player.transform.Find("SharedControllers");
+        pokemonInfoController = sharedControllers.GetComponent<PokemonInfoController>();
+        opposingPokemonInfoBarController = sharedControllers.GetComponent<OpposingPokemonInfoController>();
+    }
+
+    public void PopulateGameManager(GameObject gameObject, int type)
+    {
+        TrainerController trainerController = gameObject.GetComponent<TrainerController>();
+        if (type == 1)
+        {
+            SetTrainer1Controller(trainerController);
+            trainer1UIController = gameObject.transform.Find("UIController").GetComponent<UIController>();
+        }
+        else
+        {
+            SetTrainer2Controller(trainerController);
+            trainer2UIController = gameObject.transform.Find("UIController").GetComponent<UIController>();
+        }
+        //Set Location of the gameobjects
+        SetPokemonInfoController(gameObject);
+    }
+
+    private void Start()
+    {
+        //trainer1 = trainer1Controller.GetPlayer();
+        //trainer2 = trainer2Controller.GetPlayer();
+        //trainer1UIController = trainer1Controller.gameObject.GetComponentInChildren<UIController>();
+
+        LobbyManager.TwoPlayersConnected += HandlePlayerConnection;
+    }
+
+    private void HandlePlayerConnection()
+    {
+        // if two players have connected then we would like to start the game
+        StartGame();
+    }
+
+    private async void StartGame()
+    {        
+        //UIDocument uiDocument = uiController.GetComponent<UIDocument>();
+        //uiDocument.rootVisualElement.style.display = DisplayStyle.None;
         float time = 0f;
         while (time < 3f)
         {
             time += Time.deltaTime;
             await UniTask.Yield();
-        }
+        }        
+        trainer1Controller.SetOpponent(trainer2);
+        trainer2Controller.SetOpponent(trainer1);
         UpdateGameState(GameState.LoadingPokemonInfo);
         time = 0f;
         while (time < 2f)
@@ -50,9 +111,10 @@ public class GameManager : Singleton<GameManager>
         TimeManager.MatchTimerEnd += HandleMatchTimeout;
         trainer1Controller.playerTooInactive += Trainer1Inactive;
         trainer1Controller.playerTooInactive += Trainer2Inactive;
-        uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
+        //uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
         TurnSystem();
     }
+
     private void Trainer1Inactive()
     {
         player1Inactive = true;
@@ -66,7 +128,7 @@ public class GameManager : Singleton<GameManager>
     private async UniTask screenBuffer()
     {
         float time = 0f;
-        while (time < 2f)
+        while (time < 1f)
         {
             time += Time.deltaTime;
             await UniTask.Yield();
@@ -162,6 +224,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (trainer1Action.GetType() == typeof(Switch) && trainer2Action.GetType() == typeof(Switch))
         {
+            Debug.Log("Both players switched");
             Switch convertedTrainer1Action = (Switch)trainer1Action;
             Switch convertedTrainer2Action = (Switch)trainer2Action;
             if (trainer1.GetActivePokemon().GetSpeedStat() > trainer2.GetActivePokemon().GetSpeedStat())
@@ -234,7 +297,7 @@ public class GameManager : Singleton<GameManager>
                     if (speedTie < 50)
                     {
                         Debug.Log("Trainer 1 won the speed tie");
-                        UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                        trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                         ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
                         //UpdateGameState(GameState.FirstAttack);
                         await opposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen);
@@ -243,7 +306,7 @@ public class GameManager : Singleton<GameManager>
 
                         if (!trainer2.GetActivePokemon().IsDead())
                         {
-                            UIController.Instance.UpdateMenu(Menus.PokemonDamagedScreen);
+                            trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
                             ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
                             await pokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen);
                             //UpdateGameState(GameState.SecondAttack);
@@ -254,7 +317,7 @@ public class GameManager : Singleton<GameManager>
                             // Add an extra if to trigger the same logic if trainer1 dies afterward
                             if (trainer1.GetActivePokemon().IsDead())
                             {
-                                UIController.Instance.UpdateMenu(Menus.PokemonFaintedScreen);
+                                trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
                                 UpdateGameState(GameState.WaitingOnPlayerInput);
                                 var action = await trainer1Controller.SwitchOutFaintedPokemon();
                                 //Debug.Log(action.GetType());
@@ -263,10 +326,10 @@ public class GameManager : Singleton<GameManager>
                                 Debug.Log($"Name = {playerSwitch.GetTrainer().trainerName}, Pokemon = {playerSwitch.GetPokemon().GetSpeciesName()}");
                                 ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                                 Debug.Log("Just about to change to the general battle menu");
-                                UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                                trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
                                 //await UniTask.WaitForSeconds(1);
                             }
-                            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
                         }
                         else
                         {
@@ -284,13 +347,13 @@ public class GameManager : Singleton<GameManager>
                             //UIController.Instance.UpdateMenu(Menus.PokemonFaintedScreen);
                             //var playerSwitch = (Switch)await trainer2Controller.SelectMove();
                             //ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
                         }
                     }
                     else
                     {
                         Debug.Log("Trainer 2 won the speed tie");
-                        UIController.Instance.UpdateMenu(Menus.PokemonDamagedScreen);
+                        trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
                         ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
                         await pokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen);
                         // Give a small buffer inbetween the menu change
@@ -298,18 +361,18 @@ public class GameManager : Singleton<GameManager>
                         if (!trainer1.GetActivePokemon().IsDead())
                         {
                             //UpdateGameState(GameState.FirstAttack);
-                            UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                            trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                             ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
                             //
                             //UpdateGameState(GameState.SecondAttack);
                             await opposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen);
                             // Give a small buffer inbetween the menu change
                             await screenBuffer();
-                            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
                         }
                         else
                         {
-                            UIController.Instance.UpdateMenu(Menus.PokemonFaintedScreen);
+                            trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
                             UpdateGameState(GameState.WaitingOnPlayerInput);
                             var action = await trainer1Controller.SwitchOutFaintedPokemon();
                             Debug.Log(action.GetType());
@@ -317,7 +380,7 @@ public class GameManager : Singleton<GameManager>
                             Switch playerSwitch = action;
                             Debug.Log($"Name = {playerSwitch.GetTrainer().trainerName}, Pokemon = {playerSwitch.GetPokemon().GetSpeciesName()}");
                             ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
                             await UniTask.WaitForSeconds(1);
                         }
                     }
@@ -328,19 +391,19 @@ public class GameManager : Singleton<GameManager>
         else if (trainer1Action.GetType().IsSubclassOf(typeof(Attack)))
         {
             Attack convertedTrainer1Action = (Attack)trainer1Action;
-            UIController.Instance.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+            trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
             convertedTrainer1Action.PerformAction(trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
             ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
             await pokemonInfoController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen);
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
         }
         else if (trainer2Action.GetType().IsSubclassOf(typeof(Attack)))
         {
             Attack convertedTrainer2Action = (Attack)trainer2Action;
-            UIController.Instance.UpdateMenu(Menus.PokemonDamagedScreen);
+            trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
             ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
             await pokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen);
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
         }
 
         // Also may add a forfiet button
