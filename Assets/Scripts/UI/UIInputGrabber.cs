@@ -20,10 +20,13 @@ public class UIInputGrabber //: IDisposable
     Pokemon5Controller pokemon5Controller;
     Pokemon6Controller pokemon6Controller;
     private Menus previousMenu;
+    private UIController uIController;
 
-    public UIInputGrabber()
+    public UIInputGrabber() // GameObject gameObject
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        //uIController = gameObject.GetComponentInChildren<UIController>();
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
     }
 
 
@@ -40,9 +43,9 @@ public class UIInputGrabber //: IDisposable
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        uIController.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
@@ -50,9 +53,9 @@ public class UIInputGrabber //: IDisposable
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        uIController.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
@@ -60,9 +63,9 @@ public class UIInputGrabber //: IDisposable
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        uIController.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
@@ -70,86 +73,88 @@ public class UIInputGrabber //: IDisposable
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
-        UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+        uIController.UpdateMenu(Menus.DialogueScreen);
         await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
     private async void Switch1Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = UIController.Instance.GetCurrentMenu();
+
+        var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
-            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            uIController.UpdateMenu(Menus.DialogueScreen);
             await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
     private async void Switch2Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = UIController.Instance.GetCurrentMenu();
+        var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
-            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            uIController.UpdateMenu(Menus.DialogueScreen);
             await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
     private async void Switch3Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = UIController.Instance.GetCurrentMenu();
+        var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
-            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            uIController.UpdateMenu(Menus.DialogueScreen);
             await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
     private async void Switch4Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = UIController.Instance.GetCurrentMenu();
+        var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
-            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            uIController.UpdateMenu(Menus.DialogueScreen);
             await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
     private async void Switch5Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = UIController.Instance.GetCurrentMenu();
+        var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
+        HandleInput();
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
-            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            uIController.UpdateMenu(Menus.DialogueScreen);
             await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
-        HandleInput();
+        
     }
 
     private async void Switch6Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = UIController.Instance.GetCurrentMenu();
+        var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
-            UIController.Instance.UpdateMenu(Menus.DialogueScreen);
+            uIController.UpdateMenu(Menus.DialogueScreen);
             await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
@@ -170,10 +175,10 @@ public class UIInputGrabber //: IDisposable
     {
         if (menu == Menus.MoveSelectionMenu)
         {
-            attack1Controller = GameObject.Find("AttackSelectionControllers").GetComponent<Attack1Controller>();
-            attack2Controller = GameObject.Find("AttackSelectionControllers").GetComponent<Attack2Controller>();
-            attack3Controller = GameObject.Find("AttackSelectionControllers").GetComponent<Attack3Controller>();
-            attack4Controller = GameObject.Find("AttackSelectionControllers").GetComponent<Attack4Controller>();
+            attack1Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack1Controller>();
+            attack2Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack2Controller>();
+            attack3Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack3Controller>();
+            attack4Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack4Controller>();
             if (attack1Controller != null)
             {
                 attack1Controller.AttackSelected += Attack1Selected;

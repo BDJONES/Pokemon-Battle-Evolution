@@ -7,10 +7,13 @@ using UnityEngine.UIElements;
 
 public class ForfietButtonController : MonoBehaviour
 {
-	[SerializeField] private GeneralBattleUIElements uiElements;
+	[SerializeField] private GeneralBattleUIElements uIElements;
+	private UIController uIController;
 	private void OnEnable()
 	{
-		UIController.OnMenuChange += HandleMenuChange;
+		uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+		uIController.OnMenuChange += HandleMenuChange;
+		uIElements = uIController.GetComponent<GeneralBattleUIElements>();
         //UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
     }
 
@@ -18,22 +21,22 @@ public class ForfietButtonController : MonoBehaviour
 
     private void OnDisable()
 	{
-		if (uiElements.PokemonButton == null)
+		if (uIElements.PokemonButton == null)
 		{
 			return;
 		}
-		
+		uIController.OnMenuChange -= HandleMenuChange;
 	}
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.GeneralBattleMenu)
 		{
-            UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
+            UIEventSubscriptionManager.Subscribe(uIElements.ForfietButton, ForfietButtonClicked);
         }
     }
 
 	private void ForfietButtonClicked()
 	{
-        UIController.Instance.UpdateMenu(Menus.ForfietMenu);
+        uIController.UpdateMenu(Menus.ForfietMenu);
     }
 }

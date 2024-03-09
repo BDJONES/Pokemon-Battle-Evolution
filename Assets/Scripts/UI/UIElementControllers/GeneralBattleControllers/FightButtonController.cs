@@ -7,28 +7,31 @@ using UnityEngine.UIElements;
 
 public class FightButtonController : MonoBehaviour
 {
-    [SerializeField] private GeneralBattleUIElements uiElements;
+    [SerializeField] private GeneralBattleUIElements uIElements;
+    private UIController uIController;
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIElements = uIController.GetComponent<GeneralBattleUIElements>();
+        uIController.OnMenuChange += HandleMenuChange;
     }
 
 
 
     private void OnDisable()
     {
-        if (uiElements.PokemonButton == null)
+        if (uIElements.PokemonButton == null)
         {
             return;
         }
-        
+        uIController.OnMenuChange -= HandleMenuChange;
     }
 
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.GeneralBattleMenu)
         {
-            UIEventSubscriptionManager.Subscribe(uiElements.FightButton, FightButtonClicked);
+            UIEventSubscriptionManager.Subscribe(uIElements.FightButton, FightButtonClicked);
         }
     }
 
@@ -40,6 +43,6 @@ public class FightButtonController : MonoBehaviour
         //await opposingPokemonInfoBarController.UpdateHealthBar();
         //Debug.Log("Fight button Clicked");
         
-        UIController.Instance.UpdateMenu(Menus.MoveSelectionMenu);
+        uIController.UpdateMenu(Menus.MoveSelectionMenu);
     }
 }

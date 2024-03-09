@@ -10,15 +10,18 @@ public class ViewBuilder : MonoBehaviour
     [SerializeField] private VisualTreeAsset InBattlePartyWidget;
     [SerializeField] TrainerController trainerController;
     private Menus previousMenu;
+    private UIController uIController;
     
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+        uIController.OnMenuChange += HandleMenuChange;
     }
 
     private void OnDisable()
     {
-        UIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnMenuChange -= HandleMenuChange;
     }
 
     private void HandleMenuChange(Menus menu)
@@ -75,12 +78,10 @@ public class ViewBuilder : MonoBehaviour
                 progressBar.highValue = pokemon.GetMaxHPStat();
                 progressBar.value = pokemon.GetHPStat();
                 hpStatText.text = $"{pokemon.GetHPStat()}/{pokemon.GetMaxHPStat()}";
-
-
             }
             if (index <= 3)
             {
-                UIController.Instance.currentUI.rootVisualElement.Q("Top_Row").Add(newWidget);                
+                uIController.currentUI.rootVisualElement.Q("Top_Row").Add(newWidget);                
                 if (index == 1 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon1Controller>();
@@ -99,7 +100,7 @@ public class ViewBuilder : MonoBehaviour
             }
             else
             {
-                UIController.Instance.currentUI.rootVisualElement.Q("Bottom_Row").Add(newWidget);
+                uIController.currentUI.rootVisualElement.Q("Bottom_Row").Add(newWidget);
                 if (index == 4 && pokemon != null)
                 {
                     WidgetHolder.AddComponent<Pokemon4Controller>();
@@ -125,17 +126,17 @@ public class ViewBuilder : MonoBehaviour
     {
         for (int i = 1; i <= 6; i++)
         {
-            var element = UIController.Instance.currentUI.rootVisualElement.Q<VisualElement>($"Pokemon{i}");
+            var element = uIController.currentUI.rootVisualElement.Q<VisualElement>($"Pokemon{i}");
             if (element != null)
             {
                 Debug.Log("Removing duplicates");
                 if (i <= 3)
                 {
-                    UIController.Instance.currentUI.rootVisualElement.Q("Top_Row").Remove(element);
+                    uIController.currentUI.rootVisualElement.Q("Top_Row").Remove(element);
                 }
                 else
                 {
-                    UIController.Instance.currentUI.rootVisualElement.Q("Bottom_Row").Remove(element);
+                    uIController.currentUI.rootVisualElement.Q("Bottom_Row").Remove(element);
                 }
             }
         }

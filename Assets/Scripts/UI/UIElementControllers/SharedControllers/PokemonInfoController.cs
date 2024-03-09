@@ -31,21 +31,25 @@ public class PokemonInfoController : MonoBehaviour
     private Label pokemonLevelLabelPI;
     private ProgressBar hpBarPI;
     private Label hpStatLabelPI;
+    private UIController uIController;
 
     private void OnEnable()
     {
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIGBElements = uIController.GetComponent<GeneralBattleUIElements>();
+        moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
+        pokemonDamageUIElements = uIController.GetComponent<PokemonDamagedUIElements>();
+        pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+        uIController.OnMenuChange += HandleMenuChange;
         GameManager.OnStateChange += HandleGameStateChange;
-        UIController.OnMenuChange += HandleMenuChange;
     }
 
     private void OnDisable()
     {
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
+        uIController.OnMenuChange -= HandleMenuChange;
         GameManager.OnStateChange -= HandleGameStateChange;
-        UIController.OnMenuChange -= HandleMenuChange;
-        //if (uIGBElements.PokemonButton != null )
-        //{
-        //    uIGBElements.PokemonButton.clicked -= UpdateInfo;
-        //}
     }
 
     private void InitializeFields(Menus menu) {
@@ -233,7 +237,7 @@ public class PokemonInfoController : MonoBehaviour
     private void ClickedInfoButton()
     {
         //Debug.Log("Clicked the infoButton");
-        UIController.Instance.UpdateMenu(Menus.PokemonInfoScreen);
+        uIController.UpdateMenu(Menus.PokemonInfoScreen);
     }
 
     private void UpdateInfo(Menus menu)

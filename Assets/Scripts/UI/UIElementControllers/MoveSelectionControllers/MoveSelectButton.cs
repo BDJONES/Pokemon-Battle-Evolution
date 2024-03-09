@@ -12,6 +12,7 @@ public abstract class MoveSelectButton : MonoBehaviour
     protected Label attackName;
     protected Label PP;
     protected Label Type;
+    protected UIController uIController;
 
     protected abstract void HandleMenuChange(Menus menu);
 

@@ -7,10 +7,12 @@ using UnityEngine.UIElements;
 public class PokemonButtonController : MonoBehaviour
 {
     [SerializeField] private GeneralBattleUIElements uiElements;
+    private UIController uIController;
     
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
         //UIEventSubscriptionManager.Subscribe(uiElements.PokemonButton, PokemonButtonClicked);
     }
 
@@ -22,7 +24,7 @@ public class PokemonButtonController : MonoBehaviour
         {
             return;
         }
-        
+        uIController.OnMenuChange -= HandleMenuChange;
     }
     private void HandleMenuChange(Menus menu)
     {
@@ -33,7 +35,6 @@ public class PokemonButtonController : MonoBehaviour
     }
     private void PokemonButtonClicked()
     {
-        UIController.Instance.UpdateMenu(Menus.InBattlePartyMenu);
-        //GameManager.Instance.trainer1.Switch(1);
+        uIController.UpdateMenu(Menus.InBattlePartyMenu);
     }
 }

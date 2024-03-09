@@ -8,10 +8,16 @@ public class BackButtonController : MonoBehaviour
     [SerializeField] private MoveSelectionUIElements uIMoveSelection;
     [SerializeField] private PokemonInfoUIElements pokemonInfoUIElements;
     [SerializeField] private AttackInfoUIElements attackInfoUIElements;
+    private UIController uIController;
 
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIInBattleParty = uIController.GetComponent<InBattlePartyUIElements>();
+        uIMoveSelection = uIController.GetComponent <MoveSelectionUIElements>();
+        pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+        attackInfoUIElements = uIController.GetComponent<AttackInfoUIElements>();
+        uIController.OnMenuChange += HandleMenuChange;
     }
 
 
@@ -47,16 +53,16 @@ public class BackButtonController : MonoBehaviour
     private void BackButtonClicked()
     {
 
-        if (UIController.Instance.GetCurrentMenu() == Menus.MoveSelectionMenu)
+        if (uIController.GetCurrentMenu() == Menus.MoveSelectionMenu)
         {
-            UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            uIController.UpdateMenu(Menus.GeneralBattleMenu);
         }
         else
         {
-            Menus? prevMenu = UIController.Instance.GetPreviousMenu()!;
+            Menus? prevMenu = uIController.GetPreviousMenu()!;
             if (prevMenu != null)
             {
-                UIController.Instance.UpdateMenu((Menus)prevMenu);
+                uIController.UpdateMenu((Menus)prevMenu);
             }
         }
         

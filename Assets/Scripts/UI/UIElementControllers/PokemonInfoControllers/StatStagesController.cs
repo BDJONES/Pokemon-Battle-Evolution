@@ -15,15 +15,19 @@ public class StatStagesController : MonoBehaviour
     private Label speedLabel;
     private Label accuracyLabel;
     private Label evasionLabel;
+    private UIController uIController;
 
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
+        pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
     }
 
     private void OnDisable()
     {
-        UIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnMenuChange -= HandleMenuChange;
     }
     private void InitializeFields()
     {

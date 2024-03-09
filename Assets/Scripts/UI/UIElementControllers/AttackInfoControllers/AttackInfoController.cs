@@ -22,15 +22,19 @@ public class AttackInfoController : MonoBehaviour
     private bool attack2Clicked = false;
     private bool attack3Clicked = false;
     private bool attack4Clicked = false;
-    
+    private UIController uIController;
+
     protected void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
+        moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
+        attackInfoUIElements = uIController.GetComponent <AttackInfoUIElements>();
     }
 
     protected void OnDisable()
     {
-        UIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnMenuChange -= HandleMenuChange;
     }
 
     protected void InitalizeFields()
@@ -82,25 +86,25 @@ public class AttackInfoController : MonoBehaviour
     protected void InfoButton1Clicked()
     {
         attack1Clicked = true;
-        UIController.Instance.UpdateMenu(Menus.AttackInfoScreen);
+        uIController.UpdateMenu(Menus.AttackInfoScreen);
     }
 
     protected void InfoButton2Clicked()
     {
         attack2Clicked = true;
-        UIController.Instance.UpdateMenu(Menus.AttackInfoScreen);
+        uIController.UpdateMenu(Menus.AttackInfoScreen);
     }
 
     protected void InfoButton3Clicked()
     {
         attack3Clicked = true;
-        UIController.Instance.UpdateMenu(Menus.AttackInfoScreen);
+        uIController.UpdateMenu(Menus.AttackInfoScreen);
     }
 
     protected void InfoButton4Clicked()
     {
         attack4Clicked = true;
-        UIController.Instance.UpdateMenu(Menus.AttackInfoScreen);
+        uIController.UpdateMenu(Menus.AttackInfoScreen);
     }
 
     protected void HandleMenuChange(Menus menu)

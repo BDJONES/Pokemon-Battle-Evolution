@@ -8,12 +8,13 @@ public class Attack4Controller : MoveSelectButton
     [SerializeField] TrainerController trainerController;
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
     }
 
     private void OnDisable()
     {
-        UIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnMenuChange -= HandleMenuChange;
     }
 
     protected override void InitializeButton(Button attackButton)

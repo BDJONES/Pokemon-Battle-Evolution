@@ -28,18 +28,26 @@ public class OpposingPokemonInfoController : MonoBehaviour
     private Label pokemonLevelLabelPI;
     private ProgressBar hpBarPI;
     private Label hpStatLabelPI;
+    private UIController uIController;
 
 
     private void OnEnable()
     {
+        
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIGBElements = uIController.GetComponent<GeneralBattleUIElements>();
+        moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
+        opposingPokemonDamagedUIElements = uIController.GetComponent<OpposingPokemonDamagedUIElements>();
+        pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+        uIController.OnMenuChange += HandleMenuChange;
         GameManager.OnStateChange += HandleGameStateChange;
-        UIController.OnMenuChange += HandleMenuChange;
     }
 
     private void OnDisable()
     {
+        uIController.OnMenuChange -= HandleMenuChange;
         GameManager.OnStateChange -= HandleGameStateChange;
-        UIController.OnMenuChange -= HandleMenuChange;
     }
 
     private void InitializeFields(Menus menu)
@@ -204,7 +212,7 @@ public class OpposingPokemonInfoController : MonoBehaviour
     private void ClickedInfoButton()
     {
         Debug.Log("Clicked the opposing pokemon info button");
-        UIController.Instance.UpdateMenu(Menus.OpposingPokemonInfoScreen);
+        uIController.UpdateMenu(Menus.OpposingPokemonInfoScreen);
     }
 
     private void UpdateInfo(Menus menu)

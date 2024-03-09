@@ -5,15 +5,17 @@ using UnityEngine.UIElements;
 
 public class Attack3Controller : MoveSelectButton
 {
-    [SerializeField] TrainerController trainerController;
+    [SerializeField] private TrainerController trainerController;
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
+        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
     }
 
     private void OnDisable()
     {
-        UIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnMenuChange -= HandleMenuChange;
     }
 
     protected override void InitializeButton(Button attackButton)

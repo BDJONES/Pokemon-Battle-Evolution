@@ -10,10 +10,12 @@ public class DialogueBoxController : MonoBehaviour
 {
     [SerializeField] private DialogueUIElements dialogueUIElements;
     private static Label dialogueBoxText;
+    private UIController uIController;
 
     private void OnEnable()
     {
-        UIController.OnMenuChange += HandleMenuChange;    
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
     }
 
     private void HandleMenuChange(Menus menu)

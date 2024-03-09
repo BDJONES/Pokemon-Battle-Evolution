@@ -7,19 +7,21 @@ using UnityEngine.UIElements;
 public class NoButtonController : MonoBehaviour
 {
     [SerializeField] private ForfietUIElements forfietUIElements;
+    private UIController uIController;
 
     private void OnEnable()
     {
-        UIController.OnMenuChange += AssignProperties;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnMenuChange += AssignProperties;
     }
 
     private void OnDisable()
     {
-        if (forfietUIElements.NoButton == null)
-        {
-            return;
-        }
-        UIController.OnMenuChange -= AssignProperties;
+        //if (forfietUIElements.NoButton == null)
+        //{
+        //    return;
+        //}
+        uIController.OnMenuChange -= AssignProperties;
     }
 
     private void AssignProperties(Menus menu)
@@ -33,6 +35,6 @@ public class NoButtonController : MonoBehaviour
     private void NoButtonClicked()
     {
         forfietUIElements.NoButton.clicked -= NoButtonClicked;
-        UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+        uIController.UpdateMenu(Menus.GeneralBattleMenu);
     }
 }
