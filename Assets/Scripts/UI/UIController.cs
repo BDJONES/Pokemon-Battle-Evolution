@@ -6,29 +6,39 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
-public class UIController : Singleton<UIController>
+public class UIController : MonoBehaviour
 {
     [SerializeField] private TrainerController trainerController;
-    [SerializeField] public UIDocument currentUI;
-    [SerializeField] public VisualTreeAsset generalBattleUI; // Your HP, Opponent HP, Fight Button, Pokemon Button, Forfiet Button
-    [SerializeField] public VisualTreeAsset moveSelectUI;
-    [SerializeField] public VisualTreeAsset teamUI;
-    [SerializeField] public VisualTreeAsset pokemonInfoUI;
-    [SerializeField] public VisualTreeAsset opposingPokemonInfoUI;
-    [SerializeField] public VisualTreeAsset attackInfoUI;
-    [SerializeField] public VisualTreeAsset forfietUI;
-    [SerializeField] public VisualTreeAsset pokemonDamagedUI;
-    [SerializeField] public VisualTreeAsset dialogueUI;
-    [SerializeField] public VisualTreeAsset opposingPokemonDamagedUI;
-    [SerializeField] public VisualTreeAsset pokemonFaintedUI;
+    [SerializeField] public UIDocument currentUI; 
+    [SerializeField] private VisualTreeAsset titleScreenUI;
+    [SerializeField] private VisualTreeAsset loadingScreenUI;
+    [SerializeField] private VisualTreeAsset generalBattleUI; // Your HP, Opponent HP, Fight Button, Pokemon Button, Forfiet Button
+    [SerializeField] private VisualTreeAsset moveSelectUI;
+    [SerializeField] private VisualTreeAsset teamUI;
+    [SerializeField] private VisualTreeAsset pokemonInfoUI;
+    [SerializeField] private VisualTreeAsset opposingPokemonInfoUI;
+    [SerializeField] private VisualTreeAsset attackInfoUI;
+    [SerializeField] private VisualTreeAsset forfietUI;
+    [SerializeField] private VisualTreeAsset pokemonDamagedUI;
+    [SerializeField] private VisualTreeAsset dialogueUI;
+    [SerializeField] private VisualTreeAsset opposingPokemonDamagedUI;
+    [SerializeField] private VisualTreeAsset pokemonFaintedUI;
+    
+
     [SerializeField] private Menus? menu;
-    public static event Action<Menus> OnMenuChange;
+    public event Action<Menus> OnMenuChange;
     private Menus? prevMenu;
 
     private void OnEnable()
     {
         GameManager.OnStateChange += HandleStateChange;
         YourPokemonDeathEventManager.OnDeath += HandlePokemonDeath;
+        LobbyManager.TwoPlayersConnected += HandleLobbyConnection;
+    }
+
+    private void HandleLobbyConnection()
+    {
+        
     }
 
     private void HandlePokemonDeath()
@@ -47,6 +57,11 @@ public class UIController : Singleton<UIController>
         }
     }
 
+    private void Start()
+    {
+        UpdateMenu(Menus.TitleScreen);
+    }
+
     //private void HandleUIInput()
     //{
     //    string clickedButton = EventSystem.current.currentInputModule.name;
@@ -63,6 +78,16 @@ public class UIController : Singleton<UIController>
             menu = newMenu;
             switch (newMenu)
             {
+                case Menus.TitleScreen:
+                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                    currentUI.visualTreeAsset = titleScreenUI;
+                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                    break;
+                case Menus.LoadingScreen:
+                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                    currentUI.visualTreeAsset = loadingScreenUI;
+                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                    break;
                 case Menus.GeneralBattleMenu:
                     currentUI.rootVisualElement.style.display = DisplayStyle.None;
                     currentUI.visualTreeAsset = generalBattleUI;
