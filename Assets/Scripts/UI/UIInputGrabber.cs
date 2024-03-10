@@ -21,11 +21,13 @@ public class UIInputGrabber //: IDisposable
     Pokemon6Controller pokemon6Controller;
     private Menus previousMenu;
     private UIController uIController;
+    private DialogueBoxController dialogueBoxController;
 
     public UIInputGrabber() // GameObject gameObject
     {
         //uIController = gameObject.GetComponentInChildren<UIController>();
         uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        dialogueBoxController = uIController.gameObject.GetComponentInChildren<DialogueBoxController>();
         uIController.OnMenuChange += HandleMenuChange;
     }
 
@@ -39,47 +41,46 @@ public class UIInputGrabber //: IDisposable
         attack4Controller.AttackSelected -= Attack4Selected;
     }
 
-    private async void Attack1Selected(object sender, OnAttackSelectedEventArgs args)
+    private void Attack1Selected(object sender, OnAttackSelectedEventArgs args)
     {
-        Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
         uIController.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+        dialogueBoxController.AddDialogueToQueue("Communicating...");
         //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
-    private async void Attack2Selected(object sender, OnAttackSelectedEventArgs args)
+    private void Attack2Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
         uIController.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+        dialogueBoxController.AddDialogueToQueue("Communicating...");
         //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
-    private async void Attack3Selected(object sender, OnAttackSelectedEventArgs args)
+    private void Attack3Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
         uIController.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+        dialogueBoxController.AddDialogueToQueue("Communicating...");
         //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
-    private async void Attack4Selected(object sender, OnAttackSelectedEventArgs args)
+    private void Attack4Selected(object sender, OnAttackSelectedEventArgs args)
     {
         Debug.Log($"{args.Attack.GetAttackName()}");
         selectedAction = args.Attack;
         uIController.UpdateMenu(Menus.DialogueScreen);
-        await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+        dialogueBoxController.AddDialogueToQueue("Communicating...");
         //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         HandleInput();
     }
 
-    private async void Switch1Selected(object sender, OnSwitchEventArgs e)
+    private void Switch1Selected(object sender, OnSwitchEventArgs e)
     {
 
         var prevMenu = uIController.GetCurrentMenu();
@@ -87,52 +88,52 @@ public class UIInputGrabber //: IDisposable
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
             uIController.UpdateMenu(Menus.DialogueScreen);
-            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            dialogueBoxController.AddDialogueToQueue("Communicating...");
             //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
-    private async void Switch2Selected(object sender, OnSwitchEventArgs e)
+    private void Switch2Selected(object sender, OnSwitchEventArgs e)
     {
         var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
             uIController.UpdateMenu(Menus.DialogueScreen);
-            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            dialogueBoxController.AddDialogueToQueue("Communicating...");
             //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
-    private async void Switch3Selected(object sender, OnSwitchEventArgs e)
+    private void Switch3Selected(object sender, OnSwitchEventArgs e)
     {
         var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
             uIController.UpdateMenu(Menus.DialogueScreen);
-            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            dialogueBoxController.AddDialogueToQueue("Communicating...");
             //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
-    private async void Switch4Selected(object sender, OnSwitchEventArgs e)
+    private void Switch4Selected(object sender, OnSwitchEventArgs e)
     {
         var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
             uIController.UpdateMenu(Menus.DialogueScreen);
-            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            dialogueBoxController.AddDialogueToQueue("Communicating...");
             //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();
     }
 
-    private async void Switch5Selected(object sender, OnSwitchEventArgs e)
+    private void Switch5Selected(object sender, OnSwitchEventArgs e)
     {
         var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
@@ -140,20 +141,20 @@ public class UIInputGrabber //: IDisposable
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
             uIController.UpdateMenu(Menus.DialogueScreen);
-            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            dialogueBoxController.AddDialogueToQueue("Communicating...");
             //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         
     }
 
-    private async void Switch6Selected(object sender, OnSwitchEventArgs e)
+    private void Switch6Selected(object sender, OnSwitchEventArgs e)
     {
         var prevMenu = uIController.GetCurrentMenu();
         selectedAction = e.Switch;
         if (prevMenu != Menus.PokemonFaintedScreen)
         {
             uIController.UpdateMenu(Menus.DialogueScreen);
-            await DialogueBoxController.RequestForTextChange("Awaiting Player Input");
+            dialogueBoxController.AddDialogueToQueue("Communicating...");
             //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
         }
         HandleInput();

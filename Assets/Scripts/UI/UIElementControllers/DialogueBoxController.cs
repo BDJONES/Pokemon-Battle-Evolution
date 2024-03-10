@@ -9,13 +9,14 @@ using UnityEngine.UIElements;
 public class DialogueBoxController : MonoBehaviour
 {
     [SerializeField] private DialogueUIElements dialogueUIElements;
-    private static Label dialogueBoxText;
+    private Label dialogueBoxText;
+    private Queue<string> dialogueQueue;
     private UIController uIController;
-
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        dialogueQueue = new Queue<string>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;    
     }
 
     private void HandleMenuChange(Menus menu)
@@ -40,16 +41,25 @@ public class DialogueBoxController : MonoBehaviour
         }
     }
 
-    public async static UniTask RequestForTextChange(string text)
+    public void AddDialogueToQueue(string dialogue)
     {
-        //Debug.Log(dialogueBoxText.text);
-        string newString = "";
-        foreach (var c in text)
+        dialogueQueue.Enqueue(dialogue);
+    }
+
+    public async UniTask ReadFirstQueuedDialogue()
+    {
+        string dialouge = dialogueQueue.Dequeue();
+        dialogueBoxText.text = dialouge;
+        await UniTask.Delay(TimeSpan.FromSeconds(1), ignoreTimeScale: false);
+    }
+
+    public async UniTask ReadAllQueuedDialogue()
+    {
+        while (dialogueQueue.Count > 0)
         {
-            newString += c;
-            //Debug.Log(newString);
-            dialogueBoxText.text = newString;
-            await UniTask.Delay(TimeSpan.FromMilliseconds(75), ignoreTimeScale: false);
+            string dialouge = dialogueQueue.Dequeue();
+            dialogueBoxText.text = dialouge;
+            await UniTask.Delay(TimeSpan.FromSeconds(1), ignoreTimeScale: false);
         }
     }
 }

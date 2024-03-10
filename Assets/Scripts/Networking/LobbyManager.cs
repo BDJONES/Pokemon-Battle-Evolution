@@ -19,7 +19,7 @@ using ParrelSync;
 
 public class LobbyManager : MonoBehaviour
 {
-    private UIController uIController;
+    //private UIController uIController;
     private UnityTransport unityTransport;
     private Lobby connectedLobby;
     private const string joinCodeKey = "PokemonLobbyManager";
@@ -29,7 +29,7 @@ public class LobbyManager : MonoBehaviour
     private void Awake()
     {
         unityTransport = GameObject.Find("NetworkManager").GetComponent<UnityTransport>();
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        //uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
     }
 
     public async void CreateOrJoinLobby()
@@ -42,7 +42,8 @@ public class LobbyManager : MonoBehaviour
             {
                 TwoPlayersConnected?.Invoke();
             }
-            uIController.UpdateMenu(Menus.LoadingScreen);
+            Debug.Log("Created a Lobby");
+            //uIController.UpdateMenu(Menus.LoadingScreen);
         }
     }
 

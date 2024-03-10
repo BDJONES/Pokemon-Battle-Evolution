@@ -10,7 +10,7 @@ public class HostButtonController : MonoBehaviour
 
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIController.OnMenuChange += HandleMenuChange;
     }
 
@@ -29,7 +29,7 @@ public class HostButtonController : MonoBehaviour
 
     private void Start()
     {
-        titleScreenUIElements = GameObject.Find("UI Controller").GetComponent<TitleScreenUIElements>();
+        titleScreenUIElements = uIController.GetComponent<TitleScreenUIElements>();
     }
     private void HandleClick()
     {

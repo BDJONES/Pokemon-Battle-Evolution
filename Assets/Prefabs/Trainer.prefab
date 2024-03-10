@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trainerController: {fileID: 22141833123413027}
-  pokemonInfoUIElements: {fileID: 0}
+  pokemonInfoUIElements: {fileID: 3516142837913063715}
 --- !u!114 &1562412166527235451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,7 +61,211 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusButtonElement: {fileID: 9197481963319205126, guid: 547c0437c382e6e4aaddd1c09f3734df, type: 3}
   trainerController: {fileID: 22141833123413027}
-  pokemonInfoUIElements: {fileID: 0}
+  pokemonInfoUIElements: {fileID: 3516142837913063715}
+--- !u!1 &1231222097451731086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1448439597552099475}
+  - component: {fileID: 7668053301501275298}
+  - component: {fileID: 1863769149918915834}
+  - component: {fileID: 8449417047891125695}
+  - component: {fileID: 3494865743347544950}
+  - component: {fileID: 7398522856790591457}
+  - component: {fileID: 7467341963203309234}
+  - component: {fileID: 3251484730407625199}
+  - component: {fileID: 8205073939568806833}
+  - component: {fileID: 4782558239435541532}
+  - component: {fileID: 3516142837913063715}
+  - component: {fileID: 1966303301428598198}
+  m_Layer: 0
+  m_Name: UI Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1448439597552099475
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 7.475769, y: -0.79473114, z: 0.004863739}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4676115812694803605}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7668053301501275298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee014b3c0fa5ac04e8e8232bb7bb17b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trainerController: {fileID: 0}
+  currentUI: {fileID: 1863769149918915834}
+  titleScreenUI: {fileID: 9197481963319205126, guid: 322c60f1712a7c547a5907968fc7b7f6, type: 3}
+  loadingScreenUI: {fileID: 9197481963319205126, guid: 9b5c979f950bc884a8ca10004e5ec3b3, type: 3}
+  generalBattleUI: {fileID: 9197481963319205126, guid: 5a18e687ea3099948b8315c1e93e6feb, type: 3}
+  moveSelectUI: {fileID: 9197481963319205126, guid: b0d7e480cd9ffe347b8c00280ab28385, type: 3}
+  teamUI: {fileID: 9197481963319205126, guid: 54f2370bb3db3754fa99d72645ff2ad7, type: 3}
+  pokemonInfoUI: {fileID: 9197481963319205126, guid: 620d7f8005b4ca0478836f0f7ab2c105, type: 3}
+  opposingPokemonInfoUI: {fileID: 9197481963319205126, guid: e103133f852820c4fabb57866ecb7392, type: 3}
+  attackInfoUI: {fileID: 9197481963319205126, guid: 824b0214d9665b143933488cf2e57422, type: 3}
+  forfietUI: {fileID: 9197481963319205126, guid: d95bbceb232f0d840b3c3e3bc5b8d604, type: 3}
+  pokemonDamagedUI: {fileID: 9197481963319205126, guid: 8b36f6b095cf0c54eaf8476fe9477bc4, type: 3}
+  dialogueUI: {fileID: 9197481963319205126, guid: f85fb5a6c7e20ac4f9cc537475ff284f, type: 3}
+  opposingPokemonDamagedUI: {fileID: 9197481963319205126, guid: d97eb202a2ea55743a1f3d1ce4a5e31c, type: 3}
+  pokemonFaintedUI: {fileID: 9197481963319205126, guid: 348d3944a0d38734baaec9bf19210aba, type: 3}
+  winScreenUI: {fileID: 9197481963319205126, guid: f12b6e9afbba81940ade0e3182bdc551, type: 3}
+  loseScreenUI: {fileID: 9197481963319205126, guid: f99b7ae3db434474794325ebb390e3cb, type: 3}
+--- !u!114 &1863769149918915834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 6ac6cf0de4e7ef949bb62f8082551f5b, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 322c60f1712a7c547a5907968fc7b7f6, type: 3}
+  m_SortingOrder: 0
+--- !u!114 &8449417047891125695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba0bb69cef7e20438d9d8bf46042ccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1863769149918915834}
+--- !u!114 &3494865743347544950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20b62c3154a8eb4a9e1dc69de7171ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIDocument: {fileID: 1863769149918915834}
+--- !u!114 &7398522856790591457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1cc90b49d59be6419e6965cce63d65d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1863769149918915834}
+--- !u!114 &7467341963203309234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1027406bd4f7c8c46820f067675a0456, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1863769149918915834}
+--- !u!114 &3251484730407625199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b3dde99408dea64a921b69ccd145280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1863769149918915834}
+--- !u!114 &8205073939568806833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f49ed3cd77f7d547a307cea8a230ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1863769149918915834}
+--- !u!114 &4782558239435541532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cece9e4cdb8025a42a9bcf41b374ad20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIDocument: {fileID: 1863769149918915834}
+--- !u!114 &3516142837913063715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 391818d1e2938a9458a2cd803da66966, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIDocument: {fileID: 1863769149918915834}
+--- !u!114 &1966303301428598198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231222097451731086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf1bebe29804d443b761774d499fbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIDocument: {fileID: 1863769149918915834}
 --- !u!1 &1996891503777358841
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,7 +346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2488106bf0a4ec4998a6dead58a6553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSelectionUIElements: {fileID: 0}
+  moveSelectionUIElements: {fileID: 7467341963203309234}
   trainerController: {fileID: 22141833123413027}
 --- !u!114 &322815285074564811
 MonoBehaviour:
@@ -156,7 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a72c98577b5c64438335bba3a91f447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSelectionUIElements: {fileID: 0}
+  moveSelectionUIElements: {fileID: 7467341963203309234}
   trainerController: {fileID: 22141833123413027}
 --- !u!114 &232088164147196042
 MonoBehaviour:
@@ -170,7 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c465e9cf6dcee9445b64f29effb2ca33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSelectionUIElements: {fileID: 0}
+  moveSelectionUIElements: {fileID: 7467341963203309234}
   trainerController: {fileID: 22141833123413027}
 --- !u!114 &8561033226912628608
 MonoBehaviour:
@@ -184,7 +388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4840a4b30d36a7647a0fc91d1c7af554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSelectionUIElements: {fileID: 0}
+  moveSelectionUIElements: {fileID: 7467341963203309234}
   trainerController: {fileID: 22141833123413027}
 --- !u!1 &4423946041969507391
 GameObject:
@@ -230,7 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 210d75d5e5ab87d4e9e014f3c2655501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueUIElements: {fileID: 0}
+  dialogueUIElements: {fileID: 4782558239435541532}
 --- !u!1 &4992515505951061715
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,53 +565,9 @@ Transform:
   - {fileID: 7914232551911045099}
   - {fileID: 5615878120978260465}
   - {fileID: 8948101876111919276}
-  - {fileID: 5827971943114264390}
+  - {fileID: 1448439597552099475}
   m_Father: {fileID: 887533199211169086}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5725181227582361916
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5827971943114264390}
-  - component: {fileID: 7388393153088808049}
-  m_Layer: 0
-  m_Name: TitleScreenUIControllers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5827971943114264390
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5725181227582361916}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4676115812694803605}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7388393153088808049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5725181227582361916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f6e6b47739636e4fa73aa08790147d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6330135077270230657
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,10 +614,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef03b53ef9d1fb34eb80146212830917, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uIInBattleParty: {fileID: 0}
-  uIMoveSelection: {fileID: 0}
-  pokemonInfoUIElements: {fileID: 0}
-  attackInfoUIElements: {fileID: 0}
+  uIInBattleParty: {fileID: 7398522856790591457}
+  uIMoveSelection: {fileID: 7467341963203309234}
+  pokemonInfoUIElements: {fileID: 3516142837913063715}
+  attackInfoUIElements: {fileID: 1966303301428598198}
 --- !u!114 &2176706688629999528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,10 +631,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trainerController: {fileID: 22141833123413027}
-  uIGBElements: {fileID: 0}
-  moveSelectionUIElements: {fileID: 0}
-  pokemonDamageUIElements: {fileID: 0}
-  pokemonInfoUIElements: {fileID: 0}
+  uIGBElements: {fileID: 8449417047891125695}
+  moveSelectionUIElements: {fileID: 7467341963203309234}
+  pokemonDamageUIElements: {fileID: 3251484730407625199}
+  pokemonInfoUIElements: {fileID: 3516142837913063715}
 --- !u!114 &2987774567056814507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -488,10 +648,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trainerController: {fileID: 22141833123413027}
-  uIGBElements: {fileID: 0}
-  moveSelectionUIElements: {fileID: 0}
-  opposingPokemonDamagedUIElements: {fileID: 0}
-  pokemonInfoUIElements: {fileID: 0}
+  uIGBElements: {fileID: 8449417047891125695}
+  moveSelectionUIElements: {fileID: 7467341963203309234}
+  opposingPokemonDamagedUIElements: {fileID: 8205073939568806833}
+  pokemonInfoUIElements: {fileID: 3516142837913063715}
 --- !u!1 &7038000468518221621
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,8 +697,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trainerController: {fileID: 22141833123413027}
-  moveSelectionUIElements: {fileID: 0}
-  attackInfoUIElements: {fileID: 0}
+  moveSelectionUIElements: {fileID: 7467341963203309234}
+  attackInfoUIElements: {fileID: 1966303301428598198}
 --- !u!1 &7704239638366309168
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,7 +982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2d25ce472af0074cacbbfb4c95f5b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiElements: {fileID: 0}
+  uiElements: {fileID: 8449417047891125695}
 --- !u!1001 &6777255522857668952
 PrefabInstance:
   m_ObjectHideFlags: 0

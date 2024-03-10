@@ -11,8 +11,8 @@ public class ForfietButtonController : MonoBehaviour
 	private UIController uIController;
 	private void OnEnable()
 	{
-		uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-		uIController.OnMenuChange += HandleMenuChange;
+		uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
+        uIController.OnMenuChange += HandleMenuChange;
 		uIElements = uIController.GetComponent<GeneralBattleUIElements>();
         //UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
     }

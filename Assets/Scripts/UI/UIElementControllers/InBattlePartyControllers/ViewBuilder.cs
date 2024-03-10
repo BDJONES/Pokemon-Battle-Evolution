@@ -14,7 +14,7 @@ public class ViewBuilder : MonoBehaviour
     
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
         uIController.OnMenuChange += HandleMenuChange;
     }

@@ -216,29 +216,13 @@ public abstract class Attack : IPlayerAction
     protected virtual float Effectiveness(Pokemon attacker, Pokemon target)
     {
         float effectiveness = 1f;
-
-        //for (int i = 0; i < target.GetType1().weaknesses.Count; i++)
-        //{
-        //    Debug.Log(target.GetType1().weaknesses[i].GetType().Name);
-        //    if (this.type)
-        //    {
-        //        Debug.Log("He Weak to this right here");
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("That's aight");
-        //    }
-        //}
-        //Debug.Log("Checking for move effectiveness");
         if (target.GetType1().immunities.Contains(this.type) || (target.GetType2() != null && target.GetType2().immunities.Contains(this.type)))
         {
-            //Debug.Log($"{target.GetSpeciesName()} is unaffected.");
             return 0;
         }
 
         if (target.GetType1().weaknesses.Contains(this.type))
         {
-            //Debug.Log($"{target.GetType1().GetType().Name} is weak to {this.type.GetType().Name}");
             effectiveness *= 2;
         }
 
@@ -250,28 +234,31 @@ public abstract class Attack : IPlayerAction
 
         if (target.GetType1().resistances.Contains(this.type))
         {
-            //Debug.Log($"{target.GetType1().GetType().Name} resists {this.type.GetType().Name}");
             effectiveness /= 2;
         }
 
         if (target.GetType2() != null && target.GetType2().resistances.Contains(this.type))
         {
-            //Debug.Log($"{target.GetType2().GetType().Name} resists {this.type.GetType().Name}");
             effectiveness /= 2;
         }
+        var dialogueBoxControllers = GameObject.FindObjectsByType<DialogueBoxController>(FindObjectsSortMode.None);
+        foreach (var controller in dialogueBoxControllers)
+        {
+            if (effectiveness > 1f)
+            {
+            
+                controller.AddDialogueToQueue($"{this.GetAttackName()} is super effective. Effectiveness = {effectiveness}.");
+            }
+            else if (effectiveness == 1f)
+            {
+                controller.AddDialogueToQueue($"{this.GetAttackName()} is effective");
+            }
+            else
+            {
+                controller.AddDialogueToQueue($"{this.GetAttackName()} is not very effective. Effectiveness = {effectiveness}.");
+            }
+        }
 
-        if (effectiveness > 1f)
-        {
-            Debug.Log($"{this.GetAttackName()} is super effective. Effectiveness = {effectiveness}.");
-        }
-        else if (effectiveness == 1f)
-        {
-            Debug.Log($"{this.GetAttackName()} is effective");
-        }
-        else
-        {
-            Debug.Log($"{this.GetAttackName()} is not very effective. Effectiveness = {effectiveness}.");
-        }
 
         return effectiveness;
     }

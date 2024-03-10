@@ -12,7 +12,7 @@ public class BackButtonController : MonoBehaviour
 
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIInBattleParty = uIController.GetComponent<InBattlePartyUIElements>();
         uIMoveSelection = uIController.GetComponent <MoveSelectionUIElements>();
         pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();

@@ -26,7 +26,7 @@ public class AttackInfoController : MonoBehaviour
 
     protected void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIController.OnMenuChange += HandleMenuChange;
         moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
         attackInfoUIElements = uIController.GetComponent <AttackInfoUIElements>();

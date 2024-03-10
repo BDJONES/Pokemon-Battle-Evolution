@@ -13,5 +13,7 @@ public enum Menus
     InBattlePartyMenu,
     PokemonFaintedScreen,
     DialogueScreen,
-    ForfietMenu
+    ForfietMenu,
+    WinScreen,
+    LoseScreen
 }

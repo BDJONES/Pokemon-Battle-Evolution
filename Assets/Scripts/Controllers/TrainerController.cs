@@ -11,13 +11,13 @@ public class TrainerController : MonoBehaviour
     [SerializeField] private Trainer player;
     [SerializeField] private Trainer opponent;
     private UIInputGrabber uIGrabber;
+    private DialogueBoxController dialogueBoxController;
     private int inactiveTurnCount;
     public event Action playerTooInactive;
 
-    private void Start()
+    private void OnEnable()
     {
-        //var go = gameObject;
-        //Debug.Log(go.name);
+        dialogueBoxController = gameObject.GetComponentInChildren<DialogueBoxController>();
         uIGrabber = new UIInputGrabber();
         inactiveTurnCount = 0;
     }
@@ -31,6 +31,11 @@ public class TrainerController : MonoBehaviour
         return opponent;
     }
 
+    public DialogueBoxController GetDialogueBoxController()
+    {
+        return dialogueBoxController;
+    }
+
     public void SetOpponent(Trainer Opponent)
     {
         opponent = Opponent;
@@ -38,24 +43,21 @@ public class TrainerController : MonoBehaviour
 
     public async UniTask<IPlayerAction> SelectMove()
     {
-        Debug.Log("You can now choose something to do.");
         IPlayerAction selection = null;
-        if (this.gameObject != null && this.gameObject.name != "Trainer # 2")
+        Action anonFunc = () =>
         {
-            Action anonFunc = () =>
-            {
-                // Invoke the handler and set value of selection to returned Action
-                selection = uIGrabber.GetSelectedAction();
-                Debug.Log("Selection was made");
-            };
+            // Invoke the handler and set value of selection to returned Action
+            selection = uIGrabber.GetSelectedAction();
+            Debug.Log("Selection was made");
+        };
 
-            UIInputGrabber.MoveSelected += anonFunc;
-            while (selection == null && TimeManager.Instance.IsTurnTimerActive())
-            {
-                await UniTask.Yield();
-            }
-            UIInputGrabber.MoveSelected -= anonFunc;
+        UIInputGrabber.MoveSelected += anonFunc;
+        while (selection == null && TimeManager.Instance.IsTurnTimerActive())
+        {
+            await UniTask.Yield();
         }
+        await dialogueBoxController.ReadAllQueuedDialogue();
+        UIInputGrabber.MoveSelected -= anonFunc;
         // If a move was selected return that value
         if (selection != null)
         {

@@ -21,7 +21,7 @@ public abstract class PartyPokemonController : MonoBehaviour
 
     private void Start()
     {
-        battlePartyUIElements = GameObject.Find("UI Controller").GetComponent<InBattlePartyUIElements>();
+        battlePartyUIElements = transform.parent.gameObject.GetComponentInChildren<UIController>().GetComponent<InBattlePartyUIElements>();
         AttachButton();
     }
 

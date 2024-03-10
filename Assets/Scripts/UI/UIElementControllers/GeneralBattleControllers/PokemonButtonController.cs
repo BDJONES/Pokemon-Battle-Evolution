@@ -11,7 +11,7 @@ public class PokemonButtonController : MonoBehaviour
     
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIController.OnMenuChange += HandleMenuChange;
         //UIEventSubscriptionManager.Subscribe(uiElements.PokemonButton, PokemonButtonClicked);
     }

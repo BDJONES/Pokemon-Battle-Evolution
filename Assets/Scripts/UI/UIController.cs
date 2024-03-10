@@ -23,6 +23,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private VisualTreeAsset dialogueUI;
     [SerializeField] private VisualTreeAsset opposingPokemonDamagedUI;
     [SerializeField] private VisualTreeAsset pokemonFaintedUI;
+    [SerializeField] private VisualTreeAsset winScreenUI;
+    [SerializeField] private VisualTreeAsset loseScreenUI;
     
 
     [SerializeField] private Menus? menu;
@@ -31,6 +33,7 @@ public class UIController : MonoBehaviour
 
     private void OnEnable()
     {
+        UpdateMenu(Menus.LoadingScreen);
         GameManager.OnStateChange += HandleStateChange;
         YourPokemonDeathEventManager.OnDeath += HandlePokemonDeath;
         LobbyManager.TwoPlayersConnected += HandleLobbyConnection;
@@ -141,6 +144,16 @@ public class UIController : MonoBehaviour
                 case Menus.OpposingPokemonInfoScreen:
                     currentUI.rootVisualElement.style.display = DisplayStyle.None;
                     currentUI.visualTreeAsset = opposingPokemonInfoUI;
+                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                    break;
+                case Menus.WinScreen:
+                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                    currentUI.visualTreeAsset = winScreenUI;
+                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                    break;
+                case Menus.LoseScreen:
+                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                    currentUI.visualTreeAsset = loseScreenUI;
                     currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
                     break;
             }

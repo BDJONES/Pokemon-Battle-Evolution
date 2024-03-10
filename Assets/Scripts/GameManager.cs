@@ -15,9 +15,13 @@ public class GameManager : Singleton<GameManager>
     private UIController trainer2UIController;
     [SerializeField] private GameState gameState;
     public static event Action<GameState> OnStateChange;
-    [SerializeField] private GameObject uiController;
-    [SerializeField] private PokemonInfoController pokemonInfoController;
-    [SerializeField] private OpposingPokemonInfoController opposingPokemonInfoBarController;
+    //[SerializeField] private GameObject uiController;
+    private PokemonInfoController trainer1PokemonInfoController;
+    private OpposingPokemonInfoController trainer1OpposingPokemonInfoBarController;
+    private PokemonInfoController trainer2PokemonInfoController;
+    private OpposingPokemonInfoController trainer2OpposingPokemonInfoBarController;
+    private DialogueBoxController trainer1DialogueBoxController;
+    private DialogueBoxController trainer2DialogueBoxController;
     private LobbyManager lobbyManager;
     private bool player1Inactive = false;
     private bool player2Inactive = false;
@@ -40,20 +44,22 @@ public class GameManager : Singleton<GameManager>
     {
         trainer1Controller = trainerController;
         trainer1 = trainer1Controller.GetPlayer();
+        trainer1PokemonInfoController = trainerController.gameObject.GetComponentInChildren<PokemonInfoController>();
+        trainer1OpposingPokemonInfoBarController = trainerController.gameObject.GetComponentInChildren<OpposingPokemonInfoController>();
     }
 
     private void SetTrainer2Controller(TrainerController trainerController)
     {
         trainer2Controller = trainerController;
         trainer2 = trainer2Controller.GetPlayer();
+        trainer2PokemonInfoController = trainerController.gameObject.GetComponentInChildren<PokemonInfoController>();
+        trainer2OpposingPokemonInfoBarController = trainerController.gameObject.GetComponentInChildren<OpposingPokemonInfoController>();
     }
 
     private void SetPokemonInfoController(GameObject player)
     {
 
-        Transform sharedControllers = player.transform.Find("SharedControllers");
-        pokemonInfoController = sharedControllers.GetComponent<PokemonInfoController>();
-        opposingPokemonInfoBarController = sharedControllers.GetComponent<OpposingPokemonInfoController>();
+        //Transform sharedControllers = player..Find("SharedControllers");
     }
 
     public void PopulateGameManager(GameObject gameObject, int type)
@@ -62,15 +68,17 @@ public class GameManager : Singleton<GameManager>
         if (type == 1)
         {
             SetTrainer1Controller(trainerController);
-            trainer1UIController = gameObject.transform.Find("UIController").GetComponent<UIController>();
+            trainer1UIController = gameObject.GetComponentInChildren<UIController>();
+            trainer1UIController.UpdateMenu(Menus.LoadingScreen);
         }
         else
         {
             SetTrainer2Controller(trainerController);
-            trainer2UIController = gameObject.transform.Find("UIController").GetComponent<UIController>();
+            trainer2UIController = gameObject.GetComponentInChildren<UIController>();
+            trainer2UIController.UpdateMenu(Menus.LoadingScreen);
         }
         //Set Location of the gameobjects
-        SetPokemonInfoController(gameObject);
+        //SetPokemonInfoController(gameObject);
     }
 
     private void Start()
@@ -230,12 +238,39 @@ public class GameManager : Singleton<GameManager>
             if (trainer1.GetActivePokemon().GetSpeedStat() > trainer2.GetActivePokemon().GetSpeedStat())
             {
                 ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+                // Call the AddDialogueToQueue function twice until I figure out how to add a collection to a function parameter list
+                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                // May use UI Document here and make the UI Blank on the switch ins
+                await screenBuffer();
                 ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                await screenBuffer();
             }
             else if (trainer1.GetActivePokemon().GetSpeedStat() < trainer2.GetActivePokemon().GetSpeedStat())
             {
                 ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                await screenBuffer();
                 ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                // May use UI Document here and make the UI Blank on the switch ins
+                await screenBuffer();
             }
             else
             {
@@ -243,24 +278,63 @@ public class GameManager : Singleton<GameManager>
                 if (speedTie < 50)
                 {
                     ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    // May use UI Document here and make the UI Blank on the switch ins
+                    await screenBuffer();
                     ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    await screenBuffer();
                 }
                 else
                 {
                     ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    await screenBuffer();
                     ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    // May use UI Document here and make the UI Blank on the switch ins
+                    await screenBuffer();
                 }
             }
         }
         else if (trainer1Action.GetType() == typeof(Switch))
         {
             Switch convertedTrainer1Action = (Switch)trainer1Action;
-            ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+            ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());            
+            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+            trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+            trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+            trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
+            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+            // May use UI Document here and make the UI Blank on the switch ins
+            await screenBuffer();
         }            
         else if (trainer2Action.GetType() == typeof(Switch))
         {
             Switch convertedTrainer2Action = (Switch)trainer2Action;
-            ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+            ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());            
+            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+            trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+            trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+            trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
+            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+            await screenBuffer();
         }
 
         if (trainer1Action.GetType().IsSubclassOf(typeof(Attack)) && trainer2Action.GetType().IsSubclassOf(typeof(Attack)))
@@ -270,25 +344,293 @@ public class GameManager : Singleton<GameManager>
             Attack convertedTrainer2Action = (Attack)trainer2Action;
             if (convertedTrainer1Action.GetAttackPriority() > convertedTrainer2Action.GetAttackPriority())
             {
+                //UpdateGameState(GameState.FirstAttack);
+                trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                trainer2UIController.UpdateMenu(Menus.PokemonDamagedScreen);
                 ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
-                ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
+                //UpdateGameState(GameState.SecondAttack);
+                await UniTask.WhenAll(trainer1OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen), trainer2PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen));
+                // Give a small buffer inbetween the menu change
+                await screenBuffer();
+
+                if (!trainer2.GetActivePokemon().IsDead())
+                {
+                    trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                    trainer2UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                    ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
+                    await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
+                    // Give a small buffer inbetween the menu change
+                    await screenBuffer();
+                    // Add an extra if to trigger the same logic if trainer1 dies afterward
+                    if (trainer1.GetActivePokemon().IsDead())
+                    {
+                        if (trainer1.isTeamDead())
+                        {
+                            UpdateGameState(GameState.BattleEnd);
+                            //Give out the corresponding screen to each player
+                            trainer1UIController.UpdateMenu(Menus.LoseScreen);
+                            trainer2UIController.UpdateMenu(Menus.WinScreen);
+                            return;
+                        }
+                        trainer2DialogueBoxController.AddDialogueToQueue("Communicating...");
+                        trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                        trainer2DialogueBoxController.ReadFirstQueuedDialogue();
+                        // Will not await as the other player will be making a decision and do not want to get in the way of that
+                        UpdateGameState(GameState.WaitingOnPlayerInput);
+                        var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                        Switch playerSwitch = action;
+                        ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                        trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    }
+                }
+                else
+                {
+                    // Force trainer2 to Switch
+                    // If not, then end the battle
+                    if (trainer2.isTeamDead())
+                    {
+                        UpdateGameState(GameState.BattleEnd);
+                        //Give out the corresponding screen to each player
+                        trainer1UIController.UpdateMenu(Menus.WinScreen);
+                        trainer2UIController.UpdateMenu(Menus.LoseScreen);
+                        return;
+                    }
+                    trainer1DialogueBoxController.AddDialogueToQueue("Communicating...");
+                    trainer2UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer1DialogueBoxController.ReadFirstQueuedDialogue();
+                    // Will not await as the other player will be making a decision and do not want to get in the way of that
+                    UpdateGameState(GameState.WaitingOnPlayerInput);
+                    var action = await trainer2Controller.SwitchOutFaintedPokemon();
+                    Switch playerSwitch = action;
+                    ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                    trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                    trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                }
             }
             else if (convertedTrainer1Action.GetAttackPriority() <  convertedTrainer2Action.GetAttackPriority())
             {
+                trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                trainer2UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                 ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+                await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
+                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
+                // Give a small buffer inbetween the menu change
+                await screenBuffer();
+                if (!trainer1.GetActivePokemon().IsDead())
+                {
+                    //UpdateGameState(GameState.FirstAttack);
+                    trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                    trainer2UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                    ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+                    //UpdateGameState(GameState.SecondAttack);
+                    await UniTask.WhenAll(trainer1OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen), trainer2PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen));
+                    // Give a small buffer inbetween the menu change
+                    await screenBuffer();
+                    if (trainer2.GetActivePokemon().IsDead())
+                    {
+                        if (trainer2.isTeamDead())
+                        {
+                            UpdateGameState(GameState.BattleEnd);
+                            //Give out the corresponding screen to each player
+                            trainer1UIController.UpdateMenu(Menus.WinScreen);
+                            trainer2UIController.UpdateMenu(Menus.LoseScreen);
+                            return;
+                        }
+                        trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer1DialogueBoxController.AddDialogueToQueue("Communicating...");
+                        trainer2UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                        trainer1DialogueBoxController.ReadFirstQueuedDialogue();
+                        // Will not await as the other player will be making a decision and do not want to get in the way of that
+                        UpdateGameState(GameState.WaitingOnPlayerInput);
+                        var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                        Switch playerSwitch = action;
+                        ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                        trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    }
+                }
+                else
+                {
+                    if (trainer1.isTeamDead())
+                    {
+                        UpdateGameState(GameState.BattleEnd);
+                        //Give out the corresponding screen to each player
+                        trainer1UIController.UpdateMenu(Menus.LoseScreen);
+                        trainer2UIController.UpdateMenu(Menus.WinScreen);
+                        return;
+                    }
+                    trainer2DialogueBoxController.AddDialogueToQueue("Communicating...");
+                    trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                    trainer2DialogueBoxController.ReadFirstQueuedDialogue();
+                    // Will not await as the other player will be making a decision and do not want to get in the way of that
+                    UpdateGameState(GameState.WaitingOnPlayerInput);
+                    var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                    Switch playerSwitch = action;
+                    ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                    trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                }
             }
             else
             {
                 if (trainer1.GetActivePokemon().GetSpeedStat() > trainer2.GetActivePokemon().GetSpeedStat())
                 {
+                    //UpdateGameState(GameState.FirstAttack);
+                    trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                    trainer2UIController.UpdateMenu(Menus.PokemonDamagedScreen);
                     ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
-                    ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
+                    //UpdateGameState(GameState.SecondAttack);
+                    await UniTask.WhenAll(trainer1OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen), trainer2PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen));
+                    // Give a small buffer inbetween the menu change
+                    await screenBuffer();
+
+                    if (!trainer2.GetActivePokemon().IsDead())
+                    {
+                        trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                        trainer2UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                        ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
+                        await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
+                        trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                        await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
+                        // Give a small buffer inbetween the menu change
+                        await screenBuffer();
+                        // Add an extra if to trigger the same logic if trainer1 dies afterward
+                        if (trainer1.GetActivePokemon().IsDead())
+                        {
+                            if (trainer1.isTeamDead())
+                            {
+                                UpdateGameState(GameState.BattleEnd);
+                                //Give out the corresponding screen to each player
+                                trainer1UIController.UpdateMenu(Menus.LoseScreen);
+                                trainer2UIController.UpdateMenu(Menus.WinScreen);
+                                return;
+                            }
+                            trainer2DialogueBoxController.AddDialogueToQueue("Communicating...");
+                            trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                            trainer2DialogueBoxController.ReadFirstQueuedDialogue();
+                            // Will not await as the other player will be making a decision and do not want to get in the way of that
+                            UpdateGameState(GameState.WaitingOnPlayerInput);
+                            var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                            Switch playerSwitch = action;
+                            ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                            trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                        }
+                    }
+                    else
+                    {
+                        // Force trainer2 to Switch
+                        // If not, then end the battle
+                        if (trainer2.isTeamDead())
+                        {
+                            UpdateGameState(GameState.BattleEnd);
+                            //Give out the corresponding screen to each player
+                            trainer1UIController.UpdateMenu(Menus.WinScreen);
+                            trainer2UIController.UpdateMenu(Menus.LoseScreen);
+                            return;
+                        }
+                        trainer1DialogueBoxController.AddDialogueToQueue("Communicating...");
+                        trainer2UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                        trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer1DialogueBoxController.ReadFirstQueuedDialogue();
+                        // Will not await as the other player will be making a decision and do not want to get in the way of that
+                        UpdateGameState(GameState.WaitingOnPlayerInput);
+                        var action = await trainer2Controller.SwitchOutFaintedPokemon();
+                        Switch playerSwitch = action;
+                        ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                        trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    }
                 }
                 else if (trainer1.GetActivePokemon().GetSpeedStat() < trainer2.GetActivePokemon().GetSpeedStat())
                 {
+                    trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                    trainer2UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                     ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                    ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+                    await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
+                    trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                    trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
+                    // Give a small buffer inbetween the menu change
+                    await screenBuffer();
+                    if (!trainer1.GetActivePokemon().IsDead())
+                    {
+                        //UpdateGameState(GameState.FirstAttack);
+                        trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                        trainer2UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                        ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+                        //UpdateGameState(GameState.SecondAttack);
+                        await UniTask.WhenAll(trainer1OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen), trainer2PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen));
+                        // Give a small buffer inbetween the menu change
+                        await screenBuffer();
+                        if (trainer2.GetActivePokemon().IsDead())
+                        {
+                            if (trainer2.isTeamDead())
+                            {
+                                UpdateGameState(GameState.BattleEnd);
+                                //Give out the corresponding screen to each player
+                                trainer1UIController.UpdateMenu(Menus.WinScreen);
+                                trainer2UIController.UpdateMenu(Menus.LoseScreen);
+                                return;
+                            }
+                            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                            trainer1DialogueBoxController.AddDialogueToQueue("Communicating...");
+                            trainer2UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                            trainer1DialogueBoxController.ReadFirstQueuedDialogue();
+                            // Will not await as the other player will be making a decision and do not want to get in the way of that
+                            UpdateGameState(GameState.WaitingOnPlayerInput);
+                            var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                            Switch playerSwitch = action;
+                            ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                            trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                            trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                        }
+                    }
+                    else
+                    {
+                        if (trainer1.isTeamDead())
+                        {
+                            UpdateGameState(GameState.BattleEnd);
+                            //Give out the corresponding screen to each player
+                            trainer1UIController.UpdateMenu(Menus.LoseScreen);
+                            trainer2UIController.UpdateMenu(Menus.WinScreen);
+                            return;
+                        }
+                        trainer2DialogueBoxController.AddDialogueToQueue("Communicating...");
+                        trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                        trainer2DialogueBoxController.ReadFirstQueuedDialogue();
+                        // Will not await as the other player will be making a decision and do not want to get in the way of that
+                        UpdateGameState(GameState.WaitingOnPlayerInput);
+                        var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                        Switch playerSwitch = action;
+                        ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                        trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                        await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                    }
                 }
                 else
                 {
@@ -297,39 +639,50 @@ public class GameManager : Singleton<GameManager>
                     if (speedTie < 50)
                     {
                         Debug.Log("Trainer 1 won the speed tie");
-                        trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
-                        ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
                         //UpdateGameState(GameState.FirstAttack);
-                        await opposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen);
+                        trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                        trainer2UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                        ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+                        //UpdateGameState(GameState.SecondAttack);
+                        await UniTask.WhenAll(trainer1OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen), trainer2PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen));
                         // Give a small buffer inbetween the menu change
                         await screenBuffer();
 
                         if (!trainer2.GetActivePokemon().IsDead())
                         {
                             trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                            trainer2UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                             ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                            await pokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen);
-                            //UpdateGameState(GameState.SecondAttack);
+                            await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
+                            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                            trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                            await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
                             // Give a small buffer inbetween the menu change
                             await screenBuffer();
-                            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-
                             // Add an extra if to trigger the same logic if trainer1 dies afterward
                             if (trainer1.GetActivePokemon().IsDead())
                             {
+                                if (trainer1.isTeamDead())
+                                {
+                                    UpdateGameState(GameState.BattleEnd);
+                                    //Give out the corresponding screen to each player
+                                    trainer1UIController.UpdateMenu(Menus.LoseScreen);
+                                    trainer2UIController.UpdateMenu(Menus.WinScreen);
+                                    return;
+                                }
+                                trainer2DialogueBoxController.AddDialogueToQueue("Communicating...");
                                 trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                                trainer2DialogueBoxController.ReadFirstQueuedDialogue();
+                                // Will not await as the other player will be making a decision and do not want to get in the way of that
                                 UpdateGameState(GameState.WaitingOnPlayerInput);
                                 var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                                //Debug.Log(action.GetType());
-                                //Debug.Log("Something");
-                                Switch playerSwitch = (Switch)action;
-                                Debug.Log($"Name = {playerSwitch.GetTrainer().trainerName}, Pokemon = {playerSwitch.GetPokemon().GetSpeciesName()}");
+                                Switch playerSwitch = action;
                                 ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                                Debug.Log("Just about to change to the general battle menu");
-                                trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
-                                //await UniTask.WaitForSeconds(1);
+                                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                                trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                                trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
                             }
-                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
                         }
                         else
                         {
@@ -339,73 +692,176 @@ public class GameManager : Singleton<GameManager>
                             {
                                 UpdateGameState(GameState.BattleEnd);
                                 //Give out the corresponding screen to each player
-                                //UIController.Instance.UpdateMenu(Menus.VictoryScreen);
+                                trainer1UIController.UpdateMenu(Menus.WinScreen);
+                                trainer2UIController.UpdateMenu(Menus.LoseScreen);
                                 return;
                             }
-
-
-                            //UIController.Instance.UpdateMenu(Menus.PokemonFaintedScreen);
-                            //var playerSwitch = (Switch)await trainer2Controller.SelectMove();
-                            //ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
+                            trainer1DialogueBoxController.AddDialogueToQueue("Communicating...");
+                            trainer2UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                            trainer1DialogueBoxController.ReadFirstQueuedDialogue();
+                            // Will not await as the other player will be making a decision and do not want to get in the way of that
+                            UpdateGameState(GameState.WaitingOnPlayerInput);
+                            var action = await trainer2Controller.SwitchOutFaintedPokemon();
+                            Switch playerSwitch = action;
+                            ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                            trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                            trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
                         }
                     }
                     else
                     {
                         Debug.Log("Trainer 2 won the speed tie");
                         trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+                        trainer2UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
                         ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                        await pokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen);
+                        await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
+                        trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                        trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                        await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
                         // Give a small buffer inbetween the menu change
                         await screenBuffer();
                         if (!trainer1.GetActivePokemon().IsDead())
                         {
                             //UpdateGameState(GameState.FirstAttack);
                             trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
+                            trainer2UIController.UpdateMenu(Menus.PokemonDamagedScreen);
                             ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
-                            //
                             //UpdateGameState(GameState.SecondAttack);
-                            await opposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen);
+                            await UniTask.WhenAll(trainer1OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen), trainer2PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen));
                             // Give a small buffer inbetween the menu change
                             await screenBuffer();
-                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
+                            if (trainer2.GetActivePokemon().IsDead())
+                            {
+                                if (trainer2.isTeamDead())
+                                {
+                                    UpdateGameState(GameState.BattleEnd);
+                                    //Give out the corresponding screen to each player
+                                    trainer1UIController.UpdateMenu(Menus.WinScreen);
+                                    trainer2UIController.UpdateMenu(Menus.LoseScreen);
+                                    return;
+                                }
+                                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                                trainer1DialogueBoxController.AddDialogueToQueue("Communicating...");
+                                trainer2UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                                trainer1DialogueBoxController.ReadFirstQueuedDialogue();
+                                // Will not await as the other player will be making a decision and do not want to get in the way of that
+                                UpdateGameState(GameState.WaitingOnPlayerInput);
+                                var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                                Switch playerSwitch = action;
+                                ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                                trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                                trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                                trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                            }
                         }
                         else
                         {
+                            if (trainer1.isTeamDead())
+                            {
+                                UpdateGameState(GameState.BattleEnd);
+                                //Give out the corresponding screen to each player
+                                trainer1UIController.UpdateMenu(Menus.LoseScreen);
+                                trainer2UIController.UpdateMenu(Menus.WinScreen);
+                                return;
+                            }
+                            trainer2DialogueBoxController.AddDialogueToQueue("Communicating...");
                             trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                            trainer2DialogueBoxController.ReadFirstQueuedDialogue();
+                            // Will not await as the other player will be making a decision and do not want to get in the way of that
                             UpdateGameState(GameState.WaitingOnPlayerInput);
                             var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                            Debug.Log(action.GetType());
-                            Debug.Log("Something");
                             Switch playerSwitch = action;
-                            Debug.Log($"Name = {playerSwitch.GetTrainer().trainerName}, Pokemon = {playerSwitch.GetPokemon().GetSpeciesName()}");
                             ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
-                            await UniTask.WaitForSeconds(1);
-                        }
-                    }
+                            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                            trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                        }                            
+                    }                        
                 }
             }
-            
         }
         else if (trainer1Action.GetType().IsSubclassOf(typeof(Attack)))
         {
             Attack convertedTrainer1Action = (Attack)trainer1Action;
+            //UpdateGameState(GameState.FirstAttack);
             trainer1UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
-            convertedTrainer1Action.PerformAction(trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+            trainer2UIController.UpdateMenu(Menus.PokemonDamagedScreen);
             ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
-            await pokemonInfoController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen);
+            //UpdateGameState(GameState.SecondAttack);
+            await UniTask.WhenAll(trainer1OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen), trainer2PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen));
+            // Give a small buffer inbetween the menu change
+            await screenBuffer();
             trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
+            if (trainer2.GetActivePokemon().IsDead())
+            {
+                if (trainer2.isTeamDead())
+                {
+                    UpdateGameState(GameState.BattleEnd);
+                    //Give out the corresponding screen to each player
+                    trainer1UIController.UpdateMenu(Menus.WinScreen);
+                    trainer2UIController.UpdateMenu(Menus.LoseScreen);
+                    return;
+                }
+                trainer1DialogueBoxController.AddDialogueToQueue("Communicating...");
+                trainer2UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer1DialogueBoxController.ReadFirstQueuedDialogue();
+                // Will not await as the other player will be making a decision and do not want to get in the way of that
+                UpdateGameState(GameState.WaitingOnPlayerInput);
+                var action = await trainer2Controller.SwitchOutFaintedPokemon();
+                Switch playerSwitch = action;
+                ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+            }
         }
         else if (trainer2Action.GetType().IsSubclassOf(typeof(Attack)))
         {
             Attack convertedTrainer2Action = (Attack)trainer2Action;
             trainer1UIController.UpdateMenu(Menus.PokemonDamagedScreen);
+            trainer2UIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen);
             ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-            await pokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen);
+            await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
+            trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+            trainer2UIController.UpdateMenu(Menus.DialogueScreen);
+            await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
+            // Give a small buffer inbetween the menu change
+            await screenBuffer();
+            if (trainer1.GetActivePokemon().IsDead())
+            {
+                if (trainer1.isTeamDead())
+                {
+                    UpdateGameState(GameState.BattleEnd);
+                    //Give out the corresponding screen to each player
+                    trainer1UIController.UpdateMenu(Menus.LoseScreen);
+                    trainer2UIController.UpdateMenu(Menus.WinScreen);
+                    return;
+                }
+                trainer2DialogueBoxController.AddDialogueToQueue("Communicating...");
+                trainer1UIController.UpdateMenu(Menus.PokemonFaintedScreen);
+                trainer2DialogueBoxController.ReadFirstQueuedDialogue();
+                // Will not await as the other player will be making a decision and do not want to get in the way of that
+                UpdateGameState(GameState.WaitingOnPlayerInput);
+                var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                Switch playerSwitch = action;
+                ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                trainer1UIController.UpdateMenu(Menus.DialogueScreen);
+                trainer1DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                trainer2DialogueBoxController.AddDialogueToQueue($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
+                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+            }
             trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
         }
-
         // Also may add a forfiet button
+
+        trainer1UIController.UpdateMenu(Menus.GeneralBattleMenu);
+        trainer2UIController.UpdateMenu(Menus.GeneralBattleMenu);
     }
 }

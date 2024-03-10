@@ -35,7 +35,7 @@ public class PokemonInfoController : MonoBehaviour
 
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIGBElements = uIController.GetComponent<GeneralBattleUIElements>();
         moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
         pokemonDamageUIElements = uIController.GetComponent<PokemonDamagedUIElements>();

@@ -8,7 +8,7 @@ public class Attack3Controller : MoveSelectButton
     [SerializeField] private TrainerController trainerController;
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIController.OnMenuChange += HandleMenuChange;
         trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
     }

@@ -9,6 +9,9 @@ public class NetworkCommands : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         //NetworkObjectId
+        var titleScreenUI = GameObject.FindGameObjectWithTag("TitleScreenUI");
+        titleScreenUI.SetActive(false);
+
         GameObject player = NetworkManager.SpawnManager.GetLocalPlayerObject().gameObject;
         PopulateGameManager(player);
         //PopulateUIValues();

@@ -30,7 +30,7 @@ public class ClientButtonController : MonoBehaviour
 
     private void Start()
     {
-        titleScreenUIElements = GameObject.Find("UI Controller").GetComponent<TitleScreenUIElements>();
+        titleScreenUIElements = uIController.GetComponent<TitleScreenUIElements>();
     }
     private void HandleClick()
     {

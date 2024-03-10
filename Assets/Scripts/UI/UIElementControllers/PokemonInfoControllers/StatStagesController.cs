@@ -20,7 +20,7 @@ public class StatStagesController : MonoBehaviour
     private void OnEnable()
     {
         trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIController.OnMenuChange += HandleMenuChange;
         pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
     }

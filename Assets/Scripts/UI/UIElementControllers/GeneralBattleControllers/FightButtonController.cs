@@ -11,7 +11,7 @@ public class FightButtonController : MonoBehaviour
     private UIController uIController;
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
         uIElements = uIController.GetComponent<GeneralBattleUIElements>();
         uIController.OnMenuChange += HandleMenuChange;
     }
