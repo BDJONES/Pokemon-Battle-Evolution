@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UIElements;
@@ -22,19 +24,24 @@ public class UIInputGrabber //: IDisposable
     private Menus previousMenu;
     private UIController uIController;
     private DialogueBoxController dialogueBoxController;
+    RPCManager moveSelectionRPCManager;
 
-    public UIInputGrabber() // GameObject gameObject
+    public UIInputGrabber(GameObject gameObject)
     {
         //uIController = gameObject.GetComponentInChildren<UIController>();
         uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        dialogueBoxController = uIController.gameObject.GetComponentInChildren<DialogueBoxController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        dialogueBoxController = GameObject.Find("Me").GetComponentInChildren<DialogueBoxController>();
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
+        moveSelectionRPCManager = new RPCManager();
     }
 
 
 
     ~UIInputGrabber()
     {
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
         attack1Controller.AttackSelected -= Attack1Selected;
         attack2Controller.AttackSelected -= Attack2Selected;
         attack3Controller.AttackSelected -= Attack3Selected;
@@ -43,121 +50,52 @@ public class UIInputGrabber //: IDisposable
 
     private void Attack1Selected(object sender, OnAttackSelectedEventArgs args)
     {
-        selectedAction = args.Attack;
-        uIController.UpdateMenu(Menus.DialogueScreen);
-        dialogueBoxController.AddDialogueToQueue("Communicating...");
-        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        HandleInput();
+        UpdateUIForAttack(args);
     }
 
     private void Attack2Selected(object sender, OnAttackSelectedEventArgs args)
     {
-        Debug.Log($"{args.Attack.GetAttackName()}");
-        selectedAction = args.Attack;
-        uIController.UpdateMenu(Menus.DialogueScreen);
-        dialogueBoxController.AddDialogueToQueue("Communicating...");
-        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        HandleInput();
+        UpdateUIForAttack(args);
     }
 
     private void Attack3Selected(object sender, OnAttackSelectedEventArgs args)
     {
-        Debug.Log($"{args.Attack.GetAttackName()}");
-        selectedAction = args.Attack;
-        uIController.UpdateMenu(Menus.DialogueScreen);
-        dialogueBoxController.AddDialogueToQueue("Communicating...");
-        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        HandleInput();
+        UpdateUIForAttack(args);
     }
 
     private void Attack4Selected(object sender, OnAttackSelectedEventArgs args)
     {
-        Debug.Log($"{args.Attack.GetAttackName()}");
-        selectedAction = args.Attack;
-        uIController.UpdateMenu(Menus.DialogueScreen);
-        dialogueBoxController.AddDialogueToQueue("Communicating...");
-        //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        HandleInput();
+        UpdateUIForAttack(args);
     }
 
     private void Switch1Selected(object sender, OnSwitchEventArgs e)
     {
-
-        var prevMenu = uIController.GetCurrentMenu();
-        selectedAction = e.Switch;
-        if (prevMenu != Menus.PokemonFaintedScreen)
-        {
-            uIController.UpdateMenu(Menus.DialogueScreen);
-            dialogueBoxController.AddDialogueToQueue("Communicating...");
-            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        }
-        HandleInput();
+        UpdateUIForSwitch(e);
     }
 
     private void Switch2Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = uIController.GetCurrentMenu();
-        selectedAction = e.Switch;
-        if (prevMenu != Menus.PokemonFaintedScreen)
-        {
-            uIController.UpdateMenu(Menus.DialogueScreen);
-            dialogueBoxController.AddDialogueToQueue("Communicating...");
-            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        }
-        HandleInput();
+        UpdateUIForSwitch(e);
     }
 
     private void Switch3Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = uIController.GetCurrentMenu();
-        selectedAction = e.Switch;
-        if (prevMenu != Menus.PokemonFaintedScreen)
-        {
-            uIController.UpdateMenu(Menus.DialogueScreen);
-            dialogueBoxController.AddDialogueToQueue("Communicating...");
-            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        }
-        HandleInput();
+        UpdateUIForSwitch(e);
     }
 
     private void Switch4Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = uIController.GetCurrentMenu();
-        selectedAction = e.Switch;
-        if (prevMenu != Menus.PokemonFaintedScreen)
-        {
-            uIController.UpdateMenu(Menus.DialogueScreen);
-            dialogueBoxController.AddDialogueToQueue("Communicating...");
-            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        }
-        HandleInput();
+        UpdateUIForSwitch(e);
     }
 
     private void Switch5Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = uIController.GetCurrentMenu();
-        selectedAction = e.Switch;
-        HandleInput();
-        if (prevMenu != Menus.PokemonFaintedScreen)
-        {
-            uIController.UpdateMenu(Menus.DialogueScreen);
-            dialogueBoxController.AddDialogueToQueue("Communicating...");
-            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        }
-        
+        UpdateUIForSwitch(e);
     }
 
     private void Switch6Selected(object sender, OnSwitchEventArgs e)
     {
-        var prevMenu = uIController.GetCurrentMenu();
-        selectedAction = e.Switch;
-        if (prevMenu != Menus.PokemonFaintedScreen)
-        {
-            uIController.UpdateMenu(Menus.DialogueScreen);
-            dialogueBoxController.AddDialogueToQueue("Communicating...");
-            //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
-        }
-        HandleInput();
+        UpdateUIForSwitch(e);
     }
 
     public IPlayerAction GetSelectedAction()
@@ -176,10 +114,10 @@ public class UIInputGrabber //: IDisposable
     {
         if (menu == Menus.MoveSelectionMenu)
         {
-            attack1Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack1Controller>();
-            attack2Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack2Controller>();
-            attack3Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack3Controller>();
-            attack4Controller = uIController.transform.parent.gameObject.GetComponentInChildren<Attack4Controller>();
+            attack1Controller = GameObject.Find("Me").GetComponentInChildren<Attack1Controller>();
+            attack2Controller = GameObject.Find("Me").GetComponentInChildren<Attack2Controller>();
+            attack3Controller = GameObject.Find("Me").GetComponentInChildren<Attack3Controller>();
+            attack4Controller = GameObject.Find("Me").GetComponentInChildren<Attack4Controller>();
             if (attack1Controller != null)
             {
                 attack1Controller.AttackSelected += Attack1Selected;
@@ -291,27 +229,54 @@ public class UIInputGrabber //: IDisposable
         previousMenu = menu;
     }
 
-    //public void Dispose()
-    //{
-    //    Dispose(true);
-    //    // any other unmanaged resource cleanups you can do here
-    //    GC.SuppressFinalize(this);
-    //}
+    private void UpdateUIForSwitch(OnSwitchEventArgs e)
+    {
+        var player = GameObject.Find("Me");
+        if (TrainerController.IsOwnerHost(player))
+        {
+            var prevMenu = uIController.GetCurrentTrainer1Menu();
+            selectedAction = e.Switch;
+            if (prevMenu != Menus.PokemonFaintedScreen)
+            {
+                uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                dialogueBoxController.AddDialogueToQueue("Communicating...");
+                //dialogueBoxController.AddDialogueToQueue();
+                //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            }
+            HandleInput();
+        }
+        else
+        {
+            var prevMenu = uIController.GetCurrentTrainer2Menu();
+            selectedAction = e.Switch;
+            if (prevMenu != Menus.PokemonFaintedScreen)
+            {
+                uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                dialogueBoxController.AddDialogueToQueue("Communicating...");
+                //dialogueBoxController.AddDialogueToQueue("Communicating...");
+                //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+            }
+            HandleInput();
+        }
+    }
 
-    //protected virtual void Dispose(bool disposing)
-    //{
-    //    if (!_disposed)
-    //    {
-    //        if (disposing)
-    //        {
-    //            if (_stream != null)
-    //            {
-    //                _stream.Dispose(); // say you have to dispose a stream
-    //            }
-    //        }
-
-    //        _stream = null;
-    //        _disposed = true;
-    //    }
-    //}
+    private void UpdateUIForAttack(OnAttackSelectedEventArgs args)
+    {
+        selectedAction = args.Attack;
+        var player = GameObject.Find("Me");
+        //if (TrainerController.IsOwnerHost(player))
+        //{
+        //    uIController.UpdateMenu(Menus.DialogueScreen, 1);
+        //    dialogueBoxController.AddDialogueToQueue("Communicating...");
+        //}
+        //else
+        //{
+        //    uIController.UpdateMenu(Menus.DialogueScreen, 2);
+            
+        //}
+        //dialogueBoxController.AddDialogueToQueue("Communicating...");
+        //dialogueBoxController.ReadFirstQueuedDialogue();
+        //dialogueBoxController.AddDialogueToQueue("Communicating...");
+        HandleInput();
+    }
 }

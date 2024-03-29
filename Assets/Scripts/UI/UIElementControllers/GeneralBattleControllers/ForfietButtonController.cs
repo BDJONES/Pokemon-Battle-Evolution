@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UIElements;
+using Unity.Netcode;
 
 public class ForfietButtonController : MonoBehaviour
 {
@@ -11,9 +12,10 @@ public class ForfietButtonController : MonoBehaviour
 	private UIController uIController;
 	private void OnEnable()
 	{
-		uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
-		uIElements = uIController.GetComponent<GeneralBattleUIElements>();
+		uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
+        uIElements = uIController.GetComponent<GeneralBattleUIElements>();
         //UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
     }
 
@@ -25,18 +27,37 @@ public class ForfietButtonController : MonoBehaviour
 		{
 			return;
 		}
-		uIController.OnMenuChange -= HandleMenuChange;
-	}
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
+    }
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.GeneralBattleMenu)
 		{
-            UIEventSubscriptionManager.Subscribe(uIElements.ForfietButton, ForfietButtonClicked);
+            var player = transform.parent.parent.gameObject;
+
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(uIElements.ForfietButton, ForfietButtonClicked, 1);
+            }
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(uIElements.ForfietButton, ForfietButtonClicked, 2);
+            }           
         }
     }
 
 	private void ForfietButtonClicked()
 	{
-        uIController.UpdateMenu(Menus.ForfietMenu);
+        var player = transform.parent.parent.gameObject;
+
+        if (TrainerController.IsOwnerHost(player))
+        {
+            uIController.UpdateMenu(Menus.ForfietMenu, 1);
+        }
+        else
+        {
+            uIController.UpdateMenu(Menus.ForfietMenu, 2);
+        }
     }
 }

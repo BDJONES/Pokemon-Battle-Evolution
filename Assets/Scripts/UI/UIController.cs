@@ -2,15 +2,18 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
-public class UIController : MonoBehaviour
+public class UIController : NetworkBehaviour
 {
     [SerializeField] private TrainerController trainerController;
     [SerializeField] public UIDocument currentUI; 
-    [SerializeField] private VisualTreeAsset titleScreenUI;
+    //[SerializeField] private VisualTreeAsset titleScreenUI;
     [SerializeField] private VisualTreeAsset loadingScreenUI;
     [SerializeField] private VisualTreeAsset generalBattleUI; // Your HP, Opponent HP, Fight Button, Pokemon Button, Forfiet Button
     [SerializeField] private VisualTreeAsset moveSelectUI;
@@ -25,18 +28,20 @@ public class UIController : MonoBehaviour
     [SerializeField] private VisualTreeAsset pokemonFaintedUI;
     [SerializeField] private VisualTreeAsset winScreenUI;
     [SerializeField] private VisualTreeAsset loseScreenUI;
-    
-
-    [SerializeField] private Menus? menu;
-    public event Action<Menus> OnMenuChange;
-    private Menus? prevMenu;
+    [SerializeField] private VisualTreeAsset blankScreenUI;
+    [SerializeField] private Menus? trainer1Menu;
+    [SerializeField] private Menus? trainer2Menu;
+    public event Action<Menus> OnHostMenuChange;
+    public event Action<Menus> OnClientMenuChange;
+    private Menus? trainer1PrevMenu;
+    private Menus? trainer2PrevMenu;
 
     private void OnEnable()
     {
-        UpdateMenu(Menus.LoadingScreen);
+        //UpdateMenu(Menus.LoadingScreen);
         GameManager.OnStateChange += HandleStateChange;
         YourPokemonDeathEventManager.OnDeath += HandlePokemonDeath;
-        LobbyManager.TwoPlayersConnected += HandleLobbyConnection;
+        NetworkCommands.TwoPlayersConnected += HandleLobbyConnection;
     }
 
     private void HandleLobbyConnection()
@@ -56,14 +61,15 @@ public class UIController : MonoBehaviour
     {
         if (state == GameState.BattleStart)
         {
-            UpdateMenu(Menus.GeneralBattleMenu);
+            UpdateMenu(Menus.GeneralBattleMenu, 1);
+            UpdateMenu(Menus.GeneralBattleMenu, 2);
         }
     }
 
-    private void Start()
-    {
-        UpdateMenu(Menus.TitleScreen);
-    }
+    //private void Start()
+    //{
+    //    UpdateMenu(Menus.LoadingScreen);
+    //}
 
     //private void HandleUIInput()
     //{
@@ -71,110 +77,233 @@ public class UIController : MonoBehaviour
     //    Debug.Log(clickedButton);
     //}
 
-    public void UpdateMenu(Menus newMenu)
+    [Rpc(SendTo.ClientsAndHost)]
+    public void UpdateMenuClientRpc(Menus newMenu)
     {
-        if (menu == null || menu != newMenu)
-        {        
-            UIEventSubscriptionManager.UnsubscribeAll();
-            //Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {menu}");
-            prevMenu = menu;
-            menu = newMenu;
-            switch (newMenu)
-            {
-                case Menus.TitleScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = titleScreenUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.LoadingScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = loadingScreenUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.GeneralBattleMenu:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = generalBattleUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.InBattlePartyMenu:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = teamUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.MoveSelectionMenu:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = moveSelectUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.AttackInfoScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = attackInfoUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.ForfietMenu:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = forfietUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.PokemonDamagedScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = pokemonDamagedUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.OpposingPokemonDamagedScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = opposingPokemonDamagedUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.DialogueScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = dialogueUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.PokemonFaintedScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = pokemonFaintedUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.PokemonInfoScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = pokemonInfoUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.OpposingPokemonInfoScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = opposingPokemonInfoUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.WinScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = winScreenUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-                case Menus.LoseScreen:
-                    currentUI.rootVisualElement.style.display = DisplayStyle.None;
-                    currentUI.visualTreeAsset = loseScreenUI;
-                    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
-                    break;
-            }
-            if (OnMenuChange != null && menu != null)
-            {
-                //Debug.Log("Invoked Change");
-                OnMenuChange.Invoke(newMenu);
-            }
-        }
-        else
+        if (IsHost) return;
+
+        UIEventSubscriptionManager.UnsubscribeAll(2);
+        //Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {menu}");
+        trainer2PrevMenu = trainer2Menu;
+        trainer2Menu = newMenu;
+        switch (newMenu)
         {
-            //Debug.Log($"There was an error with {newMenu} being loaded. Most likely already on the same.");
+            //case Menus.TitleScreen:
+            //    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+            //    currentUI.visualTreeAsset = titleScreenUI;
+            //    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+            //    break;
+            case Menus.LoadingScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = loadingScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.GeneralBattleMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = generalBattleUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.InBattlePartyMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = teamUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.MoveSelectionMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = moveSelectUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.AttackInfoScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = attackInfoUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.ForfietMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                //currentUI.visualTreeAsset = null;
+                currentUI.visualTreeAsset = forfietUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.PokemonDamagedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = pokemonDamagedUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.OpposingPokemonDamagedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = opposingPokemonDamagedUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.DialogueScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = dialogueUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.PokemonFaintedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = pokemonFaintedUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.PokemonInfoScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = pokemonInfoUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.OpposingPokemonInfoScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = opposingPokemonInfoUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.WinScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = winScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.LoseScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = loseScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.BlankScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = blankScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+        }
+        if (OnClientMenuChange != null && trainer2Menu != null)
+        {
+            //Debug.Log("Invoked Change");
+            OnClientMenuChange.Invoke(newMenu);
         }
     }
 
-    public Menus? GetCurrentMenu()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void UpdateMenuHostRpc(Menus newMenu)
     {
-        return menu;
+        if (!IsHost) return;
+        //Debug.Log("Updating the Host's menu");
+        UIEventSubscriptionManager.UnsubscribeAll(1);
+        //Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {menu}");
+        trainer1PrevMenu = trainer1Menu;
+        trainer1Menu = newMenu;
+        switch (newMenu)
+        {
+            //case Menus.TitleScreen:
+            //    currentUI.rootVisualElement.style.display = DisplayStyle.None;
+            //    currentUI.visualTreeAsset = titleScreenUI;
+            //    currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+            //    break;
+            case Menus.LoadingScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = loadingScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.GeneralBattleMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = generalBattleUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.InBattlePartyMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = teamUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.MoveSelectionMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = moveSelectUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.AttackInfoScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = attackInfoUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.ForfietMenu:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = forfietUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                //Debug.Log("The Menu changed to the forfiet menu");
+                break;
+            case Menus.PokemonDamagedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = pokemonDamagedUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.OpposingPokemonDamagedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = opposingPokemonDamagedUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.DialogueScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = dialogueUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.PokemonFaintedScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = pokemonFaintedUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.PokemonInfoScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = pokemonInfoUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.OpposingPokemonInfoScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = opposingPokemonInfoUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.WinScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = winScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.LoseScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = loseScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.BlankScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = blankScreenUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+        }
+        if (OnHostMenuChange != null && trainer1Menu != null)
+        {
+            //Debug.Log("Invoked Change");
+            OnHostMenuChange.Invoke(newMenu);
+        }
     }
-    public Menus? GetPreviousMenu()
+    public void UpdateMenu(Menus newMenu, int type) // If 1 is a then we are calling the server. If it is 2, then we are calling the client
     {
-        return prevMenu;
+        if ((trainer1Menu == null || trainer1Menu != newMenu) && type == 1)
+        {
+            //Debug.Log("Updated Host Menu");
+            UpdateMenuHostRpc(newMenu);
+        }
+        else if ((trainer2Menu == null || trainer2Menu != newMenu) && type == 2)
+        {
+            //Debug.Log("Updated Client Menu");
+            UpdateMenuClientRpc(newMenu);
+        }
+    }
+
+    public Menus? GetCurrentTrainer1Menu()
+    {
+        return trainer1Menu;
+    }
+    public Menus? GetCurrentTrainer2Menu()
+    {
+        return trainer2Menu;
+    }
+    public Menus? GetTrainer1PreviousMenu()
+    {
+        return trainer1PrevMenu;
+    }
+    public Menus? GetTrainer2PreviousMenu()
+    {
+        return trainer2PrevMenu;
     }
 }

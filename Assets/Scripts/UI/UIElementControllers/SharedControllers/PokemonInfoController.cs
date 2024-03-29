@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -35,20 +37,21 @@ public class PokemonInfoController : MonoBehaviour
 
     private void OnEnable()
     {
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
         uIGBElements = uIController.GetComponent<GeneralBattleUIElements>();
         moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
         pokemonDamageUIElements = uIController.GetComponent<PokemonDamagedUIElements>();
         pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
-        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
         GameManager.OnStateChange += HandleGameStateChange;
     }
 
     private void OnDisable()
     {
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
         GameManager.OnStateChange -= HandleGameStateChange;
     }
 
@@ -121,8 +124,10 @@ public class PokemonInfoController : MonoBehaviour
         //InitializeFields();
     }
 
-    public async UniTask UpdateHealthBar(Menus menu)
+    public async void UpdateHealthBar(Menus menu)
     {
+        Debug.Log("Starting HP Update");
+        GameManager gameManager = GameManager.Instance;
         ProgressBar hpBar;
         Label hpStatLabel;
         if (menu == Menus.GeneralBattleMenu)
@@ -147,6 +152,7 @@ public class PokemonInfoController : MonoBehaviour
         }
         else
         {
+            Debug.Log("In Else for some reason");
             return;
         }
         if (menu == Menus.PokemonDamagedScreen) // || menu == Menus.GeneralBattleMenu
@@ -185,7 +191,9 @@ public class PokemonInfoController : MonoBehaviour
                 YourPokemonDeathEventManager.AlertOfDeath();
             }
         }
+        Debug.Log("Finished Updating Info");
         // If the pokemon reaches 0 hp, then play animation of faint
+        gameManager.FinishRPCTaskRpc();
         return;
     }
 
@@ -209,12 +217,21 @@ public class PokemonInfoController : MonoBehaviour
 
     private void HandleMenuChange(Menus menu)
     {
+        var player = transform.parent.parent.gameObject;
         if (menu == Menus.GeneralBattleMenu || menu == Menus.MoveSelectionMenu || menu == Menus.PokemonDamagedScreen || menu == Menus.PokemonInfoScreen) 
         {
             InitializeFields(menu);
             if (menu == Menus.GeneralBattleMenu && infoButtonGB != null)
             {
-                UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton);
+                if (TrainerController.IsOwnerHost(player))
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton, 1);
+                }
+                else
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton, 2);
+                }
+                
             }
             else if (menu == Menus.GeneralBattleMenu && infoButtonGB == null)
             {
@@ -223,7 +240,14 @@ public class PokemonInfoController : MonoBehaviour
 
             if (menu == Menus.MoveSelectionMenu && infoButtonMS != null)
             {
-                UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton);
+                if (TrainerController.IsOwnerHost(player))
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton, 1);
+                }
+                else
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton, 2);
+                }
             }
             else if (menu == Menus.MoveSelectionMenu && infoButtonMS == null)
             {
@@ -237,7 +261,15 @@ public class PokemonInfoController : MonoBehaviour
     private void ClickedInfoButton()
     {
         //Debug.Log("Clicked the infoButton");
-        uIController.UpdateMenu(Menus.PokemonInfoScreen);
+        var player = transform.parent.parent.gameObject;
+        if (TrainerController.IsOwnerHost(player))
+        {
+            uIController.UpdateMenu(Menus.PokemonInfoScreen, 1);
+        }
+        else
+        {
+            uIController.UpdateMenu(Menus.PokemonInfoScreen, 2);
+        }
     }
 
     private void UpdateInfo(Menus menu)
@@ -247,7 +279,6 @@ public class PokemonInfoController : MonoBehaviour
             //Debug.Log("Perfectly fine");
             pokemonNameLabelGB.text = trainerController.GetPlayer().GetActivePokemon().GetNickname();
             pokemonLevelLabelGB.text = $"Lv. {trainerController.GetPlayer().GetActivePokemon().GetLevel()}";
-            //Debug.Log(hpBarGB.highValue);
             hpBarGB.highValue = trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat();
             hpBarGB.value = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
             hpStatLabelGB.text = $"{trainerController.GetPlayer().GetActivePokemon().GetHPStat()}/{trainerController.GetPlayer().GetActivePokemon().GetMaxHPStat()}";

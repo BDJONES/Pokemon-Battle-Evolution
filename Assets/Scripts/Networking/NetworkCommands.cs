@@ -3,17 +3,64 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NetworkCommands : NetworkBehaviour
 {
+    private NetworkVariable<int> playerCount = new NetworkVariable<int>();
+    private bool twoPlayersConnected = false;
+    public static event Action TwoPlayersConnected;
+    [SerializeField] private GameObject gameManager;
+    [SerializeField] private GameObject uIController;
+    public static event Action<GameObject> HostConnected;
+    public static event Action UIControllerCreated;
+    private bool gameManagerSpawned = false;
+    private bool uIControllerSpawned = false;
     public override void OnNetworkSpawn()
     {
         //NetworkObjectId
-        var titleScreenUI = GameObject.FindGameObjectWithTag("TitleScreenUI");
+        //if (IsOwner)
+        //{
+        var titleScreenUI = GameObject.Find("TitleScreenUI");
         titleScreenUI.SetActive(false);
+        //Debug.Log("Set TitleScreenUI to Inactive");
+        //}
+        //titleScreenUIDocument.rootVisualElement.style.display = DisplayStyle.None;
+        //Destroy(titleScreenUI);
+        if (!IsHost)
+        {
+            return;
+        }
+     
+        if (!gameManagerSpawned)
+        {
+            var spawnedUIController = Instantiate(uIController);
+            spawnedUIController.name = "UI Controller";
+            spawnedUIController.GetComponent<NetworkObject>().Spawn(true);            
+            var generatedGameManager = Instantiate(gameManager);
+            generatedGameManager.name = "Game Manager";
+            generatedGameManager.GetComponent<NetworkObject>().Spawn(true);
+            Debug.Log("Created Game Manager");
+            gameManagerSpawned = true;
+            uIControllerSpawned = true;
+            UIControllerCreated?.Invoke();
+        }
 
-        GameObject player = NetworkManager.SpawnManager.GetLocalPlayerObject().gameObject;
-        PopulateGameManager(player);
+        //PopulateGameManager(player);
+        //if (!IsServer) return;
+        //GameObject player = NetworkManager.SpawnManager.GetLocalPlayerObject().gameObject;
+        //if (player == null)
+        //{
+        //    Debug.Log("The player is null");
+        //}
+        //if (HostConnected != null)
+        //{
+        //    HostConnected.Invoke(player);
+        //}
+        //else
+        //{
+        //    Debug.Log("There is an issue with the event");
+        //}
         //PopulateUIValues();
         return;
     }
@@ -23,15 +70,46 @@ public class NetworkCommands : NetworkBehaviour
         throw new NotImplementedException();
     }
 
-    private void PopulateGameManager(GameObject player)
+    private void Update()
     {
-        if (GameManager.Instance.GetTrainer1Controller() == null)
+        if (IsHost)
         {
-            GameManager.Instance.PopulateGameManager(player, 1);
+            //if (IsServer && NetworkManager.Singleton.ConnectedClients.Count > playerCount.Value)
+            //{
+            //    Debug.Log(NetworkManager.Singleton.ConnectedClients.Values.);
+            //}
+            playerCount.Value = NetworkManager.Singleton.ConnectedClients.Count;
+            //Debug.Log("I'm the server");
+            //SendGameMangerToClientRpc(gM);
+            if (gameManager != null)
+            {
+                //Debug.Log($"The Game Manager is not null, playerCount = {playerCount.Value}");
+                if (playerCount.Value == 2 && GameObject.Find("Game Manager").GetComponent<GameManager>().GetTrainer2Controller() != null && !twoPlayersConnected)
+                {
+                    //SendGameMangerToClientRpc(gM);
+                    //Debug.Log("Invoking TwoPlayersConnected");
+                    twoPlayersConnected = true;
+                    TwoPlayersConnected?.Invoke();
+                }
+            }
         }
-        else
+        var uIControllerScript = FindAnyObjectByType<UIController>();
+        GameObject spawnedUIControllerObject = null;
+        if (uIControllerScript != null)
         {
-            GameManager.Instance.PopulateGameManager(player, 2);
+            spawnedUIControllerObject = uIControllerScript.gameObject;
+        }
+        if (uIControllerSpawned == false && spawnedUIControllerObject != null)
+        {
+            //Debug.Log($"Found the UI Controller: Name = {spawnedUIControllerObject.name}");
+            spawnedUIControllerObject.name = "UI Controller";
+            UIControllerCreated?.Invoke();
         }
     }
+
+    //[Rpc(SendTo.Server)]
+    //private IPlayerAction playerMoveRequestRpc()
+    //{
+    //    return new Flamethrower();
+    //}
 }

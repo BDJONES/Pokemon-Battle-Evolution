@@ -12,20 +12,31 @@ public class ClientButtonController : MonoBehaviour
     private void OnEnable()
     {
         uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
     }
 
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.TitleScreen)
         {
-            UIEventSubscriptionManager.Subscribe(titleScreenUIElements.ClientButton, HandleClick);
+            var player = transform.parent.parent.gameObject;
+
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(titleScreenUIElements.ClientButton, HandleClick, 1);
+            }
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(titleScreenUIElements.ClientButton, HandleClick, 2);
+            }
         }
     }
 
     private void OnDisable()
     {
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }
 
     private void Start()

@@ -6,7 +6,15 @@ public class Pokemon2Controller : PartyPokemonController
 {
     protected override void AttachButton()
     {
+        var player = trainerController.gameObject;
         InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[1]);
-        UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon2Button, PartyPokemonClicked);
+        if (TrainerController.IsOwnerHost(player))
+        {
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon2Button, PartyPokemonClicked, 1);
+        }
+        else
+        {
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon2Button, PartyPokemonClicked, 2);
+        }
     }
 }

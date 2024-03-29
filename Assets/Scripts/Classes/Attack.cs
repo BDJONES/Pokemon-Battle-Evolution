@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public abstract class Attack : IPlayerAction
 {
@@ -51,6 +53,10 @@ public abstract class Attack : IPlayerAction
     public int GetCurrentPP()
     {
         return currPowerPoints;
+    }
+    public void SetCurrentPP(int newPPAmount)
+    {
+        currPowerPoints = newPPAmount;
     }
     public int GetMaxPP()
     {
@@ -246,20 +252,22 @@ public abstract class Attack : IPlayerAction
         {
             if (effectiveness > 1f)
             {
-            
-                controller.AddDialogueToQueue($"{this.GetAttackName()} is super effective. Effectiveness = {effectiveness}.");
+                
+                GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is super effective.");
+
+                GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is super effective.");
             }
             else if (effectiveness == 1f)
             {
-                controller.AddDialogueToQueue($"{this.GetAttackName()} is effective");
+                GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is effective");
+                GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is effective");
             }
             else
             {
-                controller.AddDialogueToQueue($"{this.GetAttackName()} is not very effective. Effectiveness = {effectiveness}.");
+                GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is not very effective.");
+                GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is not very effective.");
             }
         }
-
-
         return effectiveness;
     }
 }

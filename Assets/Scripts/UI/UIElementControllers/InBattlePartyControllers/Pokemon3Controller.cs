@@ -6,7 +6,16 @@ public class Pokemon3Controller : PartyPokemonController
 {
     protected override void AttachButton()
     {
+        var player = trainerController.gameObject;
         InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[2]);
-        UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon3Button, PartyPokemonClicked);
+
+        if (TrainerController.IsOwnerHost(player))
+        {
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon3Button, PartyPokemonClicked, 1);
+        }
+        else
+        {
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon3Button, PartyPokemonClicked, 2);
+        }
     }
 }

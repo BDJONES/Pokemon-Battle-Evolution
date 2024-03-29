@@ -17,16 +17,16 @@ using UnityEngine;
 using ParrelSync;
 #endif
 
-public class LobbyManager : MonoBehaviour
+public class LobbyManager : Singleton<LobbyManager>
 {
     //private UIController uIController;
     private UnityTransport unityTransport;
     private Lobby connectedLobby;
     private const string joinCodeKey = "PokemonLobbyManager";
     private string playerId;
-    public static event Action TwoPlayersConnected;
+    private NetworkVariable<int> playerNumber = new NetworkVariable<int>();
     // Start is called before the first frame update
-    private void Awake()
+    private void OnEnable()
     {
         unityTransport = GameObject.Find("NetworkManager").GetComponent<UnityTransport>();
         //uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
@@ -34,30 +34,47 @@ public class LobbyManager : MonoBehaviour
 
     public async void CreateOrJoinLobby()
     {
+        //Debug.Log("Hello There");
         await Authenicate();
-        connectedLobby = await QuickJoinLobby() ?? await CreateLobby();
+        connectedLobby = await QuickJoinLobby();
+        if (connectedLobby == null)
+        {
+            connectedLobby = await CreateLobby();
+            if (connectedLobby != null)
+            {
+                Debug.Log("Created a Lobby");
+            }
+        }
+        else
+        {
+            Debug.Log("Quickjoined a match");
+        }
+        //Debug.Log($"{NetworkManager.Singleton.ConnectedClients.Count} players have connected to the game");
         if (connectedLobby != null)
         {
-            if (NetworkManager.Singleton.ConnectedClients.Count == 2)
-            {
-                TwoPlayersConnected?.Invoke();
-            }
-            Debug.Log("Created a Lobby");
+            Debug.Log("Successfully joined a game");
             //uIController.UpdateMenu(Menus.LoadingScreen);
+        }
+        else
+        {
+            Debug.Log("Failed to join a game");
         }
     }
 
     private async UniTask Authenicate()
     {
+
         InitializationOptions options = new InitializationOptions();
         #if UNITY_EDITOR
                 // Remove this if you don't have ParrelSync installed. 
                 // It's used to differentiate the clients, otherwise lobby will count them as the same
                 options.SetProfile(ClonesManager.IsClone() ? ClonesManager.GetArgument() : "Primary");
         #endif
-        await UnityServices.InitializeAsync(options);
+        await UnityServices.InitializeAsync(options); 
+        
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
         playerId = AuthenticationService.Instance.PlayerId;
+        Debug.Log("Finished Authenticating");
     }    
 
     private async UniTask<Lobby> QuickJoinLobby()

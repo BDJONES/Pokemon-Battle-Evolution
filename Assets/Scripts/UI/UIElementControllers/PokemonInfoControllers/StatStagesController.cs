@@ -20,14 +20,16 @@ public class StatStagesController : MonoBehaviour
     private void OnEnable()
     {
         trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
         pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
     }
 
     private void OnDisable()
     {
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }
     private void InitializeFields()
     {
@@ -59,7 +61,7 @@ public class StatStagesController : MonoBehaviour
 
     private void HandleMenuChange(Menus menu)
     {
-        Debug.Log($"You are on this menu: {menu}");
+        //Debug.Log($"You are on this menu: {menu}");
         if (menu == Menus.PokemonInfoScreen)
         {
             InitializeFields();

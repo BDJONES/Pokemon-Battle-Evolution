@@ -7,12 +7,13 @@ using UnityEngine.UIElements;
 public class ForfietUIElements : MonoBehaviour
 {
     [SerializeField] private UIDocument uIDocument;
-    
+
     public Button YesButton
     {
         get
         {
-            if (uIDocument.rootVisualElement == null)
+
+            if (uIDocument == null || uIDocument.rootVisualElement == null)
             {
                 Debug.Log("The root is null");
                 return null;
@@ -62,10 +63,20 @@ public class ForfietUIElements : MonoBehaviour
     {
         get
         {
+            //uIDocument.asset
+            //Debug.Log(gameObject.name);
+            uIDocument = GameObject.Find("UI Controller").GetComponent<UIDocument>();
+            if (uIDocument == null)
+            {
+                Debug.Log("The UI document is null");
+                Debug.Log(uIDocument.visualTreeAsset);
+                return null;
+            }
             if (uIDocument.rootVisualElement == null)
             {
+                
                 Debug.Log("The root is null");
-                return null;
+                //return null;
             }
             
             VisualElement screen = uIDocument.rootVisualElement.Query<VisualElement>("Screen");

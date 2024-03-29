@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -21,7 +22,7 @@ public abstract class PartyPokemonController : MonoBehaviour
 
     private void Start()
     {
-        battlePartyUIElements = transform.parent.gameObject.GetComponentInChildren<UIController>().GetComponent<InBattlePartyUIElements>();
+        battlePartyUIElements = GameObject.Find("UI Controller").GetComponent<InBattlePartyUIElements>();
         AttachButton();
     }
 

@@ -10,8 +10,14 @@ public abstract class Ability : ScriptableObject
     protected TrainerController trainerController;
     protected virtual void Awake()
     {
-        trainerController = this.abilityUser.transform.parent.gameObject.GetComponent<TrainerController>();
+        //trainerController = this.abilityUser.gameObject.transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
     }
+
+    public void InitializeAbility()
+    {
+        trainerController = this.abilityUser.gameObject.transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+    }
+
     protected abstract void TriggerEffect(Pokemon attacker, Pokemon target);
     protected abstract void GameStateOnChangeHandler(GameState state);
 }

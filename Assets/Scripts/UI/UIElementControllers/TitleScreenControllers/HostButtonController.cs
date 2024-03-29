@@ -11,20 +11,31 @@ public class HostButtonController : MonoBehaviour
     private void OnEnable()
     {
         uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
     }
 
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.TitleScreen)
         {
-            UIEventSubscriptionManager.Subscribe(titleScreenUIElements.HostButton, HandleClick);
+            var player = transform.parent.parent.gameObject;
+
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(titleScreenUIElements.HostButton, HandleClick, 1);
+            }    
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(titleScreenUIElements.HostButton, HandleClick, 2);
+            }
         }
     }
 
     private void OnDisable()
     {
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }
 
     private void Start()

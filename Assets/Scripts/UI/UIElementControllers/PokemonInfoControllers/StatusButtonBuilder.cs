@@ -11,14 +11,16 @@ public class StatusButtonBuilder : MonoBehaviour
 
     private void OnEnable()
     {
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
         pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
     }
 
     private void OnDisable()
     {
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }    
     
     private void HandleMenuChange(Menus menu)

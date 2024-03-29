@@ -8,14 +8,17 @@ public class Attack3Controller : MoveSelectButton
     [SerializeField] private TrainerController trainerController;
     private void OnEnable()
     {
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
-        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        moveSelectionUIElements = uIController.gameObject.GetComponent<MoveSelectionUIElements>();
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
+        //trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
     }
 
     private void OnDisable()
     {
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }
 
     protected override void InitializeButton(Button attackButton)
@@ -28,8 +31,17 @@ public class Attack3Controller : MoveSelectButton
     {
         if (menu == Menus.MoveSelectionMenu)
         {
+            var player = transform.parent.parent.gameObject;
             InitializeButton(moveSelectionUIElements.Attack3Button);
-            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3Button, OnAttackSelected);
+            
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3Button, OnAttackSelected, 1);
+            }
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3Button, OnAttackSelected, 2);
+            }
         }
     }
 }

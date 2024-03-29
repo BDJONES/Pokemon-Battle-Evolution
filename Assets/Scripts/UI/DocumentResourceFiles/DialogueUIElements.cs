@@ -9,7 +9,8 @@ public class DialogueUIElements : MonoBehaviour
     {
         get
         {
-            if (uIDocument.rootVisualElement == null)
+            uIDocument = GameObject.Find("UI Controller").GetComponent<UIDocument>();
+            if (uIDocument == null)
             {
                 Debug.Log("The root is null");
                 return null;

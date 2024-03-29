@@ -8,13 +8,16 @@ public class Attack4Controller : MoveSelectButton
     [SerializeField] TrainerController trainerController;
     private void OnEnable()
     {
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        moveSelectionUIElements = uIController.gameObject.GetComponent<MoveSelectionUIElements>();
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
     }
 
     private void OnDisable()
     {
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }
 
     protected override void InitializeButton(Button attackButton)
@@ -27,8 +30,18 @@ public class Attack4Controller : MoveSelectButton
     {
         if (menu == Menus.MoveSelectionMenu)
         {
+            var player = transform.parent.parent.gameObject;
             InitializeButton(moveSelectionUIElements.Attack4Button);
-            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack4Button, OnAttackSelected);
+
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack4Button, OnAttackSelected, 1);
+            }
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack4Button, OnAttackSelected, 2);
+            }
+            
         }
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Switch : IPlayerAction
 {
@@ -21,7 +23,6 @@ public class Switch : IPlayerAction
         //}
         for (int i = 1; i < trainer.GetPokemonTeam().Length; i++)
         {
-            //Debug.Log($"Name = {trainer.trainerName}, Number of Pokemon = {trainer.GetPokemonTeam().Length}");
             if (trainer.GetPokemonTeam()[i] == null)
             {
                 break;

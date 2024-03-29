@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,15 +19,18 @@ public abstract class MoveSelectButton : MonoBehaviour
 
     protected virtual void InitializeButton(Button attackButton)
     {
-        VisualElement content = attackButton.Query<VisualElement>("Content");
-        attackName = content.Query<Label>("AttackName");
-        VisualElement moveInfo = content.Query<VisualElement>("MoveInfo");
-        PP = moveInfo.Query<Label>("PP");
-        Type = moveInfo.Query<Label>("Type");
+        //if (IsOwner)
+        //{
+            VisualElement content = attackButton.Query<VisualElement>("Content");
+            attackName = content.Query<Label>("AttackName");
+            VisualElement moveInfo = content.Query<VisualElement>("MoveInfo");
+            PP = moveInfo.Query<Label>("PP");
+            Type = moveInfo.Query<Label>("Type");
 
-        attackName.text = attack.GetAttackName();
-        PP.text = $"{attack.GetCurrentPP()}/{attack.GetMaxPP()}";
-        Type.text = $"{attack.GetAttackType().GetType().Name}";
+            attackName.text = attack.GetAttackName();
+            PP.text = $"{attack.GetCurrentPP()}/{attack.GetMaxPP()}";
+            Type.text = $"{attack.GetAttackType().GetType().Name}";
+        //}
     }
 
     protected void OnAttackSelected()

@@ -1,4 +1,6 @@
 using System;
+using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -26,15 +28,17 @@ public class AttackInfoController : MonoBehaviour
 
     protected void OnEnable()
     {
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
         moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
         attackInfoUIElements = uIController.GetComponent <AttackInfoUIElements>();
     }
 
     protected void OnDisable()
     {
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }
 
     protected void InitalizeFields()
@@ -86,43 +90,75 @@ public class AttackInfoController : MonoBehaviour
     protected void InfoButton1Clicked()
     {
         attack1Clicked = true;
-        uIController.UpdateMenu(Menus.AttackInfoScreen);
+        UpdateUIForPlayer();
     }
 
     protected void InfoButton2Clicked()
     {
         attack2Clicked = true;
-        uIController.UpdateMenu(Menus.AttackInfoScreen);
+        UpdateUIForPlayer();
     }
 
     protected void InfoButton3Clicked()
     {
         attack3Clicked = true;
-        uIController.UpdateMenu(Menus.AttackInfoScreen);
+        UpdateUIForPlayer();
     }
 
     protected void InfoButton4Clicked()
     {
         attack4Clicked = true;
-        uIController.UpdateMenu(Menus.AttackInfoScreen);
+        UpdateUIForPlayer();
+    }
+
+    private void UpdateUIForPlayer()
+    {
+        var player = transform.parent.parent.gameObject;
+        if (TrainerController.IsOwnerHost(player))
+        {
+            uIController.UpdateMenu(Menus.AttackInfoScreen, 1);
+        }
+        else
+        {
+            uIController.UpdateMenu(Menus.AttackInfoScreen, 2);
+        }
     }
 
     protected void HandleMenuChange(Menus menu)
     {
+        var player = transform.parent.parent.gameObject;
         if (menu == Menus.MoveSelectionMenu)
         {
             attack1 = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[0];
             attack2 = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[1];
             attack3 = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[2];
             attack4 = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[3];
-            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack1InfoButton, InfoButton1Clicked);
-            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack2InfoButton, InfoButton2Clicked);
-            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3InfoButton, InfoButton3Clicked);
-            UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack4InfoButton, InfoButton4Clicked);
+            
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack1InfoButton, InfoButton1Clicked, 1);
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack2InfoButton, InfoButton2Clicked, 1);
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3InfoButton, InfoButton3Clicked, 1);
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack4InfoButton, InfoButton4Clicked, 1);
+            }
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack1InfoButton, InfoButton1Clicked, 2);
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack2InfoButton, InfoButton2Clicked, 2);
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack3InfoButton, InfoButton3Clicked, 2);
+                UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack4InfoButton, InfoButton4Clicked, 2);
+            }
         }
         else if (menu == Menus.AttackInfoScreen)
         {
-            UIEventSubscriptionManager.Subscribe(attackInfoUIElements.BackButton, OnBackButtonClick);
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(attackInfoUIElements.BackButton, OnBackButtonClick, 1);
+            }
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(attackInfoUIElements.BackButton, OnBackButtonClick, 2);
+            }
             InitalizeFields();
             UpdateInfo();
         }

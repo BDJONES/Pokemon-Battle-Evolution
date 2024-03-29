@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -34,19 +35,21 @@ public class OpposingPokemonInfoController : MonoBehaviour
     private void OnEnable()
     {
         
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
         uIGBElements = uIController.GetComponent<GeneralBattleUIElements>();
         moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
         opposingPokemonDamagedUIElements = uIController.GetComponent<OpposingPokemonDamagedUIElements>();
         pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
         trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
         GameManager.OnStateChange += HandleGameStateChange;
     }
 
     private void OnDisable()
     {
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
         GameManager.OnStateChange -= HandleGameStateChange;
     }
 
@@ -117,8 +120,9 @@ public class OpposingPokemonInfoController : MonoBehaviour
 
     }
 
-    public async UniTask UpdateHealthBar(Menus menu)
+    public async void UpdateHealthBar(Menus menu)
     {
+        GameManager gameManager = GameManager.Instance;
         ProgressBar hpBar;
         if (menu == Menus.GeneralBattleMenu)
         {
@@ -166,7 +170,7 @@ public class OpposingPokemonInfoController : MonoBehaviour
             }
                 
         }
-        
+        gameManager.FinishRPCTaskRpc();
         return;
     }
 
@@ -190,7 +194,16 @@ public class OpposingPokemonInfoController : MonoBehaviour
             InitializeFields(menu);
             if (menu == Menus.GeneralBattleMenu && infoButtonGB != null)
             {
-                UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton);
+                var player = transform.parent.parent.gameObject;
+
+                if (TrainerController.IsOwnerHost(player))
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton, 1);
+                }
+                else
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton, 2);
+                }
             }
             else if (menu == Menus.GeneralBattleMenu && infoButtonGB == null)
             {
@@ -199,7 +212,16 @@ public class OpposingPokemonInfoController : MonoBehaviour
 
             if (menu == Menus.MoveSelectionMenu && infoButtonMS != null)
             {
-                UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton);
+                var player = transform.parent.parent.gameObject;
+
+                if (TrainerController.IsOwnerHost(player))
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton, 1);
+                }
+                else
+                {
+                    UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton, 2);
+                }
             }
             else if (menu == Menus.MoveSelectionMenu && infoButtonMS == null)
             {
@@ -212,7 +234,16 @@ public class OpposingPokemonInfoController : MonoBehaviour
     private void ClickedInfoButton()
     {
         Debug.Log("Clicked the opposing pokemon info button");
-        uIController.UpdateMenu(Menus.OpposingPokemonInfoScreen);
+        var player = transform.parent.parent.gameObject;
+
+        if (TrainerController.IsOwnerHost(player))
+        {
+            uIController.UpdateMenu(Menus.OpposingPokemonInfoScreen, 1);
+        }
+        else
+        {
+            uIController.UpdateMenu(Menus.OpposingPokemonInfoScreen, 2);
+        }
     }
 
     private void UpdateInfo(Menus menu)

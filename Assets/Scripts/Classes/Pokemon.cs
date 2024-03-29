@@ -3,10 +3,11 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 
-public abstract class Pokemon: MonoBehaviour
+public abstract class Pokemon: NetworkBehaviour
 {
     protected string speciesName = null!;
     [SerializeField] protected string nickname = null!;
@@ -44,7 +45,7 @@ public abstract class Pokemon: MonoBehaviour
     }
     [SerializeField] protected Item? heldItem;
     protected int baseHP;
-    [SerializeField] protected int hpStat;
+    [SerializeField] protected NetworkVariable<int> hpStat = new NetworkVariable<int>();
     protected int baseAttack;
     [SerializeField] protected int attackStat;
     [SerializeField] private int attackStage = 0;
@@ -243,7 +244,7 @@ public abstract class Pokemon: MonoBehaviour
     }
     public bool IsDead()
     {
-        return this.hpStat == 0;
+        return this.hpStat.Value == 0;
     }
     public List<Attack> GetMoveset()
     {
@@ -287,11 +288,12 @@ public abstract class Pokemon: MonoBehaviour
     }
     public int GetMaxHPStat()
     {
-        return Mathf.FloorToInt(0.01f * (2 * this.baseHP + this.ivs.hp + Mathf.FloorToInt(0.25f * this.evs.hp)) * this.level) + this.level + 10;
+        int maxHP = Mathf.FloorToInt(0.01f * (2 * this.baseHP + this.ivs.hp + Mathf.FloorToInt(0.25f * this.evs.hp)) * this.level) + this.level + 10;
+        return maxHP;
     }
     public int GetHPStat()
     {
-        return hpStat;
+        return hpStat.Value;
     }
     public int GetAttackStat()
     {
@@ -323,7 +325,7 @@ public abstract class Pokemon: MonoBehaviour
     }
     public void SetHPStat(int newHP)
     {
-        hpStat = newHP;
+        hpStat.Value = newHP;
     }
     public void SetAttackStat(int newAttack)
     {

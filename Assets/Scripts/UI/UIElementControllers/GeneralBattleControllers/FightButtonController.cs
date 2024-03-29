@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UIElements;
+using System.Runtime.CompilerServices;
+using Unity.Netcode;
 
 public class FightButtonController : MonoBehaviour
 {
@@ -11,12 +13,11 @@ public class FightButtonController : MonoBehaviour
     private UIController uIController;
     private void OnEnable()
     {
-        uIController = transform.parent.gameObject.GetComponentInChildren<UIController>();
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
         uIElements = uIController.GetComponent<GeneralBattleUIElements>();
-        uIController.OnMenuChange += HandleMenuChange;
+        uIController.OnHostMenuChange += HandleMenuChange;
+        uIController.OnClientMenuChange += HandleMenuChange;
     }
-
-
 
     private void OnDisable()
     {
@@ -24,14 +25,24 @@ public class FightButtonController : MonoBehaviour
         {
             return;
         }
-        uIController.OnMenuChange -= HandleMenuChange;
+        uIController.OnHostMenuChange -= HandleMenuChange;
+        uIController.OnClientMenuChange -= HandleMenuChange;
     }
 
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.GeneralBattleMenu)
         {
-            UIEventSubscriptionManager.Subscribe(uIElements.FightButton, FightButtonClicked);
+            var player = transform.parent.parent.gameObject;
+
+            if (TrainerController.IsOwnerHost(player))
+            {
+                UIEventSubscriptionManager.Subscribe(uIElements.FightButton, FightButtonClicked, 1);
+            }
+            else
+            {
+                UIEventSubscriptionManager.Subscribe(uIElements.FightButton, FightButtonClicked, 2);
+            }
         }
     }
 
@@ -42,7 +53,23 @@ public class FightButtonController : MonoBehaviour
         //OpposingPokemonInfoBarController opposingPokemonInfoBarController = GameObject.Find("UI Controller").GetComponent<OpposingPokemonInfoBarController>();
         //await opposingPokemonInfoBarController.UpdateHealthBar();
         //Debug.Log("Fight button Clicked");
-        
-        uIController.UpdateMenu(Menus.MoveSelectionMenu);
+        Debug.Log("Clicked the Fight Button");
+        UpdateUIForPlayer();
+    }
+
+    private void UpdateUIForPlayer()
+    {
+        var player = transform.parent.parent.gameObject;
+
+        if (TrainerController.IsOwnerHost(player))
+        {
+            Debug.Log("I am a host");
+            uIController.UpdateMenu(Menus.MoveSelectionMenu, 1);
+        }
+        else
+        {
+            Debug.Log("I am not a host");
+            uIController.UpdateMenu(Menus.MoveSelectionMenu, 2);
+        }
     }
 }

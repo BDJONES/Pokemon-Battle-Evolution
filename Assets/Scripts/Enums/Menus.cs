@@ -15,5 +15,6 @@ public enum Menus
     DialogueScreen,
     ForfietMenu,
     WinScreen,
-    LoseScreen
+    LoseScreen,
+    BlankScreen
 }
