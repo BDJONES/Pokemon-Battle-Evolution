@@ -673,6 +673,7 @@ public class GameManager : NetworkSingleton<GameManager>
                 await UniTask.Yield();
             }
         }
+        Debug.Log("Finished Executing the Switch");
     }
 
     private async UniTask DecideWhoGoesFirst(IPlayerAction trainer1Action, IPlayerAction trainer2Action)
@@ -852,7 +853,7 @@ public class GameManager : NetworkSingleton<GameManager>
                     // Add an extra if to trigger the same logic if trainer1 dies afterward
                     if (trainer1.GetActivePokemon().IsDead())
                     {
-                        if (trainer1.isTeamDead())
+                        if (trainer1.IsTeamDead())
                         {
                             UpdateGameStateRpc(GameState.BattleEnd);
                             //Give out the corresponding screen to each player
@@ -874,7 +875,6 @@ public class GameManager : NetworkSingleton<GameManager>
                         // Will not await as the other player will be making a decision and do not want to get in the way of that
 
                         //var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                        Debug.Log(trainer1Action.GetType().Name);
                         Switch playerSwitch = (Switch)trainer1Selection;
                         await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                         //uIController.UpdateMenu(Menus.DialogueScreen, 1);
@@ -888,7 +888,7 @@ public class GameManager : NetworkSingleton<GameManager>
                 {
                     // Force trainer2 to Switch
                     // If not, then end the battle
-                    if (trainer2.isTeamDead())
+                    if (trainer2.IsTeamDead())
                     {
                         UpdateGameStateRpc(GameState.BattleEnd);
                         //Give out the corresponding screen to each player

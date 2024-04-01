@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Trainer : MonoBehaviour
@@ -13,7 +15,47 @@ public class Trainer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         activePokemonGameObject = teamObjects[0];
+        UpdatePokemonList();
+        activePokemon = pokemonTeam[0];
+        activePokemon.ActiveState = true;
+        GameManager.OnStateChange += HandleMenuChange;
+    }
+
+    private void HandleMenuChange(GameState state)
+    {
+        if (state == GameState.LoadingPokemonInfo)
+        {
+            UpdatePokemonList();
+        }
+    }
+
+    public bool IsTeamDead()
+    {
+        //UpdatePokemonList();
+        Debug.Log("In IsTeamDead");
+        int count = 0;
+        foreach (Pokemon pokemon in pokemonTeam)
+        {
+            count++;
+            if (pokemon == null)
+            {
+                
+                continue;
+            }
+            Debug.Log($"Pokemon {count} = {pokemon.GetHPStat()}");
+            if (pokemon.GetHPStat() > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void UpdatePokemonList()
+    {
+        Debug.Log("Updating the Pokemon List");
         int i = 0;
         foreach (var go in teamObjects)
         {
@@ -24,29 +66,13 @@ public class Trainer : MonoBehaviour
             else
             {
                 pokemonTeam[i] = go.GetComponent<Pokemon>();
+                //Debug.Log();
             }
             i++;
         }
         activePokemon = pokemonTeam[0];
         activePokemon.ActiveState = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public bool isTeamDead()
-    {
-        foreach (Pokemon pokemon in pokemonTeam)
-        {
-            if (pokemon.GetHPStat() > 0)
-            {
-                return false;
-            }
-        }
-        return true;
+        Debug.Log($"Active Pokemon HP = {activePokemon.GetHPStat()}");
     }
 
     public Pokemon[] GetPokemonTeam()
