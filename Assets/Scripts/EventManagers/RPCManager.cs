@@ -35,4 +35,9 @@ public class RPCManager
     public bool AreAllRPCsCompleted() {
         return allRPCsCompleted; 
     }
+
+    public void CurrentRPCCount()
+    {
+        Debug.Log($"There are Currently {rpcCounter} active RPCs");
+    }
 }

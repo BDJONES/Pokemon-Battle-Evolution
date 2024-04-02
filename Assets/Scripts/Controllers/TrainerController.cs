@@ -257,7 +257,7 @@ public class TrainerController : NetworkBehaviour
                 var convertedSelection = (Switch) selection;
                 SwitchRPCTransfer switchRPCTransfer = new SwitchRPCTransfer();
                 GameObject player = GameObject.Find("Me");
-                switchRPCTransfer.trainerNetworkObjectID = player.GetComponent<NetworkObject>().NetworkObjectId;
+                switchRPCTransfer.trainerClientID = player.GetComponent<NetworkObject>().OwnerClientId;
                 switchRPCTransfer.pokemonIndex = FindPokemonIndex(convertedSelection.GetPokemon().GetSpeciesName());
                 gm.RecieveSwitchSelectionRpc(type, switchRPCTransfer);
             }
