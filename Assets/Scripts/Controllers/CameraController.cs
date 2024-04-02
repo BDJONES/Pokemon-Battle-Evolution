@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -8,15 +9,14 @@ public class CameraController : MonoBehaviour
     [SerializeField] private TrainerController trainerController;
     [SerializeField] private float speed = 5f;
     private float distanceMultiplier = 1.5f;
-    private void Start()
+    private void OnEnable()
     {
-        //trainerController = gameObject.GetComponentInParent<TrainerController>();
         EventsToTriggerManager.OnTriggerEvent += HandleEventTriggered;
     }
 
     private void HandleEventTriggered(EventsToTrigger e)
     {
-        if (e == EventsToTrigger.YourPokemonSwitched)
+        if (e == EventsToTrigger.YourPokemonSwitched && transform.parent.gameObject.name != "TitleScreenUI")
         {
             MoveToPosition();
         }
@@ -58,6 +58,11 @@ public class CameraController : MonoBehaviour
     private void AdjustFocalPoint()
     {
         GameObject focalPoint = GameObject.Find("Focal Point");
+        if (trainerController == null)
+        {
+            Debug.Log(transform.parent.gameObject.name);
+            Debug.Log("TrainerController is null");
+        }
         float newY = (trainerController.GetPlayer().GetActivePokemonGameObject().transform.position.y + trainerController.GetOpponent().GetActivePokemonGameObject().transform.position.y) / 2f;
         focalPoint.transform.position = new Vector3(focalPoint.transform.position.x, newY, focalPoint.transform.position.z);
     }

@@ -44,7 +44,7 @@ public class Trainer : MonoBehaviour
                 
                 continue;
             }
-            Debug.Log($"Pokemon {count} = {pokemon.GetHPStat()}");
+            //Debug.Log($"Pokemon {count} = {pokemon.GetHPStat()}");
             if (pokemon.GetHPStat() > 0)
             {
                 return false;
@@ -72,7 +72,7 @@ public class Trainer : MonoBehaviour
         }
         activePokemon = pokemonTeam[0];
         activePokemon.ActiveState = true;
-        Debug.Log($"Active Pokemon HP = {activePokemon.GetHPStat()}");
+        //Debug.Log($"Active Pokemon HP = {activePokemon.GetHPStat()}");
     }
 
     public Pokemon[] GetPokemonTeam()
