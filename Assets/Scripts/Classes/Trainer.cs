@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Trainer : MonoBehaviour
+public class Trainer : NetworkBehaviour
 {
     [SerializeField] private GameObject[] teamObjects = new GameObject[6];
     [SerializeField] private GameObject activePokemonGameObject;
@@ -90,8 +90,11 @@ public class Trainer : MonoBehaviour
         return activePokemonGameObject;
     }
 
-    public void Switch(int index)
+    [Rpc(SendTo.ClientsAndHost)]
+    public void SwitchRpc(int index)
     {
+        Debug.Log("Starting SwitchRpc");
+        GameManager.Instance.AddRPCTaskRpc();
         if (index == 0)
         {
             Debug.LogError("Invalid Switch");
@@ -100,6 +103,7 @@ public class Trainer : MonoBehaviour
         GameObject newObject = teamObjects[index];
         Pokemon newPokemon = pokemonTeam[index];
         SwapPokemon(newObject, newPokemon, index);
+        GameManager.Instance.FinishRPCTaskRpc();
     }
 
     private void SwapPokemon(GameObject newObject, Pokemon newPokemon, int index)

@@ -29,7 +29,8 @@ public class Switch : IPlayerAction
             }
             if (trainer.GetPokemonTeam()[i].GetSpeciesName() == newPokemon.GetSpeciesName() && newPokemon.GetHPStat() != 0)
             {
-                trainer.Switch(i);
+                trainer.SwitchRpc(i);
+                // Will have to make this change based on the player who is Switching
                 EventsToTriggerManager.AlertEventTriggered(EventsToTrigger.YourPokemonSwitched);
                 return;
             }
