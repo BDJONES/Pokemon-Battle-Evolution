@@ -169,7 +169,8 @@ public abstract class Attack : IPlayerAction
             damage = step9;
             if (critChance == 1)
             {
-                Debug.Log("You landed a critical hit");
+                GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()} landed a critical hit");
+                GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()} landed a critical hit");
                 damage = Mathf.FloorToInt(damage * 1.5f);
             }
         }
@@ -254,7 +255,6 @@ public abstract class Attack : IPlayerAction
             {
                 
                 GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is super effective.");
-
                 GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is super effective.");
             }
             else if (effectiveness == 1f)
