@@ -430,8 +430,23 @@ public class GameManager : NetworkSingleton<GameManager>
         else if (type == 2) // Client
         {   
             SetTrainer2Move(playerSwitch);
+            SetClientDialogue();
         }
         FinishRPCTaskRpc();
+    }
+
+    private async void SetClientDialogue()
+    {
+        SendDialogueToClientRpc("Communicating...");
+        while (RPCManager.ActiveRPCs() > 1)
+        {
+            await UniTask.Yield();
+        }
+        RequestClientReadFirstDialogueRpc();
+        while (RPCManager.ActiveRPCs() > 1)
+        {
+            await UniTask.Yield();
+        }
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -581,7 +596,7 @@ public class GameManager : NetworkSingleton<GameManager>
         }
     }
 
-    private async void SetTrainer2Move(IPlayerAction action)
+    private void SetTrainer2Move(IPlayerAction action)
     {
         if (IsHost)
         {
@@ -589,17 +604,8 @@ public class GameManager : NetworkSingleton<GameManager>
             trainer2Selection = action;
             if (trainer1Selection != null)
             {
+                Debug.Log("Had an Early Exit");
                 return;
-            }
-            TrainerController playerTrainerController = GameObject.Find("Me").GetComponent<TrainerController>();
-            DialogueBoxController playerDialogue = playerTrainerController.GetDialogueBoxController();
-            playerDialogue.AddDialogueToQueue("Communicating...");
-            RPCManager rpcManager = new RPCManager();
-            rpcManager.RPCStarted();
-            StartCoroutine(playerDialogue.ReadFirstQueuedDialogue(rpcManager));
-            while (!rpcManager.AreAllRPCsCompleted())
-            {
-                await UniTask.Yield();
             }
         }
     }
@@ -674,12 +680,25 @@ public class GameManager : NetworkSingleton<GameManager>
 
     private async UniTask ExecuteSwitch(Switch playerAction, Trainer trainer, Pokemon newPokemon)
     {
-        RPCManager.BeginRPCBatch();
-        SendDialogueToClientRpc($"{trainer.trainerName} sent in {newPokemon.GetNickname()}");
-        SendDialogueToHostRpc($"{trainer.trainerName} sent in {newPokemon.GetNickname()}");
-        while (!RPCManager.AreAllRPCsCompleted())
+        if (trainer.gameObject.GetComponent<NetworkObject>().IsLocalPlayer)
         {
-            await UniTask.Yield();
+            RPCManager.BeginRPCBatch();
+            SendDialogueToClientRpc($"{trainer.trainerName} sent in {newPokemon.GetNickname()}");
+            SendDialogueToHostRpc($"You sent in {newPokemon.GetNickname()}");
+            while (!RPCManager.AreAllRPCsCompleted())
+            {
+                await UniTask.Yield();
+            }
+        }
+        else
+        {
+            RPCManager.BeginRPCBatch();
+            SendDialogueToClientRpc($"You sent in {newPokemon.GetNickname()}");
+            SendDialogueToHostRpc($"{trainer.trainerName} sent in {newPokemon.GetNickname()}");
+            while (!RPCManager.AreAllRPCsCompleted())
+            {
+                await UniTask.Yield();
+            }
         }
         RPCManager.BeginRPCBatch();
         if (playerAction.PerformAction(trainer, newPokemon) != null)
@@ -693,12 +712,14 @@ public class GameManager : NetworkSingleton<GameManager>
             uIController.UpdateMenu(Menus.DialogueScreen, 1);
             uIController.UpdateMenu(Menus.DialogueScreen, 2);
             RPCManager.BeginRPCBatch();
-            RequestClientReadFirstDialogueRpc();
-            RequestHostReadFirstDialogueRpc();
+            RequestClientReadAllDialogueRpc();
+            RequestHostReadAllDialogueRpc();
+            EventsToTriggerManager.AlertEventTriggered(EventsToTrigger.YourPokemonSwitched);
             while (!RPCManager.AreAllRPCsCompleted())
             {
                 await UniTask.Yield();
             }
+            
         }
         Debug.Log("Finished Executing the Switch");
     }
@@ -707,112 +728,57 @@ public class GameManager : NetworkSingleton<GameManager>
     {
         Debug.Log("Playing out turn");
         int oldHP;
-        /*if (trainer1Action.GetType() == typeof(Switch) && trainer2Action.GetType() == typeof(Switch))
+        if (trainer1Action.GetType() == typeof(Switch) && trainer2Action.GetType() == typeof(Switch))
         {
             Debug.Log("Both players switched");
             Switch convertedTrainer1Action = (Switch)trainer1Action;
             Switch convertedTrainer2Action = (Switch)trainer2Action;
             if (trainer1.GetActivePokemon().GetSpeedStat() > trainer2.GetActivePokemon().GetSpeedStat())
             {
-                ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
-                // Call the AddDialogueToQueue function twice until I figure out how to add a collection to a function parameter list
-                uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                dialogueBoxController.SendDialogueToHostRpc($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                dialogueBoxController.SendDialogueToClientRpc($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+
+                await ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
                 // May use UI Document here and make the UI Blank on the switch ins
-                await screenBuffer();
-                ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
-                uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                await screenBuffer();
+                await MenuBuffer();
+                await ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                await MenuBuffer();
             }
             else if (trainer1.GetActivePokemon().GetSpeedStat() < trainer2.GetActivePokemon().GetSpeedStat())
             {
-                ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
-                uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                await screenBuffer();
-                ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
-                uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                // May use UI Document here and make the UI Blank on the switch ins
-                await screenBuffer();
+                await ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                await MenuBuffer();
+                await ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+                await MenuBuffer();
             }
             else
             {
                 int speedTie = UnityEngine.Random.Range(0, 99);
                 if (speedTie < 50)
                 {
-                    ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
-                    uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                    uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                    // May use UI Document here and make the UI Blank on the switch ins
-                    await screenBuffer();
-                    ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
-                    uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                    uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                    await screenBuffer();
+                    await ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+                    await MenuBuffer();
+                    await ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                    await MenuBuffer();
                 }
                 else
                 {
-                    ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
-                    uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                    uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                    await screenBuffer();
-                    ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
-                    uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                    uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                    trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                    trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-                    await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                    // May use UI Document here and make the UI Blank on the switch ins
-                    await screenBuffer();
+                    await ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());
+                    await MenuBuffer();
+                    await ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());
+                    await MenuBuffer();
                 }
             }
         }
         else if (trainer1Action.GetType() == typeof(Switch))
         {
             Switch convertedTrainer1Action = (Switch)trainer1Action;
-            ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());            
-            uIController.UpdateMenu(Menus.DialogueScreen, 1);
-            uIController.UpdateMenu(Menus.DialogueScreen, 2);
-            trainer1DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-            trainer2DialogueBoxController.AddDialogueToQueue($"{trainer1.trainerName} switched in {trainer1.GetActivePokemon().GetNickname()}");
-            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-            // May use UI Document here and make the UI Blank on the switch ins
-            await screenBuffer();
+            await ExecuteSwitch(convertedTrainer1Action, convertedTrainer1Action.GetTrainer(), convertedTrainer1Action.GetPokemon());            
         }            
         else if (trainer2Action.GetType() == typeof(Switch))
         {
             Switch convertedTrainer2Action = (Switch)trainer2Action;
-            ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());            
-            uIController.UpdateMenu(Menus.DialogueScreen, 1);
-            uIController.UpdateMenu(Menus.DialogueScreen, 2);
-            trainer1DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-            trainer2DialogueBoxController.AddDialogueToQueue($"{trainer2.trainerName} switched in {trainer2.GetActivePokemon().GetNickname()}");
-            await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-            await screenBuffer();
-        }*/
+            await ExecuteSwitch(convertedTrainer2Action, convertedTrainer2Action.GetTrainer(), convertedTrainer2Action.GetPokemon());            
+            await MenuBuffer();
+        }
 
         if (trainer1Action.GetType().IsSubclassOf(typeof(Attack)) && trainer2Action.GetType().IsSubclassOf(typeof(Attack)))
         {
@@ -909,7 +875,7 @@ public class GameManager : NetworkSingleton<GameManager>
                         uIController.UpdateMenu(Menus.WinScreen, 1);
                         uIController.UpdateMenu(Menus.LoseScreen, 2);
                         return;
-                    }                    
+                    }
                     // Will not await as the other player will be making a decision and do not want to get in the way of that
                     UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
                     SendDialogueToHostRpc("Communicating...");
@@ -926,7 +892,7 @@ public class GameManager : NetworkSingleton<GameManager>
                     await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                 }
             }
-            else if (convertedTrainer1Action.GetAttackPriority() <  convertedTrainer2Action.GetAttackPriority())
+            else if (convertedTrainer1Action.GetAttackPriority() < convertedTrainer2Action.GetAttackPriority())
             {
                 oldHP = trainer1.GetActivePokemon().GetHPStat();
                 await ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
@@ -1015,58 +981,73 @@ public class GameManager : NetworkSingleton<GameManager>
                     RPCManager.BeginRPCBatch();
                     RequestClientReadFirstDialogueRpc();
                     RequestHostSwitchRpc();
-                    while (!RPCManager.AreAllRPCsCompleted()) 
-                    { 
+                    while (!RPCManager.AreAllRPCsCompleted())
+                    {
                         await UniTask.Yield();
                     }
                     // Will not await as the other player will be making a decision and do not want to get in the way of that
                     UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
-                    Switch playerSwitch = (Switch) trainer1Selection;
+                    Switch playerSwitch = (Switch)trainer1Selection;
                     await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                 }
             }
-            /*else
+            else
             {
                 if (trainer1.GetActivePokemon().GetSpeedStat() > trainer2.GetActivePokemon().GetSpeedStat())
                 {
-                    //UpdateGameState(GameState.FirstAttack);
+                    oldHP = trainer2.GetActivePokemon().GetHPStat();
+                    await ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
                     uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 1);
                     uIController.UpdateMenu(Menus.PokemonDamagedScreen, 2);
-                    ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
-                    //UpdateGameState(GameState.SecondAttack);
-                    moveSelectionRPCManager.BeginRPCBatch();
-                    UpdateHealthBarRpc(Attacker.Trainer1);
-                    while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                    await MenuBuffer();
+                    RPCManager.BeginRPCBatch();
+                    UpdateHealthBarRpc(Attacker.Trainer1, oldHP);
+                    while (!RPCManager.AreAllRPCsCompleted())
                     {
                         await UniTask.Yield();
-                    }                    
+                    }
+                    //UpdateGameState(GameState.SecondAttack);
+                    uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                    uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                    RPCManager.BeginRPCBatch();
+                    RequestClientReadAllDialogueRpc();
+                    RequestHostReadAllDialogueRpc();
+                    while (!RPCManager.AreAllRPCsCompleted())
+                    {
+                        await UniTask.Yield();
+                    }
                     // Give a small buffer inbetween the menu change
-                    await screenBuffer();
-
+                    //await MenuBuffer();
                     if (!trainer2.GetActivePokemon().IsDead())
                     {
+                        oldHP = trainer1.GetActivePokemon().GetHPStat();
+                        await ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
                         uIController.UpdateMenu(Menus.PokemonDamagedScreen, 1);
                         uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 2);
-                        ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                        moveSelectionRPCManager.BeginRPCBatch();
-                        UpdateHealthBarRpc(Attacker.Trainer2);
-                        while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                        await MenuBuffer();
+                        RPCManager.BeginRPCBatch();
+                        UpdateHealthBarRpc(Attacker.Trainer2, oldHP);
+                        while (!RPCManager.AreAllRPCsCompleted())
                         {
                             await UniTask.Yield();
                         }
                         uIController.UpdateMenu(Menus.DialogueScreen, 1);
                         uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                        //await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
+                        RPCManager.BeginRPCBatch();
                         RequestClientReadAllDialogueRpc();
                         RequestHostReadAllDialogueRpc();
+                        while (!RPCManager.AreAllRPCsCompleted())
+                        {
+                            await UniTask.Yield();
+                        }
                         // Give a small buffer inbetween the menu change
-                        await screenBuffer();
+                        //await MenuBuffer();
                         // Add an extra if to trigger the same logic if trainer1 dies afterward
                         if (trainer1.GetActivePokemon().IsDead())
                         {
-                            if (trainer1.isTeamDead())
+                            if (trainer1.IsTeamDead())
                             {
-                                UpdateGameState(GameState.BattleEnd);
+                                UpdateGameStateRpc(GameState.BattleEnd);
                                 //Give out the corresponding screen to each player
                                 uIController.UpdateMenu(Menus.LoseScreen, 1);
                                 uIController.UpdateMenu(Menus.WinScreen, 2);
@@ -1074,108 +1055,126 @@ public class GameManager : NetworkSingleton<GameManager>
                             }
                             SendDialogueToClientRpc("Communicating...");
                             uIController.UpdateMenu(Menus.PokemonFaintedScreen, 1);
+                            uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                            UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
+                            RPCManager.BeginRPCBatch();
                             RequestClientReadFirstDialogueRpc();
+                            RequestHostSwitchRpc();
+                            while (!RPCManager.AreAllRPCsCompleted())
+                            {
+                                await UniTask.Yield();
+                            }
                             // Will not await as the other player will be making a decision and do not want to get in the way of that
-                            UpdateGameState(GameState.WaitingOnPlayerInput);
-                            var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                            Switch playerSwitch = action;
-                            ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                            SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            RequestClientReadFirstDialogueRpc();
-                            RequestHostReadFirstDialogueRpc();
+
+                            //var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                            Switch playerSwitch = (Switch)trainer1Selection;
+                            await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                         }
                     }
                     else
                     {
                         // Force trainer2 to Switch
                         // If not, then end the battle
-                        if (trainer2.isTeamDead())
+                        if (trainer2.IsTeamDead())
                         {
-                            UpdateGameState(GameState.BattleEnd);
+                            UpdateGameStateRpc(GameState.BattleEnd);
                             //Give out the corresponding screen to each player
                             uIController.UpdateMenu(Menus.WinScreen, 1);
                             uIController.UpdateMenu(Menus.LoseScreen, 2);
                             return;
                         }
+                        // Will not await as the other player will be making a decision and do not want to get in the way of that
+                        UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
                         SendDialogueToHostRpc("Communicating...");
                         uIController.UpdateMenu(Menus.PokemonFaintedScreen, 2);
                         uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                        RPCManager.BeginRPCBatch();
                         RequestHostReadFirstDialogueRpc();
-                        // Will not await as the other player will be making a decision and do not want to get in the way of that
-                        UpdateGameState(GameState.WaitingOnPlayerInput);
-                        var action = await trainer2Controller.SwitchOutFaintedPokemon();
-                        Switch playerSwitch = action;
-                        ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                        uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                        SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                        SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                        RequestClientReadFirstDialogueRpc();
-                        RequestHostReadFirstDialogueRpc();
+                        RequestClientSwitchRpc();
+                        while (!RPCManager.AreAllRPCsCompleted())
+                        {
+                            await UniTask.Yield();
+                        }
+                        Switch playerSwitch = (Switch)trainer2Selection;
+                        await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                     }
                 }
                 else if (trainer1.GetActivePokemon().GetSpeedStat() < trainer2.GetActivePokemon().GetSpeedStat())
                 {
+                    oldHP = trainer1.GetActivePokemon().GetHPStat();
+                    await ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
                     uIController.UpdateMenu(Menus.PokemonDamagedScreen, 1);
                     uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 2);
-                    ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                    moveSelectionRPCManager.BeginRPCBatch();
-                    UpdateHealthBarRpc(Attacker.Trainer2);
-                    while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                    await MenuBuffer();
+                    RPCManager.BeginRPCBatch();
+                    UpdateHealthBarRpc(Attacker.Trainer2, oldHP);
+                    while (!RPCManager.AreAllRPCsCompleted())
                     {
                         await UniTask.Yield();
                     }
                     uIController.UpdateMenu(Menus.DialogueScreen, 1);
                     uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                    RPCManager.BeginRPCBatch();
                     RequestClientReadAllDialogueRpc();
                     RequestHostReadAllDialogueRpc();
-                    // Give a small buffer inbetween the menu change
-                    await screenBuffer();
+                    while (!RPCManager.AreAllRPCsCompleted())
+                    {
+                        await UniTask.Yield();
+                    }
                     if (!trainer1.GetActivePokemon().IsDead())
                     {
                         //UpdateGameState(GameState.FirstAttack);
+                        oldHP = trainer2.GetActivePokemon().GetHPStat();
+                        await ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
                         uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 1);
                         uIController.UpdateMenu(Menus.PokemonDamagedScreen, 2);
-                        ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+                        await MenuBuffer();
                         //UpdateGameState(GameState.SecondAttack);
-                        moveSelectionRPCManager.BeginRPCBatch();
-                        UpdateHealthBarRpc(Attacker.Trainer1);
-                        while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                        RPCManager.BeginRPCBatch();
+                        UpdateHealthBarRpc(Attacker.Trainer1, oldHP);
+                        while (!RPCManager.AreAllRPCsCompleted())
                         {
                             await UniTask.Yield();
-                        }                        
+                        }
+                        uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                        uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                        RPCManager.BeginRPCBatch();
+                        RequestClientReadAllDialogueRpc();
+                        RequestHostReadAllDialogueRpc();
+                        while (!RPCManager.AreAllRPCsCompleted())
+                        {
+                            await UniTask.Yield();
+                        }
                         // Give a small buffer inbetween the menu change
-                        await screenBuffer();
                         if (trainer2.GetActivePokemon().IsDead())
                         {
-                            if (trainer2.isTeamDead())
+                            if (trainer2.IsTeamDead())
                             {
-                                UpdateGameState(GameState.BattleEnd);
+                                UpdateGameStateRpc(GameState.BattleEnd);
                                 //Give out the corresponding screen to each player
                                 uIController.UpdateMenu(Menus.WinScreen, 1);
                                 uIController.UpdateMenu(Menus.LoseScreen, 2);
                                 return;
                             }
-                            uIController.UpdateMenu(Menus.DialogueScreen, 1);
                             SendDialogueToHostRpc("Communicating...");
+                            uIController.UpdateMenu(Menus.DialogueScreen, 1);
                             uIController.UpdateMenu(Menus.PokemonFaintedScreen, 2);
+                            RPCManager.BeginRPCBatch();
                             RequestHostReadFirstDialogueRpc();
+                            RequestClientSwitchRpc();
+                            while (!RPCManager.AreAllRPCsCompleted())
+                            {
+                                await UniTask.Yield();
+                            }
                             // Will not await as the other player will be making a decision and do not want to get in the way of that
-                            UpdateGameState(GameState.WaitingOnPlayerInput);
-                            var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                            Switch playerSwitch = action;
-                            ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                            SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            RequestClientReadFirstDialogueRpc();
-                            RequestHostReadFirstDialogueRpc();
+                            UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
+                            Switch playerSwitch = (Switch)trainer2Selection;
+                            await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                         }
                     }
                     else
                     {
-                        if (trainer1.isTeamDead())
+                        if (trainer1.IsTeamDead())
                         {
                             UpdateGameState(GameState.BattleEnd);
                             //Give out the corresponding screen to each player
@@ -1185,18 +1184,18 @@ public class GameManager : NetworkSingleton<GameManager>
                         }
                         SendDialogueToClientRpc("Communicating...");
                         uIController.UpdateMenu(Menus.PokemonFaintedScreen, 1);
+                        uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                        RPCManager.BeginRPCBatch();
                         RequestClientReadFirstDialogueRpc();
+                        RequestHostSwitchRpc();
+                        while (!RPCManager.AreAllRPCsCompleted())
+                        {
+                            await UniTask.Yield();
+                        }
                         // Will not await as the other player will be making a decision and do not want to get in the way of that
-                        UpdateGameState(GameState.WaitingOnPlayerInput);
-                        var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                        Switch playerSwitch = action;
-                        ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                        uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                        SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                        SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                        //await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                        RequestClientReadFirstDialogueRpc();
-                        RequestHostReadFirstDialogueRpc();
+                        UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
+                        Switch playerSwitch = (Switch)trainer1Selection;
+                        await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                     }
                 }
                 else
@@ -1205,44 +1204,59 @@ public class GameManager : NetworkSingleton<GameManager>
                     Debug.Log("Speed Tie");
                     if (speedTie < 50)
                     {
-                        Debug.Log("Trainer 1 won the speed tie");
-                        //UpdateGameState(GameState.FirstAttack);
+                        oldHP = trainer2.GetActivePokemon().GetHPStat();
+                        await ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
                         uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 1);
                         uIController.UpdateMenu(Menus.PokemonDamagedScreen, 2);
-                        ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
-                        //UpdateGameState(GameState.SecondAttack);
-                        moveSelectionRPCManager.BeginRPCBatch();
-                        UpdateHealthBarRpc(Attacker.Trainer1);
-                        while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                        await MenuBuffer();
+                        RPCManager.BeginRPCBatch();
+                        UpdateHealthBarRpc(Attacker.Trainer1, oldHP);
+                        while (!RPCManager.AreAllRPCsCompleted())
                         {
                             await UniTask.Yield();
-                        }                        
+                        }
+                        //UpdateGameState(GameState.SecondAttack);
+                        uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                        uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                        RPCManager.BeginRPCBatch();
+                        RequestClientReadAllDialogueRpc();
+                        RequestHostReadAllDialogueRpc();
+                        while (!RPCManager.AreAllRPCsCompleted())
+                        {
+                            await UniTask.Yield();
+                        }
                         // Give a small buffer inbetween the menu change
-                        await screenBuffer();
-
+                        //await MenuBuffer();
                         if (!trainer2.GetActivePokemon().IsDead())
                         {
+                            oldHP = trainer1.GetActivePokemon().GetHPStat();
+                            await ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
                             uIController.UpdateMenu(Menus.PokemonDamagedScreen, 1);
                             uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 2);
-                            ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                            moveSelectionRPCManager.BeginRPCBatch();
-                            UpdateHealthBarRpc(Attacker.Trainer2);
-                            while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                            await MenuBuffer();
+                            RPCManager.BeginRPCBatch();
+                            UpdateHealthBarRpc(Attacker.Trainer2, oldHP);
+                            while (!RPCManager.AreAllRPCsCompleted())
                             {
                                 await UniTask.Yield();
                             }
                             uIController.UpdateMenu(Menus.DialogueScreen, 1);
                             uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                            RPCManager.BeginRPCBatch();
                             RequestClientReadAllDialogueRpc();
                             RequestHostReadAllDialogueRpc();
+                            while (!RPCManager.AreAllRPCsCompleted())
+                            {
+                                await UniTask.Yield();
+                            }
                             // Give a small buffer inbetween the menu change
-                            await screenBuffer();
+                            //await MenuBuffer();
                             // Add an extra if to trigger the same logic if trainer1 dies afterward
                             if (trainer1.GetActivePokemon().IsDead())
                             {
-                                if (trainer1.isTeamDead())
+                                if (trainer1.IsTeamDead())
                                 {
-                                    UpdateGameState(GameState.BattleEnd);
+                                    UpdateGameStateRpc(GameState.BattleEnd);
                                     //Give out the corresponding screen to each player
                                     uIController.UpdateMenu(Menus.LoseScreen, 1);
                                     uIController.UpdateMenu(Menus.WinScreen, 2);
@@ -1250,112 +1264,126 @@ public class GameManager : NetworkSingleton<GameManager>
                                 }
                                 SendDialogueToClientRpc("Communicating...");
                                 uIController.UpdateMenu(Menus.PokemonFaintedScreen, 1);
-                                RequestHostReadFirstDialogueRpc();
-                                // Will not await as the other player will be making a decision and do not want to get in the way of that
-                                UpdateGameState(GameState.WaitingOnPlayerInput);
-                                var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                                Switch playerSwitch = action;
-                                ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                                uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                                SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                                SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                                //await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
+                                uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                                UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
+                                RPCManager.BeginRPCBatch();
                                 RequestClientReadFirstDialogueRpc();
-                                RequestHostReadFirstDialogueRpc();
+                                RequestHostSwitchRpc();
+                                while (!RPCManager.AreAllRPCsCompleted())
+                                {
+                                    await UniTask.Yield();
+                                }
+                                // Will not await as the other player will be making a decision and do not want to get in the way of that
+
+                                //var action = await trainer1Controller.SwitchOutFaintedPokemon();
+                                Switch playerSwitch = (Switch)trainer1Selection;
+                                await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                             }
                         }
                         else
                         {
                             // Force trainer2 to Switch
                             // If not, then end the battle
-                            if (trainer2.isTeamDead())
+                            if (trainer2.IsTeamDead())
                             {
-                                UpdateGameState(GameState.BattleEnd);
+                                UpdateGameStateRpc(GameState.BattleEnd);
                                 //Give out the corresponding screen to each player
                                 uIController.UpdateMenu(Menus.WinScreen, 1);
                                 uIController.UpdateMenu(Menus.LoseScreen, 2);
                                 return;
                             }
+                            // Will not await as the other player will be making a decision and do not want to get in the way of that
+                            UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
                             SendDialogueToHostRpc("Communicating...");
                             uIController.UpdateMenu(Menus.PokemonFaintedScreen, 2);
                             uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                            RPCManager.BeginRPCBatch();
                             RequestHostReadFirstDialogueRpc();
-                            // Will not await as the other player will be making a decision and do not want to get in the way of that
-                            UpdateGameState(GameState.WaitingOnPlayerInput);
-                            var action = await trainer2Controller.SwitchOutFaintedPokemon();
-                            Switch playerSwitch = action;
-                            ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                            SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            //await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                            RequestClientReadFirstDialogueRpc();
-                            RequestHostReadFirstDialogueRpc();
+                            RequestClientSwitchRpc();
+                            while (!RPCManager.AreAllRPCsCompleted())
+                            {
+                                await UniTask.Yield();
+                            }
+                            Switch playerSwitch = (Switch)trainer2Selection;
+                            await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                         }
                     }
                     else
                     {
-                        Debug.Log("Trainer 2 won the speed tie");
+                        oldHP = trainer1.GetActivePokemon().GetHPStat();
+                        await ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
                         uIController.UpdateMenu(Menus.PokemonDamagedScreen, 1);
                         uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 2);
-                        ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
-                        moveSelectionRPCManager.BeginRPCBatch();
-                        UpdateHealthBarRpc(Attacker.Trainer2);
-                        while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                        await MenuBuffer();
+                        RPCManager.BeginRPCBatch();
+                        UpdateHealthBarRpc(Attacker.Trainer2, oldHP);
+                        while (!RPCManager.AreAllRPCsCompleted())
                         {
                             await UniTask.Yield();
                         }
                         uIController.UpdateMenu(Menus.DialogueScreen, 1);
                         uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                        //await UniTask.WhenAll(trainer1DialogueBoxController.ReadAllQueuedDialogue(), trainer2DialogueBoxController.ReadAllQueuedDialogue());
+                        RPCManager.BeginRPCBatch();
                         RequestClientReadAllDialogueRpc();
                         RequestHostReadAllDialogueRpc();
-                        // Give a small buffer inbetween the menu change
-                        await screenBuffer();
+                        while (!RPCManager.AreAllRPCsCompleted())
+                        {
+                            await UniTask.Yield();
+                        }
                         if (!trainer1.GetActivePokemon().IsDead())
                         {
                             //UpdateGameState(GameState.FirstAttack);
+                            oldHP = trainer2.GetActivePokemon().GetHPStat();
+                            await ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
                             uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 1);
                             uIController.UpdateMenu(Menus.PokemonDamagedScreen, 2);
-                            ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
+                            await MenuBuffer();
                             //UpdateGameState(GameState.SecondAttack);
-                            moveSelectionRPCManager.BeginRPCBatch();
-                            UpdateHealthBarRpc(Attacker.Trainer1);
-                            while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+                            RPCManager.BeginRPCBatch();
+                            UpdateHealthBarRpc(Attacker.Trainer1, oldHP);
+                            while (!RPCManager.AreAllRPCsCompleted())
                             {
                                 await UniTask.Yield();
-                            }                            
+                            }
+                            uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                            uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                            RPCManager.BeginRPCBatch();
+                            RequestClientReadAllDialogueRpc();
+                            RequestHostReadAllDialogueRpc();
+                            while (!RPCManager.AreAllRPCsCompleted())
+                            {
+                                await UniTask.Yield();
+                            }
                             // Give a small buffer inbetween the menu change
-                            await screenBuffer();
                             if (trainer2.GetActivePokemon().IsDead())
                             {
-                                if (trainer2.isTeamDead())
+                                if (trainer2.IsTeamDead())
                                 {
-                                    UpdateGameState(GameState.BattleEnd);
+                                    UpdateGameStateRpc(GameState.BattleEnd);
                                     //Give out the corresponding screen to each player
                                     uIController.UpdateMenu(Menus.WinScreen, 1);
                                     uIController.UpdateMenu(Menus.LoseScreen, 2);
                                     return;
                                 }
-                                uIController.UpdateMenu(Menus.DialogueScreen, 1);
                                 SendDialogueToHostRpc("Communicating...");
+                                uIController.UpdateMenu(Menus.DialogueScreen, 1);
                                 uIController.UpdateMenu(Menus.PokemonFaintedScreen, 2);
+                                RPCManager.BeginRPCBatch();
                                 RequestHostReadFirstDialogueRpc();
+                                RequestClientSwitchRpc();
+                                while (!RPCManager.AreAllRPCsCompleted())
+                                {
+                                    await UniTask.Yield();
+                                }
                                 // Will not await as the other player will be making a decision and do not want to get in the way of that
-                                UpdateGameState(GameState.WaitingOnPlayerInput);
-                                var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                                Switch playerSwitch = action;
-                                ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                                uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                                SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                                SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                                RequestClientReadFirstDialogueRpc();
-                                RequestHostReadFirstDialogueRpc();
+                                UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
+                                Switch playerSwitch = (Switch)trainer2Selection;
+                                await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
                             }
                         }
                         else
                         {
-                            if (trainer1.isTeamDead())
+                            if (trainer1.IsTeamDead())
                             {
                                 UpdateGameState(GameState.BattleEnd);
                                 //Give out the corresponding screen to each player
@@ -1365,20 +1393,20 @@ public class GameManager : NetworkSingleton<GameManager>
                             }
                             SendDialogueToClientRpc("Communicating...");
                             uIController.UpdateMenu(Menus.PokemonFaintedScreen, 1);
+                            uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                            RPCManager.BeginRPCBatch();
                             RequestClientReadFirstDialogueRpc();
+                            RequestHostSwitchRpc();
+                            while (!RPCManager.AreAllRPCsCompleted())
+                            {
+                                await UniTask.Yield();
+                            }
                             // Will not await as the other player will be making a decision and do not want to get in the way of that
-                            UpdateGameState(GameState.WaitingOnPlayerInput);
-                            var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                            Switch playerSwitch = action;
-                            ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                            uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                            SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                            //await UniTask.WhenAll(trainer1DialogueBoxController.ReadFirstQueuedDialogue(), trainer2DialogueBoxController.ReadFirstQueuedDialogue());
-                            RequestClientReadFirstDialogueRpc();
-                            RequestHostReadFirstDialogueRpc();
-                        }                            
-                    }                        
+                            UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
+                            Switch playerSwitch = (Switch)trainer1Selection;
+                            await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+                        }
+                    }
                 }
             }
         }
@@ -1386,72 +1414,81 @@ public class GameManager : NetworkSingleton<GameManager>
         {
             Attack convertedTrainer1Action = (Attack)trainer1Action;
             //UpdateGameState(GameState.FirstAttack);
+            oldHP = trainer2.GetActivePokemon().GetHPStat();
+            await ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
             uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 1);
             uIController.UpdateMenu(Menus.PokemonDamagedScreen, 2);
-            ExecuteAttack(convertedTrainer1Action, trainer1.GetActivePokemon(), trainer2.GetActivePokemon());
-            //UpdateGameState(GameState.SecondAttack);
-            moveSelectionRPCManager.BeginRPCBatch();
-            UpdateHealthBarRpc(Attacker.Trainer1);
-            while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+            await MenuBuffer();
+            RPCManager.BeginRPCBatch();
+            UpdateHealthBarRpc(Attacker.Trainer1, oldHP);
+            while (!RPCManager.AreAllRPCsCompleted())
             {
                 await UniTask.Yield();
             }
-            // Give a small buffer inbetween the menu change
-            await screenBuffer();
-            uIController.UpdateMenu(Menus.GeneralBattleMenu, 1);
+            //UpdateGameState(GameState.SecondAttack);
+            uIController.UpdateMenu(Menus.DialogueScreen, 1);
+            uIController.UpdateMenu(Menus.DialogueScreen, 2);
+            RPCManager.BeginRPCBatch();
+            RequestClientReadAllDialogueRpc();
+            RequestHostReadAllDialogueRpc();
+            while (!RPCManager.AreAllRPCsCompleted())
+            {
+                await UniTask.Yield();
+            }
             if (trainer2.GetActivePokemon().IsDead())
             {
-                if (trainer2.isTeamDead())
+                if (trainer2.IsTeamDead())
                 {
-                    UpdateGameState(GameState.BattleEnd);
+                    UpdateGameStateRpc(GameState.BattleEnd);
                     //Give out the corresponding screen to each player
                     uIController.UpdateMenu(Menus.WinScreen, 1);
                     uIController.UpdateMenu(Menus.LoseScreen, 2);
                     return;
                 }
+                // Will not await as the other player will be making a decision and do not want to get in the way of that
+                UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
                 SendDialogueToHostRpc("Communicating...");
                 uIController.UpdateMenu(Menus.PokemonFaintedScreen, 2);
                 uIController.UpdateMenu(Menus.DialogueScreen, 1);
+                RPCManager.BeginRPCBatch();
                 RequestHostReadFirstDialogueRpc();
-                // Will not await as the other player will be making a decision and do not want to get in the way of that
-                UpdateGameState(GameState.WaitingOnPlayerInput);
-                var action = await trainer2Controller.SwitchOutFaintedPokemon();
-                Switch playerSwitch = action;
-                ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                RequestClientReadFirstDialogueRpc();
-                RequestHostReadFirstDialogueRpc();
+                RequestClientSwitchRpc();
+                while (!RPCManager.AreAllRPCsCompleted())
+                {
+                    await UniTask.Yield();
+                }
+                Switch playerSwitch = (Switch)trainer2Selection;
+                await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
             }
         }
         else if (trainer2Action.GetType().IsSubclassOf(typeof(Attack)))
         {
             Attack convertedTrainer2Action = (Attack)trainer2Action;
-            uIController.UpdateMenu(Menus.PokemonDamagedScreen, 1);
-            uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 2);
-            ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
+            oldHP = trainer1.GetActivePokemon().GetHPStat();
+            await ExecuteAttack(convertedTrainer2Action, trainer2.GetActivePokemon(), trainer1.GetActivePokemon());
             //await UniTask.WhenAll(trainer1PokemonInfoController.UpdateHealthBar(Menus.PokemonDamagedScreen), trainer2OpposingPokemonInfoBarController.UpdateHealthBar(Menus.OpposingPokemonDamagedScreen));
-            moveSelectionRPCManager.BeginRPCBatch();
-            UpdateHealthBarRpc(Attacker.Trainer2);
-            while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+            uIController.UpdateMenu(Menus.OpposingPokemonDamagedScreen, 2);
+            uIController.UpdateMenu(Menus.PokemonDamagedScreen, 1);
+            await MenuBuffer();
+            RPCManager.BeginRPCBatch();
+            UpdateHealthBarRpc(Attacker.Trainer2, oldHP);
+            while (!RPCManager.AreAllRPCsCompleted())
             {
                 await UniTask.Yield();
             }
+            //UpdateGameState(GameState.SecondAttack);
             uIController.UpdateMenu(Menus.DialogueScreen, 1);
             uIController.UpdateMenu(Menus.DialogueScreen, 2);
-            moveSelectionRPCManager.BeginRPCBatch();
+            RPCManager.BeginRPCBatch();
             RequestClientReadAllDialogueRpc();
             RequestHostReadAllDialogueRpc();
-            while (!moveSelectionRPCManager.AreAllRPCsCompleted())
+            while (!RPCManager.AreAllRPCsCompleted())
             {
                 await UniTask.Yield();
             }
-            // Give a small buffer inbetween the menu change
-            await screenBuffer();
             if (trainer1.GetActivePokemon().IsDead())
             {
-                if (trainer1.isTeamDead())
+                if (trainer1.IsTeamDead())
                 {
                     UpdateGameState(GameState.BattleEnd);
                     //Give out the corresponding screen to each player
@@ -1459,20 +1496,20 @@ public class GameManager : NetworkSingleton<GameManager>
                     uIController.UpdateMenu(Menus.WinScreen, 2);
                     return;
                 }
+                UpdateGameStateRpc(GameState.WaitingOnPlayerInput);
                 SendDialogueToClientRpc("Communicating...");
                 uIController.UpdateMenu(Menus.PokemonFaintedScreen, 1);
+                uIController.UpdateMenu(Menus.DialogueScreen, 2);
+                RPCManager.BeginRPCBatch();
                 RequestClientReadFirstDialogueRpc();
-                // Will not await as the other player will be making a decision and do not want to get in the way of that
-                UpdateGameState(GameState.WaitingOnPlayerInput);
-                var action = await trainer1Controller.SwitchOutFaintedPokemon();
-                Switch playerSwitch = action;
-                ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
-                uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                SendDialogueToHostRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                SendDialogueToClientRpc($"{playerSwitch.GetTrainer().trainerName} sent out {playerSwitch.GetPokemon().GetNickname()}");
-                RequestClientReadFirstDialogueRpc();
-                RequestHostReadFirstDialogueRpc();
-            }*/
+                RequestHostSwitchRpc();
+                while (!RPCManager.AreAllRPCsCompleted())
+                {
+                    await UniTask.Yield();
+                }
+                Switch playerSwitch = (Switch)trainer1Selection;
+                await ExecuteSwitch(playerSwitch, playerSwitch.GetTrainer(), playerSwitch.GetPokemon());
+            }
             //uIController.UpdateMenu(Menus.GeneralBattleMenu, 1);
         }
         // Also may add a forfiet button
