@@ -45,8 +45,10 @@ public class DialogueBoxController : MonoBehaviour
         if (dialogueUIElements.DialogueBox != null)
         {
             VisualElement element = dialogueUIElements.DialogueBox.Query<VisualElement>();
+            
             if (element != null)
             {
+                Debug.Log("Element was found");
                 dialogueBoxText = element.Query<Label>();
             }
         }
@@ -83,6 +85,7 @@ public class DialogueBoxController : MonoBehaviour
         if (dialogueBoxText == null)
         {
             Debug.Log("This Label was not found");
+            rpcManager.RPCFinished();
             yield return null;
         }
         dialogueBoxText.text = dialouge.ToString();
