@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8270063233396279739
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      propertyPath: m_Name
+      value: StandardGyaradosM
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2979021674346318001}
+  m_SourcePrefab: {fileID: 100100000, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+--- !u!1 &9080456829700912362 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f4ba0cb3d61e1a41bf2eea91e77afa7, type: 3}
+  m_PrefabInstance: {fileID: 8270063233396279739}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2979021674346318001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9080456829700912362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52a99d77b25c51044a514c92d029f9d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nickname: Poket Creature
+  ability: {fileID: 0}
+  gender: 0
+  status: 0
+  hpStat:
+    m_InternalValue: 0
+  attackStat: 0
+  attackStage: 0
+  defenseStat: 0
+  defenseStage: 0
+  specialAttackStat: 0
+  specialAttackStage: 0
+  specialDefenseStat: 0
+  specialDefenseStage: 0
+  speedStat: 0
+  speedStage: 0
