@@ -8,16 +8,25 @@ public abstract class Ability : ScriptableObject
     protected string abilityName = null!;
     protected string description = null!;
     protected TrainerController trainerController;
+    protected EventsToTriggerManager eventsToTriggerManager;
     protected virtual void Awake()
     {
-        //trainerController = this.abilityUser.gameObject.transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+        if (abilityUser != null)
+        {
+            trainerController = this.abilityUser.gameObject.transform.parent.parent.gameObject.GetComponent<TrainerController>();
+        }
+        GameObject eventsToTriggerGO = GameObject.Find("EventsToTriggerManager");
+        eventsToTriggerManager = eventsToTriggerGO.GetComponent<EventsToTriggerManager>();
     }
 
     public void InitializeAbility()
     {
         trainerController = this.abilityUser.gameObject.transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
     }
+    protected virtual void GameStateOnChangeHandler(GameState state)
+    {
+        return;
+    }
 
     protected abstract void TriggerEffect(Pokemon attacker, Pokemon target);
-    protected abstract void GameStateOnChangeHandler(GameState state);
 }
