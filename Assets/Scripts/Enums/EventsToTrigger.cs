@@ -6,6 +6,8 @@ public enum EventsToTrigger
 {
     YourPokemonDamaged,
     OpposingPokemonDamaged,
+    YourPokemonAttackedOpposingPokemon,
+    OpposingPokemonAttackedYourPokemon,
     YourPokemonSwitched,
     OpposingPokemonSwitched,
     YourPokemonAbilityTriggered,
