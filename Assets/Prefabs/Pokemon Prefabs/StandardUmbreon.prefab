@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 32.82743
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.00000071525574
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 30.15054
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
       propertyPath: m_LocalRotation.w
@@ -55,5 +55,104 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8553912291913837968}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4386585540720334066}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6690788988966303531}
   m_SourcePrefab: {fileID: 100100000, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
+--- !u!1 &2426318949519225002 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4b10582e0a221244ebf5ccdce418f6de, type: 3}
+  m_PrefabInstance: {fileID: 3273393361828531707}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &8553912291913837968
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2426318949519225002}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.4681168, y: 2.2001758, z: 2.9339352}
+  m_Center: {x: -0.016944885, y: 1.0737755, z: -0.31690502}
+--- !u!114 &-4386585540720334066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2426318949519225002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfb6a3486d269df438755cd98553b1ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nickname: Umbreon
+  ability: {fileID: 0}
+  gender: 0
+  status: 0
+  hpStat:
+    m_InternalValue: 0
+  attackStat: 0
+  attackStage:
+    m_InternalValue: 0
+  defenseStat: 0
+  defenseStage:
+    m_InternalValue: 0
+  specialAttackStat: 0
+  specialAttackStage:
+    m_InternalValue: 0
+  specialDefenseStat: 0
+  specialDefenseStage:
+    m_InternalValue: 0
+  speedStat: 0
+  speedStage:
+    m_InternalValue: 0
+--- !u!114 &6690788988966303531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2426318949519225002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0

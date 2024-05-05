@@ -77,3 +77,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a99d77b25c51044a514c92d029f9d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nickname: Gyarados
+  ability: {fileID: 0}
+  gender: 0
+  status: 0
+  hpStat:
+    m_InternalValue: 0
+  attackStat: 0
+  attackStage:
+    m_InternalValue: 0
+  defenseStat: 0
+  defenseStage:
+    m_InternalValue: 0
+  specialAttackStat: 0
+  specialAttackStage:
+    m_InternalValue: 0
+  specialDefenseStat: 0
+  specialDefenseStage:
+    m_InternalValue: 0
+  speedStat: 0
+  speedStage:
+    m_InternalValue: 0

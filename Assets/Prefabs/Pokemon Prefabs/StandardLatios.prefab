@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 34.79897
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.00000047683716
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 27.772753
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -55,5 +55,104 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1729169972479391372}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1485779878734764845}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 739602572951248164}
   m_SourcePrefab: {fileID: 100100000, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
+--- !u!1 &7864011326754433754 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 91e16e1be0275b34e921e5a417f4a8f9, type: 3}
+  m_PrefabInstance: {fileID: 7053760111970719627}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-1729169972479391372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7864011326754433754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e833d090e8eca1d4ca1c2c5fc3bdde84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nickname: Latios
+  ability: {fileID: 0}
+  gender: 0
+  status: 0
+  hpStat:
+    m_InternalValue: 0
+  attackStat: 0
+  attackStage:
+    m_InternalValue: 0
+  defenseStat: 0
+  defenseStage:
+    m_InternalValue: 0
+  specialAttackStat: 0
+  specialAttackStage:
+    m_InternalValue: 0
+  specialDefenseStat: 0
+  specialDefenseStage:
+    m_InternalValue: 0
+  speedStat: 0
+  speedStage:
+    m_InternalValue: 0
+--- !u!65 &1485779878734764845
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7864011326754433754}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.7145195, y: 2.991878, z: 5.301857}
+  m_Center: {x: 0.010438919, y: 2.3252199, z: 0.89787865}
+--- !u!114 &739602572951248164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7864011326754433754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0
