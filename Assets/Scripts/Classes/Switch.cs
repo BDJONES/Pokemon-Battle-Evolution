@@ -31,7 +31,6 @@ public class Switch : IPlayerAction
             {
                 trainer.SwitchRpc(i);
                 // Will have to make this change based on the player who is Switching
-                EventsToTriggerManager.AlertEventTriggered(EventsToTrigger.YourPokemonSwitched);
                 return;
             }
 

@@ -8,38 +8,70 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private TrainerController trainerController;
     [SerializeField] private float speed = 5f;
-    private float distanceMultiplier = 1.5f;
+    private float distanceMultiplier = 1f;
+    EventsToTriggerManager eventsToTriggerManager;
     private void OnEnable()
     {
-        EventsToTriggerManager.OnTriggerEvent += HandleEventTriggered;
+        //GameObject eventsToTriggerManagerGO = GameObject.Find("EventsToTriggerManager");
+        NetworkCommands.UIControllerCreated += HandleUIControllerCreated;
+    }
+
+    private void HandleUIControllerCreated()
+    {
+        GameObject eventsToTriggerGO = GameObject.Find("EventsToTriggerManager");
+        eventsToTriggerManager = eventsToTriggerGO.GetComponent<EventsToTriggerManager>();
+        eventsToTriggerManager.OnTriggerEvent += HandleEventTriggered;
     }
 
     private void HandleEventTriggered(EventsToTrigger e)
     {
-        if (e == EventsToTrigger.YourPokemonSwitched && transform.parent.gameObject.name != "TitleScreenUI")
+        if (this == null)
         {
-            MoveToPosition();
+            return;
+        }
+        if ((e == EventsToTrigger.YourPokemonSwitched || e == EventsToTrigger.OpposingPokemonSwitched) && transform.parent.gameObject.name != "TitleScreenUI")
+        {
+            Debug.Log("Attempting to move camera");
+            if (transform.parent.gameObject.GetComponent<NetworkObject>().IsOwner)
+            {
+                Debug.Log("It's my turn to move the camera");
+                MoveToPosition();
+                Debug.Log("Finished moving the camera");
+            }
+            else
+            {
+                Debug.Log("Parent was not the owner");
+            }
         }
     }
 
     public void MoveToPosition()
     {
-        AdjustFocalPoint();
+        Debug.Log("Moving Camera");
+        trainerController = transform.parent.gameObject.GetComponent<TrainerController>();
+        //trainerController.SetOpponent(GameObject.Find("Trainer(Clone)").GetComponent<Trainer>());
         Transform activePokemonTransform = trainerController.GetPlayer().GetActivePokemonGameObject().transform;
+        Debug.Log($"Active Pokemon's position = {activePokemonTransform.position}");
         if (activePokemonTransform != null)
         {
             float objectSize = CalculateObjectSize(activePokemonTransform);
-            float desiredDistance = objectSize * distanceMultiplier;
-
+            float desiredDistance = (objectSize * distanceMultiplier);
+            if (desiredDistance > 4)
+            {
+                desiredDistance /= 2;
+            }
+            Debug.Log($"Desired Distance = {desiredDistance}");
+            Debug.Log($"Current Position = {transform.position}");
             // Calculate the desired position based on the target object and desired distance
-            Vector3 offsetPosition = -activePokemonTransform.forward * desiredDistance + activePokemonTransform.right * desiredDistance;
+            Vector3 offsetPosition = -activePokemonTransform.forward * desiredDistance + activePokemonTransform.right * desiredDistance + activePokemonTransform.up * activePokemonTransform.gameObject.GetComponent<Collider>().bounds.size.y;
             Vector3 desiredPosition = activePokemonTransform.position + offsetPosition;
-
+            Debug.Log($"offsetPosition = {offsetPosition}");
             // Set the camera position
             //transform.position = Vector3.Lerp(transform.position, desiredPosition, speed * Time.deltaTime);
             transform.position = desiredPosition;
-
+            Debug.Log($"New Position = {transform.position}");
             // Make the camera look at the target object
+            AdjustFocalPoint();
             GameObject focalPoint = GameObject.Find("Focal Point");
             transform.LookAt(focalPoint.transform);
         }
@@ -57,14 +89,35 @@ public class CameraController : MonoBehaviour
 
     private void AdjustFocalPoint()
     {
-        GameObject focalPoint = GameObject.Find("Focal Point");
         if (trainerController == null)
         {
             Debug.Log(transform.parent.gameObject.name);
             Debug.Log("TrainerController is null");
+            return;
         }
-        float newY = (trainerController.GetPlayer().GetActivePokemonGameObject().transform.position.y + trainerController.GetOpponent().GetActivePokemonGameObject().transform.position.y) / 2f;
-        focalPoint.transform.position = new Vector3(focalPoint.transform.position.x, newY, focalPoint.transform.position.z);
+        GameObject focalPoint = GameObject.Find("Focal Point");
+        var playerBounds = trainerController.GetPlayer().GetActivePokemonGameObject().GetComponent<Collider>().bounds;
+        var opponentBounds = trainerController.GetOpponent().GetActivePokemonGameObject().GetComponent<Collider>().bounds;
+        float newX = (trainerController.GetPlayer().gameObject.transform.position.x + trainerController.GetOpponent().gameObject.transform.position.x) / 2f;
+        float newY;
+        Debug.Log($"playerBounds size = {playerBounds.size.y}, opponentBounds size {opponentBounds.size.y}");
+        if (playerBounds.size.y > opponentBounds.size.y)
+        {
+            Debug.Log("Player is bigger");
+            newY = (playerBounds.size.y) / 2f;
+        }
+        else if (playerBounds.size.y < opponentBounds.size.y && opponentBounds.size.y < 1.7f * playerBounds.size.y)
+        {
+            Debug.Log("Opponent is bigger, but not by much");
+            newY = (opponentBounds.size.y) / 2f;
+        }
+        else
+        {
+            Debug.Log("The opponent is bigger by a wide margin");
+            newY = (opponentBounds.size.y) / 4f;            
+        }
+        float newZ = (trainerController.GetPlayer().gameObject.transform.position.z + trainerController.GetOpponent().gameObject.transform.position.z) / 2f;
+        focalPoint.transform.position = new Vector3(newX, newY, newZ);
     }
 
     float CalculateObjectSize(Transform obj)
