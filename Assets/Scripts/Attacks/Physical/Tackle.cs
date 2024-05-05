@@ -15,5 +15,6 @@ public class Tackle : Attack
         this.priority = 0;
         this.currPowerPoints = 56;
         this.maxPowerPoints = 56;
+        this.isContact = true;
     }
 }

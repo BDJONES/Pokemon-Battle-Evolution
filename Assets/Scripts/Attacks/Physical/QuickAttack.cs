@@ -15,10 +15,6 @@ public class QuickAttack : Attack
         this.priority = 1;
         this.currPowerPoints = 48;
         this.maxPowerPoints = 48;
-    }
-
-    protected override void TriggerEffect(Pokemon attacker, Pokemon target)
-    {
-        base.TriggerEffect(attacker, target);  
+        this.isContact = true;
     }
 }

@@ -1,15 +1,13 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Flamethrower : Attack
+public class Thunderbolt : Attack
 {
-    public Flamethrower()
+    public Thunderbolt()
     {
-        this.attackName = "Flamethrower";
-        this.description = "The target is scorched with an intense blast of fire. This may also leave the target with a burn.";
-        this.type = StaticTypeObjects.Fire;
+        this.attackName = "Thunderbolt";
+        this.description = "The user attacks the target with a strong electric blast. This may also leave the target with paralysis.";
+        this.type = StaticTypeObjects.Electric;
         this.moveCategory = AttackCategory.Special;
         this.power = 90;
         this.accuracy = 100;
@@ -17,7 +15,7 @@ public class Flamethrower : Attack
         this.currPowerPoints = 16;
         this.maxPowerPoints = 16;
     }
-    
+
     protected async override void TriggerEffect(Pokemon attacker, Pokemon target)
     {
         base.TriggerEffect(attacker, target);
@@ -26,15 +24,14 @@ public class Flamethrower : Attack
         {
             if (target.GetHPStat() > 0)
             {
-                target.Status = StatusConditions.Burn;
+                target.Status = StatusConditions.Paralysis;
                 int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
-                GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} was burned.");
-                GameManager.Instance.SendDialogueToHostRpc($"{target.GetNickname()} was burned.");
+                GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} was paralyzed.");
+                GameManager.Instance.SendDialogueToHostRpc($"{target.GetNickname()} was paralyzed.");
                 while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
                 {
                     await UniTask.Yield();
                 }
-                //Debug.Log("Flamethrower burned the target");
             }
         }
     }

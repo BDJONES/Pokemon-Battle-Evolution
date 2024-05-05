@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,13 +18,21 @@ public class ThunderWave : Attack
         this.maxPowerPoints = 32;
     }
 
-    protected override void TriggerEffect(Pokemon attacker, Pokemon target)
+    protected async override void TriggerEffect(Pokemon attacker, Pokemon target)
     {
+        int activeRPCs;
         base.TriggerEffect(attacker, target);
         if (target.Status == StatusConditions.Healthy && (target.GetType1() != StaticTypeObjects.Electric || (target.GetType2() != null && target.GetType2() != StaticTypeObjects.Electric)))
         {
-            Debug.Log("The target was paralyzed");
+            
             target.Status = StatusConditions.Paralysis;
+            activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+            GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} was paralyzed");
+            GameManager.Instance.SendDialogueToHostRpc($"{target.GetNickname()} was paralyzed");
+            while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+            {
+                await UniTask.Yield();
+            }
         }
     }
 }
