@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class StatStagesController : MonoBehaviour
+public class StatStagesController : NetworkBehaviour
 {
     [SerializeField] private TrainerController trainerController;
     [SerializeField] private PokemonInfoUIElements pokemonInfoUIElements;
@@ -16,20 +17,32 @@ public class StatStagesController : MonoBehaviour
     private Label accuracyLabel;
     private Label evasionLabel;
     private UIController uIController;
+    private GameObject opponent;
 
     private void OnEnable()
     {
-        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
-        pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+        //Debug.Log($"Trainer Name while enabling StatStages is {gameObject.name}");
+        //if (IsOwner)
+        //{
+            NetworkCommands.UIControllerCreated += () =>
+            {
+                trainerController = transform.parent.parent.gameObject.GetComponent<TrainerController>();
+                uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+                uIController.OnHostMenuChange += HandleMenuChange;
+                uIController.OnClientMenuChange += HandleMenuChange;
+                pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+                opponent = GameObject.Find("Trainer(Clone)");
+            };
+        //}
     }
 
     private void OnDisable()
     {
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
+        if (uIController != null)
+        {
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+        }
     }
     private void InitializeFields()
     {
@@ -44,20 +57,7 @@ public class StatStagesController : MonoBehaviour
         accuracyLabel = acc_and_eva.Query<Label>("Accuracy");
         evasionLabel = acc_and_eva.Query<Label>("Evasion");
     }
-    private void UpdateYourPokemonInfo()
-    {
-        string attackStage = trainerController.GetPlayer().GetActivePokemon().AttackStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().AttackStage}" : $"{trainerController.GetPlayer().GetActivePokemon().AttackStage}";
-        string defenseStage = trainerController.GetPlayer().GetActivePokemon().DefenseStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().DefenseStage}" : $"{trainerController.GetPlayer().GetActivePokemon().DefenseStage}";
-        string specialAttackStage = trainerController.GetPlayer().GetActivePokemon().SpecialAttackStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().SpecialAttackStage}" : $"{trainerController.GetPlayer().GetActivePokemon().SpecialAttackStage}";
-        string specialDefenseStage = trainerController.GetPlayer().GetActivePokemon().SpecialDefenseStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().SpecialDefenseStage}" : $"{trainerController.GetPlayer().GetActivePokemon().SpecialDefenseStage}";
-        string speedStage = trainerController.GetPlayer().GetActivePokemon().SpeedStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().SpeedStage}" : $"{trainerController.GetPlayer().GetActivePokemon().SpeedStage}";
 
-        attackLabel.text = $"Atk: {attackStage}";
-        defenseLabel.text = $"Def: {defenseStage}";
-        specialAttackLabel.text = $"Sp.Atk: {specialAttackStage}";
-        specialDefenseLabel.text = $"Sp.Def: {specialDefenseStage}";
-        speedLabel.text = $"Speed: {speedStage}";
-    }
 
     private void HandleMenuChange(Menus menu)
     {
@@ -73,9 +73,25 @@ public class StatStagesController : MonoBehaviour
             UpdateOpponentPokemonInfo();
         }
     }
+    private void UpdateYourPokemonInfo()
+    {
+        trainerController = transform.parent.parent.gameObject.GetComponent<TrainerController>();
+        string attackStage = trainerController.GetPlayer().GetActivePokemon().AttackStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().AttackStage}" : $"{trainerController.GetPlayer().GetActivePokemon().AttackStage}";
+        string defenseStage = trainerController.GetPlayer().GetActivePokemon().DefenseStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().DefenseStage}" : $"{trainerController.GetPlayer().GetActivePokemon().DefenseStage}";
+        string specialAttackStage = trainerController.GetPlayer().GetActivePokemon().SpecialAttackStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().SpecialAttackStage}" : $"{trainerController.GetPlayer().GetActivePokemon().SpecialAttackStage}";
+        string specialDefenseStage = trainerController.GetPlayer().GetActivePokemon().SpecialDefenseStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().SpecialDefenseStage}" : $"{trainerController.GetPlayer().GetActivePokemon().SpecialDefenseStage}";
+        string speedStage = trainerController.GetPlayer().GetActivePokemon().SpeedStage >= 0 ? $"+{trainerController.GetPlayer().GetActivePokemon().SpeedStage}" : $"{trainerController.GetPlayer().GetActivePokemon().SpeedStage}";
+
+        attackLabel.text = $"Atk: {attackStage}";
+        defenseLabel.text = $"Def: {defenseStage}";
+        specialAttackLabel.text = $"Sp.Atk: {specialAttackStage}";
+        specialDefenseLabel.text = $"Sp.Def: {specialDefenseStage}";
+        speedLabel.text = $"Speed: {speedStage}";
+    }
 
     private void UpdateOpponentPokemonInfo()
     {
+        Debug.Log($"In UpdateOpponentPokemonInfo Function Finding Opponent {GameObject.Find("Trainer(Clone)").GetComponent<Trainer>().GetActivePokemon().GetSpeciesName()}");
         string attackStage = trainerController.GetOpponent().GetActivePokemon().AttackStage >= 0 ? $"+{trainerController.GetOpponent().GetActivePokemon().AttackStage}" : $"{trainerController.GetOpponent().GetActivePokemon().AttackStage}";
         string defenseStage = trainerController.GetOpponent().GetActivePokemon().DefenseStage >= 0 ? $"+{trainerController.GetOpponent().GetActivePokemon().DefenseStage}" : $"{trainerController.GetOpponent().GetActivePokemon().DefenseStage}";
         string specialAttackStage = trainerController.GetOpponent().GetActivePokemon().SpecialAttackStage >= 0 ? $"+{trainerController.GetOpponent().GetActivePokemon().SpecialAttackStage}" : $"{trainerController.GetOpponent().GetActivePokemon().SpecialAttackStage}";

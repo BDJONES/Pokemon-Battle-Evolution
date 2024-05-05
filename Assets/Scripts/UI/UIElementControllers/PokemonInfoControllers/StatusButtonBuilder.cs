@@ -1,8 +1,9 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class StatusButtonBuilder : MonoBehaviour
+public class StatusButtonBuilder : NetworkBehaviour
 {
     [SerializeField] private VisualTreeAsset StatusButtonElement;
     [SerializeField] private TrainerController trainerController;
@@ -11,16 +12,25 @@ public class StatusButtonBuilder : MonoBehaviour
 
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
-        pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+        //if (IsOwner)
+        //{
+            NetworkCommands.UIControllerCreated += () =>
+            {
+                uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+                uIController.OnHostMenuChange += HandleMenuChange;
+                uIController.OnClientMenuChange += HandleMenuChange;
+                pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+            };
+        //}
     }
 
     private void OnDisable()
     {
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
+        if (uIController != null)
+        {
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+        }
     }    
     
     private void HandleMenuChange(Menus menu)
@@ -62,7 +72,7 @@ public class StatusButtonBuilder : MonoBehaviour
         if (trainer.GetActivePokemon().Status != StatusConditions.Healthy)
         {
             var newButton = StatusButtonElement.Instantiate();
-            Button content = newButton.Query<Button>("Element");
+            Button content = newButton.Query<Button>("Content");
             Label text = content.Query<Label>();
             text.text = trainer.GetActivePokemon().Status.ToString();
             pokemonInfoUIElements.StatusButtons.Add(newButton);

@@ -5,26 +5,36 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class NoButtonController : MonoBehaviour
+public class NoButtonController : NetworkBehaviour
 {
     [SerializeField] private ForfietUIElements forfietUIElements;
     private UIController uIController;
 
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnHostMenuChange += AssignProperties;
-        uIController.OnClientMenuChange += AssignProperties;
+        //if (IsOwner)
+        //{
+            NetworkCommands.UIControllerCreated += () =>
+            {
+                uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+                uIController.OnHostMenuChange += AssignProperties;
+                uIController.OnClientMenuChange += AssignProperties;
+            };
+        //}
+
     }
 
     private void OnDisable()
     {
-        if (forfietUIElements.NoButton == null)
+        if (uIController != null)
         {
-            return;
+            if (forfietUIElements.NoButton == null)
+            {
+                return;
+            }
+            uIController.OnHostMenuChange -= AssignProperties;
+            uIController.OnClientMenuChange -= AssignProperties;
         }
-        uIController.OnHostMenuChange -= AssignProperties;
-        uIController.OnClientMenuChange -= AssignProperties;
     }
 
     private void AssignProperties(Menus menu)
@@ -32,7 +42,7 @@ public class NoButtonController : MonoBehaviour
         if (menu == Menus.ForfietMenu)
         {
             var player = transform.parent.parent.gameObject;
-            if (TrainerController.IsOwnerHost(player))
+            if (IsHost)
             {
                 UIEventSubscriptionManager.Subscribe(forfietUIElements.NoButton, NoButtonClicked, 1);
             }
@@ -47,13 +57,13 @@ public class NoButtonController : MonoBehaviour
     {
         Debug.Log("Clicked the No Button");
         var player = transform.parent.parent.gameObject;
-        if (TrainerController.IsOwnerHost(player))
+        if (IsHost)
         {
-            uIController.UpdateMenu(Menus.GeneralBattleMenu, 1);
+            uIController.UpdateMenuRpc(Menus.GeneralBattleMenu, 1);
         }
         else
         {
-            uIController.UpdateMenu(Menus.GeneralBattleMenu, 2);
+            uIController.UpdateMenuRpc(Menus.GeneralBattleMenu, 2);
         }
         
     }

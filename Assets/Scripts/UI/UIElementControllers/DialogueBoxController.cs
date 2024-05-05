@@ -9,7 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class DialogueBoxController : MonoBehaviour
+public class DialogueBoxController : NetworkBehaviour
 {
     [SerializeField] private DialogueUIElements dialogueUIElements;
     private Label dialogueBoxText;
@@ -17,16 +17,24 @@ public class DialogueBoxController : MonoBehaviour
     private UIController uIController;
     private void OnEnable()
     {
-        dialogueQueue = new Queue<FixedString128Bytes>();
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
+        Debug.Log("Dialogue Box Enabled");
+        NetworkCommands.UIControllerCreated += () =>
+        {
+            Debug.Log("Initializing Dialogue Queue");
+            dialogueQueue = new Queue<FixedString128Bytes>();
+            uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+            uIController.OnHostMenuChange += HandleMenuChange;
+            uIController.OnClientMenuChange += HandleMenuChange;
+        };
     }
 
     private void OnDisable()
     {
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
+        if (uIController != null)
+        {
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+        }
     }
 
     private void HandleMenuChange(Menus menu)
@@ -62,6 +70,7 @@ public class DialogueBoxController : MonoBehaviour
     {
         FixedString128Bytes convertedDialogue = new FixedString128Bytes(dialogue);
         dialogueQueue.Enqueue(convertedDialogue);
+        Debug.Log($"Dialogue Added was {dialogue}");
     }
 
     public IEnumerator ReadFirstQueuedDialogue()

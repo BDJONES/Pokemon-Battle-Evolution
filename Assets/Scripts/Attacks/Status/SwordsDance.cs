@@ -20,32 +20,40 @@ public class SwordsDance : Attack
     {
         int activeRPCs;
         base.TriggerEffect(attacker, target);
-        if (attacker.AttackStage == 5)
+        if (attacker.AttackStage >= 5)
         {
+            if (attacker.AttackStage == 6)
+            {
+                activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+                GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()}'s attack could not go any higher");
+                GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()}'s attack could not go any higher");
+                while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+                {
+                    await UniTask.Yield();
+                }
+            }
+            else
+            {
+                activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+                GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()}'s attack increased");
+                GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()}'s attack increased");
+                while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+                {
+                    await UniTask.Yield();
+                }
+            }
             attacker.AttackStage += 1;
         }
         else if (attacker.AttackStage < 5)
         {
             attacker.AttackStage += 2;
-        }
-        else
-        {
             activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
-            GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()}'s attack could not go any higher");
-            GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()}'s attack could not go any higher");
+            GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()}'s attack sharply increased");
+            GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()}'s attack sharply increased");
             while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
             {
                 await UniTask.Yield();
             }
-            return;
-        }
-        // May not work
-        activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
-        GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()}'s attack sharply increased");
-        GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()}'s attack sharply increased");
-        while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
-        {
-            await UniTask.Yield();
         }
     }
 }

@@ -6,16 +6,20 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.UIElements;
 using Unity.Netcode;
 
-public class ForfietButtonController : MonoBehaviour
+public class ForfietButtonController : NetworkBehaviour
 {
 	[SerializeField] private GeneralBattleUIElements uIElements;
 	private UIController uIController;
 	private void OnEnable()
 	{
-		uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
-        uIElements = uIController.GetComponent<GeneralBattleUIElements>();
+        NetworkCommands.UIControllerCreated += () =>
+        {
+            uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+            uIController.OnHostMenuChange += HandleMenuChange;
+            uIController.OnClientMenuChange += HandleMenuChange;
+            uIElements = uIController.GetComponent<GeneralBattleUIElements>();
+        };
+
         //UIEventSubscriptionManager.Subscribe(uiElements.ForfietButton, ForfietButtonClicked);
     }
 
@@ -23,12 +27,16 @@ public class ForfietButtonController : MonoBehaviour
 
     private void OnDisable()
 	{
-		if (uIElements.PokemonButton == null)
-		{
-			return;
-		}
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
+        if (uIController != null)
+        {
+		    if (uIElements.PokemonButton == null)
+		    {
+			    return;
+		    }
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+        }
+
     }
     private void HandleMenuChange(Menus menu)
     {
@@ -36,7 +44,7 @@ public class ForfietButtonController : MonoBehaviour
 		{
             var player = transform.parent.parent.gameObject;
 
-            if (TrainerController.IsOwnerHost(player))
+            if (IsHost)
             {
                 UIEventSubscriptionManager.Subscribe(uIElements.ForfietButton, ForfietButtonClicked, 1);
             }
@@ -51,13 +59,13 @@ public class ForfietButtonController : MonoBehaviour
 	{
         var player = transform.parent.parent.gameObject;
 
-        if (TrainerController.IsOwnerHost(player))
+        if (IsHost)
         {
-            uIController.UpdateMenu(Menus.ForfietMenu, 1);
+            uIController.UpdateMenuRpc(Menus.ForfietMenu, 1);
         }
         else
         {
-            uIController.UpdateMenu(Menus.ForfietMenu, 2);
+            uIController.UpdateMenuRpc(Menus.ForfietMenu, 2);
         }
     }
 }

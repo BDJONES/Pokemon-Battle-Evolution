@@ -8,8 +8,8 @@ public class Pokemon5Controller : PartyPokemonController
     {
         var player = trainerController.gameObject;
         InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[4]);
-        
-        if (TrainerController.IsOwnerHost(player))
+        Debug.Log("Attaching the Button");
+        if (IsHost)
         {
             UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon5Button, PartyPokemonClicked, 1);
         }

@@ -8,8 +8,8 @@ public class Pokemon3Controller : PartyPokemonController
     {
         var player = trainerController.gameObject;
         InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[2]);
-
-        if (TrainerController.IsOwnerHost(player))
+        Debug.Log("Attaching the Button");
+        if (IsHost)
         {
             UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon3Button, PartyPokemonClicked, 1);
         }

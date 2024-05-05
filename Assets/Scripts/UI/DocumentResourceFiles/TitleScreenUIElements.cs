@@ -4,6 +4,31 @@ using UnityEngine.UIElements;
 public class TitleScreenUIElements : MonoBehaviour
 {
     public UIDocument uIDocument;
+
+    private void OnEnable()
+    {
+        //GameObject gameManager = GameObject.Find("Game Manager");
+        //GameObject playerUIController = GameObject.Find("UI Controller");
+        //GameObject opposingPlayer = GameObject.Find("Trainer(Clone)");
+        //GameObject player = GameObject.Find("Me");
+        //if (gameManager != null)
+        //{
+        //    Destroy(gameManager);
+        //}
+        //if (playerUIController != null)
+        //{
+        //    Destroy(playerUIController);
+        //}
+        //if (opposingPlayer != null)
+        //{
+        //    Destroy(opposingPlayer);
+        //}
+        //if (player != null)
+        //{
+        //    Destroy(player);
+        //}
+    }
+
     public Button HostButton
     {
         get

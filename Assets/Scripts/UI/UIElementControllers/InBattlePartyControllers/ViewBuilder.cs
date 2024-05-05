@@ -1,64 +1,79 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class ViewBuilder : MonoBehaviour
+public class ViewBuilder : NetworkBehaviour
 {
     [SerializeField] private VisualTreeAsset InBattlePartyWidget;
     [SerializeField] TrainerController trainerController;
     private Menus previousMenu;
     private UIController uIController;
-    
+    public static event Action OnViewCreated;
+
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
-    }
+        //if (IsOwner)
+        //{   
 
+            NetworkCommands.UIControllerCreated += () =>
+            {
+                uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+                trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+                uIController.OnHostMenuChange += HandleMenuChange;
+                uIController.OnClientMenuChange += HandleMenuChange;
+
+            };
+        //}
+    }
     private void OnDisable()
     {
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
+        if (uIController != null)
+        {
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+        }
     }
 
     private void HandleMenuChange(Menus menu)
     {
-        
-        if (menu == Menus.InBattlePartyMenu || menu == Menus.PokemonFaintedScreen)
+        if (IsOwner)
         {
-            PopulateUI();
-        }
-        else
-        {
-            if (previousMenu == Menus.InBattlePartyMenu)
+            if (menu == Menus.InBattlePartyMenu || menu == Menus.PokemonFaintedScreen)
             {
-                var widgetHolder = GameObject.Find("WidgetHolder");
-                var pokemon1Controller = widgetHolder.GetComponent<Pokemon1Controller>();
-                var pokemon2Controller = widgetHolder.GetComponent<Pokemon2Controller>();
-                var pokemon3Controller = widgetHolder.GetComponent<Pokemon3Controller>();
-                var pokemon4Controller = widgetHolder.GetComponent<Pokemon4Controller>();
-                var pokemon5Controller = widgetHolder.GetComponent<Pokemon5Controller>();
-                var pokemon6Controller = widgetHolder.GetComponent<Pokemon6Controller>();
-                Destroy(pokemon1Controller);
-                Destroy(pokemon2Controller);
-                Destroy(pokemon3Controller);
-                Destroy(pokemon4Controller);
-                Destroy(pokemon5Controller);
-                Destroy(pokemon6Controller);
-                Destroy(GameObject.Find("WidgetHolder"));
-                //RemoveUI();
+                PopulateUI();
             }
+            else
+            {
+                if (previousMenu == Menus.InBattlePartyMenu || previousMenu == Menus.PokemonFaintedScreen)
+                {
+                    var widgetHolder = GameObject.Find("WidgetHolder");
+                    var pokemon1Controller = widgetHolder.GetComponent<Pokemon1Controller>();
+                    var pokemon2Controller = widgetHolder.GetComponent<Pokemon2Controller>();
+                    var pokemon3Controller = widgetHolder.GetComponent<Pokemon3Controller>();
+                    var pokemon4Controller = widgetHolder.GetComponent<Pokemon4Controller>();
+                    var pokemon5Controller = widgetHolder.GetComponent<Pokemon5Controller>();
+                    var pokemon6Controller = widgetHolder.GetComponent<Pokemon6Controller>();
+                    Destroy(pokemon1Controller);
+                    Destroy(pokemon2Controller);
+                    Destroy(pokemon3Controller);
+                    Destroy(pokemon4Controller);
+                    Destroy(pokemon5Controller);
+                    Destroy(pokemon6Controller);
+                    Destroy(GameObject.Find("WidgetHolder"));
+                    //RemoveUI();
+                }
+            }
+            previousMenu = menu;
         }
-        previousMenu = menu;
     }
 
     private void PopulateUI()
     {
+        Debug.Log("Populating UI");
         int index = 1;
         GameObject WidgetHolder = new GameObject
         {
@@ -121,6 +136,7 @@ public class ViewBuilder : MonoBehaviour
             }
             index++;
         }
+        OnViewCreated?.Invoke();
         //RemoveUI();
     }
 

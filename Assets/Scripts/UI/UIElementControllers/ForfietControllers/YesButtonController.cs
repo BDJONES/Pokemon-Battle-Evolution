@@ -5,14 +5,11 @@ using UnityEngine;
 public class YesButtonController : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        
-    }
+        NetworkCommands.UIControllerCreated += () =>
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        };
     }
 }

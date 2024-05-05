@@ -9,7 +9,8 @@ public class Pokemon1Controller : PartyPokemonController
     {
         var player = trainerController.gameObject;
         InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[0]);
-        if (TrainerController.IsOwnerHost(player))
+        Debug.Log("Attaching the Button");
+        if (IsHost)
         {
             UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon1Button, PartyPokemonClicked, 1);
         }

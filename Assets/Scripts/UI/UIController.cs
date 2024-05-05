@@ -38,37 +38,42 @@ public class UIController : NetworkBehaviour
 
     private void OnEnable()
     {
-        //UpdateMenu(Menus.LoadingScreen);
+        //UpdateMenuRpc(Menus.LoadingScreen);
         GameManager.OnStateChange += HandleStateChange;
         YourPokemonDeathEventManager.OnDeath += HandlePokemonDeath;
-        NetworkCommands.TwoPlayersConnected += HandleLobbyConnection;
     }
 
-    private void HandleLobbyConnection()
+    private void OnDisable()
     {
-        
+        GameManager.OnStateChange -= HandleStateChange;
+        YourPokemonDeathEventManager.OnDeath -= HandlePokemonDeath;
+    }
+
+    public override void OnDestroy()
+    {
+        UIEventSubscriptionManager.UnsubscribeAll(1);
+        UIEventSubscriptionManager.UnsubscribeAll(2);
+        base.OnDestroy();
     }
 
     private void HandlePokemonDeath()
     {
         //Play Animation
         Debug.Log("Detected that Pokemon Died");
-        //UpdateMenu(Menus.InBattlePartyMenu);
-        //print($"Menu = {menu}");
     }
 
     private void HandleStateChange(GameState state)
     {
         if (state == GameState.BattleStart)
         {
-            UpdateMenu(Menus.GeneralBattleMenu, 1);
-            UpdateMenu(Menus.GeneralBattleMenu, 2);
+            UpdateMenuRpc(Menus.GeneralBattleMenu, 1);
+            UpdateMenuRpc(Menus.GeneralBattleMenu, 2);
         }
     }
 
     //private void Start()
     //{
-    //    UpdateMenu(Menus.LoadingScreen);
+    //    UpdateMenuRpc(Menus.LoadingScreen);
     //}
 
     //private void HandleUIInput()
@@ -80,12 +85,12 @@ public class UIController : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     public void UpdateMenuClientRpc(Menus newMenu)
     {
-        if (IsHost) return;
-
-        UIEventSubscriptionManager.UnsubscribeAll(2);
-        //Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {menu}");
         trainer2PrevMenu = trainer2Menu;
         trainer2Menu = newMenu;
+        if (IsHost) return;
+        UIEventSubscriptionManager.UnsubscribeAll(2);
+        Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {trainer2Menu}");
+
         switch (newMenu)
         {
             //case Menus.TitleScreen:
@@ -183,7 +188,7 @@ public class UIController : NetworkBehaviour
         if (!IsHost) return;
         //Debug.Log("Updating the Host's menu");
         UIEventSubscriptionManager.UnsubscribeAll(1);
-        //Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {menu}");
+        Debug.Log($"Just Updated Menu to {newMenu}.\nOld menu was {trainer1Menu}");
         trainer1PrevMenu = trainer1Menu;
         trainer1Menu = newMenu;
         switch (newMenu)
@@ -276,16 +281,26 @@ public class UIController : NetworkBehaviour
             OnHostMenuChange.Invoke(newMenu);
         }
     }
-    public void UpdateMenu(Menus newMenu, int type) // If 1 is a then we are calling the server. If it is 2, then we are calling the client
+
+    [Rpc(SendTo.Server)]
+    public void UpdateMenuRpc(Menus newMenu, int type) // If 1 is a then we are calling the server. If it is 2, then we are calling the client
     {
         if ((trainer1Menu == null || trainer1Menu != newMenu) && type == 1)
         {
             //Debug.Log("Updated Host Menu");
+            if (newMenu == trainer1Menu)
+            {
+                return;
+            }
             UpdateMenuHostRpc(newMenu);
         }
         else if ((trainer2Menu == null || trainer2Menu != newMenu) && type == 2)
         {
             //Debug.Log("Updated Client Menu");
+            if (newMenu == trainer2Menu)
+            {
+                return;
+            }
             UpdateMenuClientRpc(newMenu);
         }
     }

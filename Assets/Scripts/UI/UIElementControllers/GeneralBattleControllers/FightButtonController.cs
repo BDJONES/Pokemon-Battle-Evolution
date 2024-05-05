@@ -7,35 +7,41 @@ using UnityEngine.UIElements;
 using System.Runtime.CompilerServices;
 using Unity.Netcode;
 
-public class FightButtonController : MonoBehaviour
+public class FightButtonController : NetworkBehaviour
 {
     [SerializeField] private GeneralBattleUIElements uIElements;
     private UIController uIController;
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIElements = uIController.GetComponent<GeneralBattleUIElements>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
+        NetworkCommands.UIControllerCreated += () =>
+        {
+            uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+            uIElements = uIController.GetComponent<GeneralBattleUIElements>();
+            uIController.OnHostMenuChange += HandleMenuChange;
+            uIController.OnClientMenuChange += HandleMenuChange;
+        };
     }
 
     private void OnDisable()
     {
-        if (uIElements.PokemonButton == null)
-        {
-            return;
+        if (uIController != null)
+        {      
+            if (uIElements.PokemonButton == null)
+            {
+                return;
+            }
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
         }
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
     }
 
     private void HandleMenuChange(Menus menu)
     {
         if (menu == Menus.GeneralBattleMenu)
         {
-            var player = transform.parent.parent.gameObject;
+            //var player = transform.parent.parent.gameObject;
 
-            if (TrainerController.IsOwnerHost(player))
+            if (IsHost)
             {
                 UIEventSubscriptionManager.Subscribe(uIElements.FightButton, FightButtonClicked, 1);
             }
@@ -61,15 +67,15 @@ public class FightButtonController : MonoBehaviour
     {
         var player = transform.parent.parent.gameObject;
 
-        if (TrainerController.IsOwnerHost(player))
+        if (IsHost)
         {
             Debug.Log("I am a host");
-            uIController.UpdateMenu(Menus.MoveSelectionMenu, 1);
+            uIController.UpdateMenuRpc(Menus.MoveSelectionMenu, 1);
         }
         else
         {
             Debug.Log("I am not a host");
-            uIController.UpdateMenu(Menus.MoveSelectionMenu, 2);
+            uIController.UpdateMenuRpc(Menus.MoveSelectionMenu, 2);
         }
     }
 }

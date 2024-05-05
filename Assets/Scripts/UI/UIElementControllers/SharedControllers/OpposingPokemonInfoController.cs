@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class OpposingPokemonInfoController : MonoBehaviour
+public class OpposingPokemonInfoController : NetworkBehaviour
 {
     [SerializeField] private TrainerController trainerController;
     [SerializeField] private GeneralBattleUIElements uIGBElements;
@@ -33,23 +33,47 @@ public class OpposingPokemonInfoController : MonoBehaviour
     private float? oldHP;
     private void OnEnable()
     {
-        
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIGBElements = uIController.GetComponent<GeneralBattleUIElements>();
-        moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
-        opposingPokemonDamagedUIElements = uIController.GetComponent<OpposingPokemonDamagedUIElements>();
-        pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
-        trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
-        GameManager.OnStateChange += HandleGameStateChange;
+        //if (IsOwner)
+        //{   
+        NetworkCommands.UIControllerCreated += () =>
+        {
+            uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+            uIGBElements = uIController.GetComponent<GeneralBattleUIElements>();
+            moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
+            opposingPokemonDamagedUIElements = uIController.GetComponent<OpposingPokemonDamagedUIElements>();
+            pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+            trainerController = transform.parent.parent.gameObject.GetComponent<TrainerController>();
+            //if (trainerController.GetPlayer())
+            //{
+            //    Debug.Log("The player exist");
+            //}
+            //else
+            //{
+            //    Debug.Log("The player does not exist");
+            //}
+            //if (trainerController.GetOpponent())
+            //{
+            //    Debug.Log($"GameObject = {transform.parent.parent.gameObject.name}, The opponent exist");
+            //}
+            //else
+            //{
+            //    Debug.Log($"GameObject = {transform.parent.parent.gameObject.name}, The opponent doesn't exist");
+            //}
+            uIController.OnHostMenuChange += HandleMenuChange;
+            uIController.OnClientMenuChange += HandleMenuChange;
+            GameManager.OnStateChange += HandleGameStateChange;
+        };
+        //}
     }
 
     private void OnDisable()
     {
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
-        GameManager.OnStateChange -= HandleGameStateChange;
+        if (uIController != null)
+        {
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+            GameManager.OnStateChange -= HandleGameStateChange;
+        }
     }
 
     private void InitializeFields(Menus menu)
@@ -194,12 +218,13 @@ public class OpposingPokemonInfoController : MonoBehaviour
             {
                 var player = transform.parent.parent.gameObject;
 
-                if (TrainerController.IsOwnerHost(player))
+                if (IsHost)
                 {
                     UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton, 1);
                 }
                 else
                 {
+                    Debug.Log("Subscribing to the info button on General Battle Menu");
                     UIEventSubscriptionManager.Subscribe(infoButtonGB, ClickedInfoButton, 2);
                 }
             }
@@ -212,12 +237,13 @@ public class OpposingPokemonInfoController : MonoBehaviour
             {
                 var player = transform.parent.parent.gameObject;
 
-                if (TrainerController.IsOwnerHost(player))
+                if (IsHost)
                 {
                     UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton, 1);
                 }
                 else
                 {
+                    Debug.Log("Subscribing to the info button on MoveSelection");
                     UIEventSubscriptionManager.Subscribe(infoButtonMS, ClickedInfoButton, 2);
                 }
             }
@@ -234,18 +260,21 @@ public class OpposingPokemonInfoController : MonoBehaviour
         Debug.Log("Clicked the opposing pokemon info button");
         var player = transform.parent.parent.gameObject;
 
-        if (TrainerController.IsOwnerHost(player))
+        if (IsHost)
         {
-            uIController.UpdateMenu(Menus.OpposingPokemonInfoScreen, 1);
+            uIController.UpdateMenuRpc(Menus.OpposingPokemonInfoScreen, 1);
         }
         else
         {
-            uIController.UpdateMenu(Menus.OpposingPokemonInfoScreen, 2);
+            uIController.UpdateMenuRpc(Menus.OpposingPokemonInfoScreen, 2);
         }
     }
 
     private void UpdateInfo(Menus menu)
     {
+        if (!IsOwner) return;
+        trainerController = transform.parent.parent.gameObject.GetComponent<TrainerController>();
+        Debug.Log($"trainerController.GetOpponent().GetActivePokemon() = {trainerController.GetOpponent().GetActivePokemon().GetNickname()}");
         if (oldHP == null)
         {
             oldHP = trainerController.GetOpponent().GetActivePokemon().GetHPStat();

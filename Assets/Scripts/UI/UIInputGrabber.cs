@@ -31,12 +31,53 @@ public class UIInputGrabber //: IDisposable
         //uIController = gameObject.GetComponentInChildren<UIController>();
         uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
         dialogueBoxController = GameObject.Find("Me").GetComponentInChildren<DialogueBoxController>();
+        ViewBuilder.OnViewCreated += HandlePartyViewCreated;
         uIController.OnHostMenuChange += HandleMenuChange;
         uIController.OnClientMenuChange += HandleMenuChange;
         moveSelectionRPCManager = new RPCManager();
     }
 
+    private void HandlePartyViewCreated()
+    {
+        Debug.Log("PartyViewCreated");
+        pokemon1Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon1Controller>();
+        pokemon2Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon2Controller>();
+        pokemon3Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon3Controller>();
+        pokemon4Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon4Controller>();
+        pokemon5Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon5Controller>();
+        pokemon6Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon6Controller>();
 
+        if (pokemon1Controller != null)
+        {
+            //Debug.Log("Subscribing to Controller1");
+            pokemon1Controller.SwitchSelected += Switch1Selected;
+        }
+        if (pokemon2Controller != null)
+        {
+            //Debug.Log("Subscribing to Controller2");
+            pokemon2Controller.SwitchSelected += Switch2Selected;
+        }
+        if (pokemon3Controller != null)
+        {
+            //Debug.Log("Subscribing to Controller3");
+            pokemon3Controller.SwitchSelected += Switch3Selected;
+        }
+        if (pokemon4Controller != null)
+        {
+            //Debug.Log("Subscribing to Controller4");
+            pokemon4Controller.SwitchSelected += Switch4Selected;
+        }
+        if (pokemon5Controller != null)
+        {
+            //Debug.Log("Subscribing to Controller5");
+            pokemon5Controller.SwitchSelected += Switch5Selected;
+        }
+        if (pokemon6Controller != null)
+        {
+            //Debug.Log("Subscribing to Controller6");
+            pokemon6Controller.SwitchSelected += Switch6Selected;
+        }
+    }
 
     ~UIInputGrabber()
     {
@@ -135,46 +176,6 @@ public class UIInputGrabber //: IDisposable
                 attack4Controller.AttackSelected += Attack4Selected;
             }
         }
-        else if (menu == Menus.InBattlePartyMenu || menu == Menus.PokemonFaintedScreen)
-        {
-            pokemon1Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon1Controller>();
-            pokemon2Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon2Controller>();
-            pokemon3Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon3Controller>();
-            pokemon4Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon4Controller>();
-            pokemon5Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon5Controller>();
-            pokemon6Controller = GameObject.Find("WidgetHolder").GetComponent<Pokemon6Controller>();
-
-            if (pokemon1Controller != null)
-            {
-                //Debug.Log("Subscribing to Controller1");
-                pokemon1Controller.SwitchSelected += Switch1Selected;
-            }
-            if (pokemon2Controller != null)
-            {
-                //Debug.Log("Subscribing to Controller2");
-                pokemon2Controller.SwitchSelected += Switch2Selected;
-            }
-            if (pokemon3Controller != null)
-            {
-                //Debug.Log("Subscribing to Controller3");
-                pokemon3Controller.SwitchSelected += Switch3Selected;
-            }
-            if (pokemon4Controller != null)
-            {
-                //Debug.Log("Subscribing to Controller4");
-                pokemon4Controller.SwitchSelected += Switch4Selected;
-            }
-            if (pokemon5Controller != null)
-            {
-                //Debug.Log("Subscribing to Controller5");
-                pokemon5Controller.SwitchSelected += Switch5Selected;
-            }
-            if (pokemon6Controller != null)
-            {
-                //Debug.Log("Subscribing to Controller6");
-                pokemon6Controller.SwitchSelected += Switch6Selected;
-            }
-        }
         else
         {
             if (previousMenu == Menus.MoveSelectionMenu)
@@ -231,17 +232,16 @@ public class UIInputGrabber //: IDisposable
 
     private void UpdateUIForSwitch(OnSwitchEventArgs e)
     {
-        var player = GameObject.Find("Me");
-        if (TrainerController.IsOwnerHost(player))
+        if (NetworkManager.Singleton.IsHost)
         {
             var prevMenu = uIController.GetCurrentTrainer1Menu();
             selectedAction = e.Switch;
             if (prevMenu != Menus.PokemonFaintedScreen)
             {
-                uIController.UpdateMenu(Menus.DialogueScreen, 1);
-                dialogueBoxController.AddDialogueToQueue("Communicating...");
+                uIController.UpdateMenuRpc(Menus.DialogueScreen, 1);
+                //dialogueBoxController.AddDialogueToQueue("Communicating...");
                 //dialogueBoxController.AddDialogueToQueue();
-                //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                //UIController.Instance.UpdateMenuRpc(Menus.GeneralBattleMenu);
             }
             HandleInput();
         }
@@ -251,10 +251,10 @@ public class UIInputGrabber //: IDisposable
             selectedAction = e.Switch;
             if (prevMenu != Menus.PokemonFaintedScreen)
             {
-                uIController.UpdateMenu(Menus.DialogueScreen, 2);
-                dialogueBoxController.AddDialogueToQueue("Communicating...");
+                uIController.UpdateMenuRpc(Menus.DialogueScreen, 2);
                 //dialogueBoxController.AddDialogueToQueue("Communicating...");
-                //UIController.Instance.UpdateMenu(Menus.GeneralBattleMenu);
+                //dialogueBoxController.AddDialogueToQueue("Communicating...");
+                //UIController.Instance.UpdateMenuRpc(Menus.GeneralBattleMenu);
             }
             HandleInput();
         }
@@ -266,12 +266,12 @@ public class UIInputGrabber //: IDisposable
         var player = GameObject.Find("Me");
         //if (TrainerController.IsOwnerHost(player))
         //{
-        //    uIController.UpdateMenu(Menus.DialogueScreen, 1);
+        //    uIController.UpdateMenuRpc(Menus.DialogueScreen, 1);
         //    dialogueBoxController.AddDialogueToQueue("Communicating...");
         //}
         //else
         //{
-        //    uIController.UpdateMenu(Menus.DialogueScreen, 2);
+        //    uIController.UpdateMenuRpc(Menus.DialogueScreen, 2);
             
         //}
         //dialogueBoxController.AddDialogueToQueue("Communicating...");

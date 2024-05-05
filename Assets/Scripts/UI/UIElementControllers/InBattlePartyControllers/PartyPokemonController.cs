@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class PartyPokemonController : MonoBehaviour
+public abstract class PartyPokemonController : NetworkBehaviour
 {
     [SerializeField] protected TrainerController trainerController;
     public static event Action<IPlayerAction> InputReceived;
@@ -22,8 +22,11 @@ public abstract class PartyPokemonController : MonoBehaviour
 
     private void Start()
     {
+        //NetworkCommands.UIControllerCreated += () =>
+        //{
         battlePartyUIElements = GameObject.Find("UI Controller").GetComponent<InBattlePartyUIElements>();
         AttachButton();
+        //};
     }
 
     protected abstract void AttachButton();
@@ -35,7 +38,7 @@ public abstract class PartyPokemonController : MonoBehaviour
 
     protected void PartyPokemonClicked()
     {
-        //Debug.Log("PartyPokemon Clicked");
+        Debug.Log("PartyPokemon Clicked");
         var args = new OnSwitchEventArgs
         {
             Switch = this.switchPA

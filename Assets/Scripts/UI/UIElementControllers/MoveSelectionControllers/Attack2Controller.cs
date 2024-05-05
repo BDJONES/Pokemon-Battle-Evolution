@@ -8,19 +8,27 @@ public class Attack2Controller : MoveSelectButton
     [SerializeField] TrainerController trainerController;
     private void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        moveSelectionUIElements = uIController.gameObject.GetComponent<MoveSelectionUIElements>();
-        //trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
+        //if (IsOwner)
+        //{
+            NetworkCommands.UIControllerCreated += () =>
+            {
+                uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+                moveSelectionUIElements = uIController.gameObject.GetComponent<MoveSelectionUIElements>();
+                //trainerController = transform.parent.gameObject.transform.parent.gameObject.GetComponent<TrainerController>();
+                uIController.OnHostMenuChange += HandleMenuChange;
+                uIController.OnClientMenuChange += HandleMenuChange;
+            };
+        //}
     }
 
     private void OnDisable()
     {
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
+        if (uIController != null)
+        {
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+        }
     }
-
     protected override void InitializeButton(Button attackButton)
     {
         attack = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[1];
@@ -34,7 +42,7 @@ public class Attack2Controller : MoveSelectButton
             var player = transform.parent.parent.gameObject;
             InitializeButton(moveSelectionUIElements.Attack2Button);
             
-            if (TrainerController.IsOwnerHost(player))
+            if (IsHost)
             {
                 UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack2Button, OnAttackSelected, 1);
             }

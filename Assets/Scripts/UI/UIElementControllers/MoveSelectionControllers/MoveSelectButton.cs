@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class MoveSelectButton : MonoBehaviour
+public abstract class MoveSelectButton : NetworkBehaviour
 {
     [SerializeField] protected MoveSelectionUIElements moveSelectionUIElements;
     protected Attack attack;

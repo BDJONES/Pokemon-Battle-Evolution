@@ -4,7 +4,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class AttackInfoController : MonoBehaviour
+public class AttackInfoController : NetworkBehaviour
 {
     [SerializeField] private TrainerController trainerController;
     [SerializeField] private MoveSelectionUIElements moveSelectionUIElements;
@@ -28,17 +28,25 @@ public class AttackInfoController : MonoBehaviour
 
     protected void OnEnable()
     {
-        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-        uIController.OnHostMenuChange += HandleMenuChange;
-        uIController.OnClientMenuChange += HandleMenuChange;
-        moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
-        attackInfoUIElements = uIController.GetComponent <AttackInfoUIElements>();
+        //if (IsOwner) { 
+            NetworkCommands.UIControllerCreated += () =>
+            {
+                uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+                uIController.OnHostMenuChange += HandleMenuChange;
+                uIController.OnClientMenuChange += HandleMenuChange;
+                moveSelectionUIElements = uIController.GetComponent<MoveSelectionUIElements>();
+                attackInfoUIElements = uIController.GetComponent<AttackInfoUIElements>();
+            };
+        //}
     }
 
     protected void OnDisable()
     {
-        uIController.OnHostMenuChange -= HandleMenuChange;
-        uIController.OnClientMenuChange -= HandleMenuChange;
+        if (uIController != null)
+        {
+            uIController.OnHostMenuChange -= HandleMenuChange;
+            uIController.OnClientMenuChange -= HandleMenuChange;
+        }
     }
 
     protected void InitalizeFields()
@@ -114,13 +122,13 @@ public class AttackInfoController : MonoBehaviour
     private void UpdateUIForPlayer()
     {
         var player = transform.parent.parent.gameObject;
-        if (TrainerController.IsOwnerHost(player))
+        if (IsHost)
         {
-            uIController.UpdateMenu(Menus.AttackInfoScreen, 1);
+            uIController.UpdateMenuRpc(Menus.AttackInfoScreen, 1);
         }
         else
         {
-            uIController.UpdateMenu(Menus.AttackInfoScreen, 2);
+            uIController.UpdateMenuRpc(Menus.AttackInfoScreen, 2);
         }
     }
 
@@ -134,7 +142,7 @@ public class AttackInfoController : MonoBehaviour
             attack3 = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[2];
             attack4 = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[3];
             
-            if (TrainerController.IsOwnerHost(player))
+            if (IsHost)
             {
                 UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack1InfoButton, InfoButton1Clicked, 1);
                 UIEventSubscriptionManager.Subscribe(moveSelectionUIElements.Attack2InfoButton, InfoButton2Clicked, 1);
@@ -151,7 +159,7 @@ public class AttackInfoController : MonoBehaviour
         }
         else if (menu == Menus.AttackInfoScreen)
         {
-            if (TrainerController.IsOwnerHost(player))
+            if (IsHost)
             {
                 UIEventSubscriptionManager.Subscribe(attackInfoUIElements.BackButton, OnBackButtonClick, 1);
             }
