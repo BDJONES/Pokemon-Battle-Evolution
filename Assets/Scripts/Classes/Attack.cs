@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Netcode;
-using Unity.VisualScripting;
+using Cysharp.Threading.Tasks;
+using System;
+using System.Reflection;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public abstract class Attack : IPlayerAction
 {
@@ -16,7 +14,9 @@ public abstract class Attack : IPlayerAction
     protected int priority;
     protected int currPowerPoints;
     protected int maxPowerPoints;
-
+    protected bool isContact;
+    public static event Action<Attack> LastAttack;
+    protected bool finishedAttack = false;
     public Attack() 
     {
         this.attackName = "Generic Attack";
@@ -62,11 +62,28 @@ public abstract class Attack : IPlayerAction
     {
         return maxPowerPoints;
     }
-    protected virtual bool UseAttack(Pokemon attacker, Pokemon target)
+    public bool IsContact()
     {
-        if (this.accuracy == 100)
+        return isContact;
+    }
+    protected async virtual UniTask<bool> UseAttack(Pokemon attacker, Pokemon target)
+    {
+        if (this.accuracy == 101)
         {
-            int damage = CalculateDamage(this, attacker, target);
+            // Ignore evasion
+            int damage = await CalculateDamage(this, attacker, target);
+            DealDamage(damage, attacker, target);
+            if (target.GetHPStat() == 0)
+            {
+                return true;
+            }
+            // Some effects trigger after KO
+            TriggerEffect(attacker, target);
+        }
+        else if (this.accuracy == 100)
+        {
+            // Have to factor evasion into equation
+            int damage = await CalculateDamage(this, attacker, target);
             DealDamage(damage, attacker, target);
             if (target.GetHPStat() == 0)
             {
@@ -77,7 +94,8 @@ public abstract class Attack : IPlayerAction
         }
         else
         {
-            int generatedValue = Random.Range(0, 99);
+            // Have to factor evasion into equation
+            int generatedValue = UnityEngine.Random.Range(0, 99);
             int accurateRange = 100 - this.accuracy;
             if (generatedValue < accurateRange)
             {
@@ -86,7 +104,7 @@ public abstract class Attack : IPlayerAction
             }
             else
             {
-                int damage = CalculateDamage(this, attacker, target);
+                int damage = await CalculateDamage(this, attacker, target);
                 DealDamage(damage, attacker, target);
                 if (target.GetHPStat() == 0)
                 {
@@ -96,6 +114,9 @@ public abstract class Attack : IPlayerAction
             }
         }
         //Debug.Log("The Attack Landed");
+        LastAttack.Invoke(this);
+        //finishedAttack = true;
+        GameManager.Instance.FinishRPCTaskRpc();
         return true;
     }
     protected virtual void TriggerEffect(Pokemon attacker, Pokemon target)
@@ -103,12 +124,20 @@ public abstract class Attack : IPlayerAction
         currPowerPoints -= 1;
         return;
     }
-    protected virtual int CalculateDamage(Attack attack, Pokemon attacker, Pokemon target)
+    protected async virtual UniTask<int> CalculateDamage(Attack attack, Pokemon attacker, Pokemon target)
     {
+        if (attacker.GetAbility().GetType().Name == StaticAbilityObjects.Levitate.GetType().Name && attack.GetAttackType() == StaticTypeObjects.Ground)
+        {
+            return 0;
+        }
         float stab = IsStab(attacker); // Same Type Attack Bonus
-        float typeMatchup = Effectiveness(attacker, target);
-        int damageRange = Random.Range(217, 255);
-        int critChance = Random.Range(1, 16);
+        float typeMatchup = 1;
+        if (attack.GetAttackCategory() != AttackCategory.Status)
+        {
+            typeMatchup = await Effectiveness(attacker, target);
+        }
+        int damageRange = UnityEngine.Random.Range(217, 255);
+        int critChance = UnityEngine.Random.Range(1, 16);
         int damage;
         // Damage Formula comes from this attack https://www.math.miami.edu/~jam/azure/compendium/battdam.htm
         // Visual for Formula https://gamerant.com/pokemon-damage-calculation-help-guide/
@@ -169,8 +198,13 @@ public abstract class Attack : IPlayerAction
             damage = step9;
             if (critChance == 1)
             {
+                int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
                 GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()} landed a critical hit");
                 GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()} landed a critical hit");
+                while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+                {
+                    await UniTask.Yield();
+                }
                 damage = Mathf.FloorToInt(damage * 1.5f);
             }
         }
@@ -199,7 +233,11 @@ public abstract class Attack : IPlayerAction
 
     public IPlayerAction PerformAction(Pokemon attacker, Pokemon target)
     {
+        GameManager.Instance.AddRPCTaskRpc();
         UseAttack(attacker, target);
+        
+        //while (!finishedAttack) ;
+        //finishedAttack = false;
         return this;
     }
 
@@ -220,7 +258,7 @@ public abstract class Attack : IPlayerAction
         }
     }
 
-    protected virtual float Effectiveness(Pokemon attacker, Pokemon target)
+    protected virtual async UniTask<float> Effectiveness(Pokemon attacker, Pokemon target)
     {
         float effectiveness = 1f;
         if (target.GetType1().immunities.Contains(this.type) || (target.GetType2() != null && target.GetType2().immunities.Contains(this.type)))
@@ -248,24 +286,25 @@ public abstract class Attack : IPlayerAction
         {
             effectiveness /= 2;
         }
-        var dialogueBoxControllers = GameObject.FindObjectsByType<DialogueBoxController>(FindObjectsSortMode.None);
-        foreach (var controller in dialogueBoxControllers)
+
+        if (effectiveness > 1f)
         {
-            if (effectiveness > 1f)
+            int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+            GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is super effective.");
+            GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is super effective.");
+            while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
             {
-                
-                GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is super effective.");
-                GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is super effective.");
+                await UniTask.Yield();
             }
-            else if (effectiveness == 1f)
+        }
+        else if (effectiveness < 1f)
+        {
+            int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+            GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is not very effective.");
+            GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is not very effective.");
+            while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
             {
-                GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is effective");
-                GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is effective");
-            }
-            else
-            {
-                GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} is not very effective.");
-                GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} is not very effective.");
+                await UniTask.Yield();
             }
         }
         return effectiveness;
