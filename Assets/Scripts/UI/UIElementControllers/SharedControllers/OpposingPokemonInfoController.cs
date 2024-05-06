@@ -31,6 +31,8 @@ public class OpposingPokemonInfoController : NetworkBehaviour
     private Label hpStatLabelPI;
     private UIController uIController;
     private float? oldHP;
+    private Pokemon lastPokemon;
+    private EventsToTriggerManager eventsToTriggerManager;
     private void OnEnable()
     {
         //if (IsOwner)
@@ -43,27 +45,21 @@ public class OpposingPokemonInfoController : NetworkBehaviour
             opposingPokemonDamagedUIElements = uIController.GetComponent<OpposingPokemonDamagedUIElements>();
             pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
             trainerController = transform.parent.parent.gameObject.GetComponent<TrainerController>();
-            //if (trainerController.GetPlayer())
-            //{
-            //    Debug.Log("The player exist");
-            //}
-            //else
-            //{
-            //    Debug.Log("The player does not exist");
-            //}
-            //if (trainerController.GetOpponent())
-            //{
-            //    Debug.Log($"GameObject = {transform.parent.parent.gameObject.name}, The opponent exist");
-            //}
-            //else
-            //{
-            //    Debug.Log($"GameObject = {transform.parent.parent.gameObject.name}, The opponent doesn't exist");
-            //}
+            eventsToTriggerManager = GameObject.Find("EventsToTriggerManager").GetComponent<EventsToTriggerManager>();
             uIController.OnHostMenuChange += HandleMenuChange;
             uIController.OnClientMenuChange += HandleMenuChange;
             GameManager.OnStateChange += HandleGameStateChange;
+            eventsToTriggerManager.OnTriggerEvent += HandleTriggeredEvent;
         };
         //}
+    }
+
+    private void HandleTriggeredEvent(EventsToTrigger e)
+    {
+        if (e == EventsToTrigger.OpposingPokemonSwitched)
+        {
+            oldHP = trainerController.GetOpponent().GetActivePokemon().GetHPStat();
+        }
     }
 
     private void OnDisable()
@@ -273,7 +269,6 @@ public class OpposingPokemonInfoController : NetworkBehaviour
     private void UpdateInfo(Menus menu)
     {
         if (!IsOwner) return;
-        trainerController = transform.parent.parent.gameObject.GetComponent<TrainerController>();
         Debug.Log($"trainerController.GetOpponent().GetActivePokemon() = {trainerController.GetOpponent().GetActivePokemon().GetNickname()}");
         if (oldHP == null)
         {
