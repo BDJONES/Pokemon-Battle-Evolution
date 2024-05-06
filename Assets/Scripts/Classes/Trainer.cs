@@ -10,7 +10,7 @@ public class Trainer : NetworkBehaviour
 {
     [SerializeField] private GameObject[] teamObjects = new GameObject[6];
     [SerializeField] private GameObject activePokemonGameObject;
-    private Pokemon[] pokemonTeam = new Pokemon[6];
+    [SerializeField] private Pokemon[] pokemonTeam = new Pokemon[6];
     private Pokemon activePokemon;
     public string trainerName;
     public event Action<Trainer> UpdatedTeam;
@@ -20,7 +20,7 @@ public class Trainer : NetworkBehaviour
     private async void Start()
     {
         rpcManager = new RPCManager();
-        UpdatePokemonList();
+        InitializePokemonList();
         await RandomizeTeam();
         UpdatePokemonList();
         //rpcManager.BeginRPCBatch();
@@ -32,8 +32,28 @@ public class Trainer : NetworkBehaviour
         
         //activePokemonGameObject = teamObjects[0];
         //activePokemon = pokemonTeam[0];
-        activePokemon.ActiveState = true;
+        //activePokemon.ActiveState = true;
         GameManager.OnStateChange += HandleMenuChange;
+    }
+
+    private void InitializePokemonList()
+    {
+        int i = 0;
+        foreach (var go in teamObjects)
+        {
+            if (go == null)
+            {
+                pokemonTeam[i] = null;
+            }
+            else
+            {
+                pokemonTeam[i] = go.GetComponent<Pokemon>();
+                //Debug.Log();
+            }
+            i++;
+        }
+        activePokemon = pokemonTeam[0];
+        activePokemonGameObject = activePokemon.gameObject;
     }
 
     private void HandleMenuChange(GameState state)
@@ -162,7 +182,10 @@ public class Trainer : NetworkBehaviour
         activePokemon.ActiveState = false;
         activePokemonGameObject = newObject;
         activePokemon = newPokemon;
-        activePokemon.ActiveState = true;
+        if (IsOwner)
+        {
+            activePokemon.ActiveState = true;
+        } 
         pokemonTeam[0] = newPokemon;
         teamObjects[0] = newObject;
         if (gameObject.name == "Me")
@@ -385,18 +408,24 @@ public class Trainer : NetworkBehaviour
             else
             {
                 randomizedTeam[i] = pokemonNameInstanceDictionary[pokemonTeamInfo.pokemon6.ToString()];
+
             }
+            randomizedTeam[i].ActiveState = false;
         }
         Debug.Log("Setting the host's team on the client");
+        Pokemon lastActivePokemon = pokemonNameInstanceDictionary[activePokemon.GetSpeciesName()];
+        //lastActivePokemon.ActiveState = false;
+        //randomizedTeam[0].ActiveState = true;
         opponent.SetPokemonTeam(randomizedTeam);
         GameObject[] newTeamObjects = new GameObject[6];
         for (int j = 0; j < opponent.GetPokemonTeam().Length; j++)
         {
+
             newTeamObjects[j] = opponent.GetPokemonTeam()[j].gameObject;
         }
         opponent.SetTeamObjects(newTeamObjects);
-        opponent.SetActivePokemon(opponent.pokemonTeam[0]);
-        opponent.SetActivePokemonGameObject(opponent.teamObjects[0]);
+        opponent.SetActivePokemon(opponent.GetPokemonTeam()[0]);
+        opponent.SetActivePokemonGameObject(opponent.GetTeamObjects()[0]);
         opponent.gameObject.GetComponent<TrainerController>().SetOpponent(opponent);
     }
 
@@ -442,10 +471,15 @@ public class Trainer : NetworkBehaviour
         }
         int j = 0;
         Trainer opponent = GameObject.Find("Trainer(Clone)").GetComponent<Trainer>();
+        //Pokemon lastActivePokemon = pokemonNameInstanceDictionary[opponent.GetActivePokemon().GetSpeciesName()];
+        //lastActivePokemon.ActiveState = false;
+        //opponent.SetActivePokemon(lastActivePokemon);
+        //randomizedTeam[0].ActiveState = true;
         opponent.SetPokemonTeam(randomizedTeam);
         GameObject[] newTeamObjects = new GameObject[6];
-        foreach(Pokemon pokemon in opponent.pokemonTeam)
+        foreach(Pokemon pokemon in opponent.GetPokemonTeam())
         {
+            pokemon.ActiveState = false;
             newTeamObjects[j] = pokemon.gameObject;
             j++;
         }

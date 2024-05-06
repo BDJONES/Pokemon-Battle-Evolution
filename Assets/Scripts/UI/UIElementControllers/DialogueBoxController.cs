@@ -46,6 +46,11 @@ public class DialogueBoxController : NetworkBehaviour
 
     }
 
+    public int QueueSize()
+    {
+        return dialogueQueue.Count;
+    }
+
     private void InitializeFields()
     {
         Debug.Log("Initializing the Fields");

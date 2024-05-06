@@ -35,7 +35,7 @@ public abstract class Pokemon: NetworkBehaviour
     public event Action<StatusConditions>? StatusChanged;
     [SerializeField] protected List<Attack> moveSet = null!;
     [SerializeField] protected List<Attack> learnSet = null!;
-    protected bool isActive; // Is the pokemon currently on the field
+    public bool isActive = false; // Is the pokemon currently on the field
     public bool ActiveState
     {
         get
@@ -300,7 +300,7 @@ public abstract class Pokemon: NetworkBehaviour
     }
     public bool GetActiveStatus()
     {
-        return isActive;
+        return ActiveState;
     }
     public Item? GetItem()
     {
@@ -432,11 +432,22 @@ public abstract class Pokemon: NetworkBehaviour
     }
     public void ResetStatStages()
     {
-        this.AttackStage = 0;
-        this.DefenseStage = 0;
-        this.SpecialAttackStage = 0;
-        this.SpecialDefenseStage = 0;
-        this.SpeedStage = 0;
+        if (IsHost)
+        {
+            this.AttackStage = 0;
+            this.DefenseStage = 0;
+            this.SpecialAttackStage = 0;
+            this.SpecialDefenseStage = 0;
+            this.SpeedStage = 0;
+        }
+        else
+        {
+            RequestStatChangeRpc(Stats.Attack, 0);
+            RequestStatChangeRpc(Stats.SpecialAttack, 0);
+            RequestStatChangeRpc(Stats.Defense, 0);
+            RequestStatChangeRpc(Stats.SpecialDefense, 0);
+            RequestStatChangeRpc(Stats.Speed, 0);
+        }
     }
     public void ResetBattleEffects()
     {
@@ -449,5 +460,32 @@ public abstract class Pokemon: NetworkBehaviour
     public Attack? GetLastAttack()
     {
         return lastAttack;
+    }
+    [Rpc(SendTo.Server)]
+    public void RequestStatChangeRpc(Stats stat, int value)
+    {
+        Pokemon target = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<TrainerController>().GetPlayer().GetActivePokemon();
+        switch (stat)
+        {
+            case Stats.Attack:
+                target.AttackStage = value; 
+                break;
+            case Stats.SpecialAttack:
+                target.SpecialAttackStage = value;
+                break;
+            case Stats.Defense:
+                target.DefenseStage = value;
+                break;
+            case Stats.SpecialDefense:
+                target.SpecialDefenseStage = value;
+                break;
+            case Stats.Speed:
+                target.SpeedStage = value;
+                break;
+            case Stats.Evasion:
+                break;
+            case Stats.Accuracy:
+                break;
+        }
     }
 }

@@ -40,8 +40,8 @@ public class CalmMind : Attack
         {
             attacker.SpecialDefenseStage += 1;
             int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
-            GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()}'s Special Defense Increased increased");
-            GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()}'s Special Attack increased");
+            GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()}'s Special Defense increased");
+            GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()}'s Special Defense increased");
             while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
             {
                 await UniTask.Yield();

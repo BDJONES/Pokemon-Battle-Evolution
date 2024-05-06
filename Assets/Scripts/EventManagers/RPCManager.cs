@@ -17,7 +17,7 @@ public class RPCManager : INetworkSerializable
 
     public void BeginRPCBatch()
     {
-        //Debug.Log("Beginning an RPC Batch");
+        Debug.Log("Beginning an RPC Batch");
         rpcCounter = 0;
         allRPCsCompleted = false;
     }

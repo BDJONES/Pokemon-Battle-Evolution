@@ -66,8 +66,7 @@ public class UIController : NetworkBehaviour
     {
         if (state == GameState.BattleStart)
         {
-            UpdateMenuRpc(Menus.GeneralBattleMenu, 1);
-            UpdateMenuRpc(Menus.GeneralBattleMenu, 2);
+
         }
     }
 
@@ -287,23 +286,13 @@ public class UIController : NetworkBehaviour
     {
         if ((trainer1Menu == null || trainer1Menu != newMenu) && type == 1)
         {
-            //Debug.Log("Updated Host Menu");
-            if (newMenu == trainer1Menu)
-            {
-                return;
-            }
             UpdateMenuHostRpc(newMenu);
         }
         else if ((trainer2Menu == null || trainer2Menu != newMenu) && type == 2)
         {
-            //Debug.Log("Updated Client Menu");
-            if (newMenu == trainer2Menu)
-            {
-                return;
-            }
             UpdateMenuClientRpc(newMenu);
         }
-    }
+    }   
 
     public Menus? GetCurrentTrainer1Menu()
     {
