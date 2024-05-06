@@ -19,7 +19,6 @@ using ParrelSync;
 
 public class LobbyManager : Singleton<LobbyManager>
 {
-    //private UIController uIController;
     private UnityTransport unityTransport;
     private Lobby connectedLobby;
     private const string joinCodeKey = "PokemonLobbyManager";
@@ -29,7 +28,6 @@ public class LobbyManager : Singleton<LobbyManager>
     private void OnEnable()
     {
         unityTransport = GameObject.Find("NetworkManager").GetComponent<UnityTransport>();
-        //uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
     }
 
     public async void CreateOrJoinLobby()
@@ -53,7 +51,8 @@ public class LobbyManager : Singleton<LobbyManager>
         if (connectedLobby != null)
         {
             Debug.Log("Successfully joined a game");
-            //uIController.UpdateMenu(Menus.LoadingScreen);
+            Destroy(GameObject.Find("TitleScreenUI"));
+            //uIController.UpdateMenuRpc(Menus.LoadingScreen);
         }
         else
         {
@@ -135,6 +134,16 @@ public class LobbyManager : Singleton<LobbyManager>
         }
     }
 
+    public Lobby GetLobby()
+    {
+        return connectedLobby;
+    }
+
+    public string GetPlayerID()
+    {
+        return playerId;
+    }
+
     private void SetTransformAsClient(JoinAllocation a)
     {
         unityTransport.SetClientRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
@@ -149,6 +158,7 @@ public class LobbyManager : Singleton<LobbyManager>
             yield return delay;
         }
     }
+
 
     private void OnDestroy()
     {
