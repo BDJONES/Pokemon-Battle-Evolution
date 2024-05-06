@@ -17,6 +17,7 @@ public class TrainerController : NetworkBehaviour
     private DialogueBoxController dialogueBoxController;
     private int inactiveTurnCount;
     public event Action playerTooInactive;
+    public static event Action UIInitialized;
     [SerializeField] private GameObject myCamera;
     [SerializeField] private GameObject myUI;
     private AudioListener myAudioListener;
@@ -46,11 +47,16 @@ public class TrainerController : NetworkBehaviour
     {
         //Debug.Log("In TrainerController OnEnable");
         dialogueBoxController = transform.GetChild(0).gameObject.GetComponentInChildren<DialogueBoxController>();
-        NetworkCommands.UIControllerCreated += SetUIActive;
+        NetworkCommands.UIControllerCreated += InitializeUI;
         GameManager.GameManagerSpawned += SetMoveSelectionRPCManager;
         //myAudioListener = gameObject.GetComponentInChildren<AudioListener>();
+        player.UpdatedTeam += GetUpdatedTrainer;
         inactiveTurnCount = 0;
-        
+    }
+
+    private void GetUpdatedTrainer(Trainer trainer)
+    {
+        player = trainer;
     }
 
     private void SetMoveSelectionRPCManager()
@@ -72,6 +78,11 @@ public class TrainerController : NetworkBehaviour
         return dialogueBoxController;
     }
 
+    public void SetPlayer(Trainer trainer)
+    {
+        player = trainer;
+    }
+
     public void SetOpponent(Trainer Opponent)
     {
         opponent = Opponent;
@@ -81,17 +92,22 @@ public class TrainerController : NetworkBehaviour
     {
         if (!IsOwner) return;
         //Debug.Log("Enabling the Camera");
-        myCamera.SetActive(true);
+        myCamera.SetActive(true);     
     }
 
-    public void SetUIActive()
+    private void InitializeUI()
     {
-        if (!IsOwner || isUIActive) return;
+        if (IsOwner)
+        {
+            Debug.Log($"gameObject.name is {gameObject.name}");
+            uIGrabber = new UIInputGrabber(myUI);
+            isUIActive = true;
+        }
         ////Debug.Log("Enabling UI");
-        myUI.SetActive(true);
+        //myUI.SetActive(true);
         //myUI.gameObject.GetComponent<NetworkObject>().Spawn(true);
-        uIGrabber = new UIInputGrabber(myUI);
-        isUIActive = true;
+
+        //UIInitialized?.Invoke();
     }
 
     public async UniTask<IPlayerAction> SelectMove()
@@ -176,22 +192,6 @@ public class TrainerController : NetworkBehaviour
         }
     }
 
-    private void Update()
-    {
-        //Debug.Log("Enabling the Camera");
-        //if (myCamera.activeInHierarchy == false)
-        //{
-        //myCamera.SetActive(true);
-        //}
-        //if (myUI.activeInHierarchy == false)
-        //{
-        //Debug.Log("Enabling UI");
-        //myUI.SetActive(true);
-        //}
-
-        //myAudioListener.enabled = true;
-    }
-
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
@@ -216,11 +216,16 @@ public class TrainerController : NetworkBehaviour
 
             //}
             //NetworkObject.gameObject.transform.Find("YourUI").gameObject.SetActive(false);
-            SetCameraActive();
+            SetCameraActive();            
+            //RespawnNetworkObjectRpc(NetworkObject);
             //if (!IsHost)
             //{
             //    SetUIActive();
             //}
+        }
+        else
+        {
+            this.myUI.SetActive(false);
         }
     }
 
@@ -247,7 +252,7 @@ public class TrainerController : NetworkBehaviour
                 Debug.Log("The selection was an Attack");
                 var convertedSelection = (Attack) selection;
                 AttackRPCTransfer attackRPCTrasfer = new AttackRPCTransfer();
-                attackRPCTrasfer.attackName = convertedSelection.GetAttackName();
+                attackRPCTrasfer.attackName = convertedSelection.GetType().Name;
                 attackRPCTrasfer.remainingPP = convertedSelection.GetCurrentPP();
                 gm.RecieveAttackSelectionRpc(type, attackRPCTrasfer);
             }
