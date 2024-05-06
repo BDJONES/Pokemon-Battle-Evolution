@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoketCreature : Pokemon
+public class Umbreon : Pokemon
 {
-    public PoketCreature()
+    public Umbreon()
     {
-        this.speciesName = "Poket Creature";
-        this.nickname = this.speciesName;
+        this.speciesName = "Umbreon";
+        this.nickname = "Umbreon";
         this.level = 100;
         this.gender = Gender.Male;
-        this.baseHP = 60;
-        this.baseAttack = 60;
-        this.baseDefense = 60;
+        this.baseHP = 95;
+        this.baseAttack = 65;
+        this.baseDefense = 110;
         this.baseSpecialAttack = 60;
-        this.baseSpecialDefense = 60;
-        this.baseSpeed = 60;
+        this.baseSpecialDefense = 130;
+        this.baseSpeed = 65;
     }
 
     private void OnEnable()
@@ -31,30 +31,29 @@ public class PoketCreature : Pokemon
             // Must assign Scriptable Objects in Start Function
             this.abilityList = new List<Ability>
             {
-                ScriptableObject.CreateInstance<Intimidate>()
+                ScriptableObject.CreateInstance<Static>()
             };
             this.ability = this.abilityList[0];
             // Get the user of this ability to the Ability
             this.ability.abilityUser = this;
             this.ability.InitializeAbility();
-            this.Type1 = StaticTypeObjects.Fire;
+            this.Type1 = StaticTypeObjects.Dark;
             this.Type2 = null;
-            this.heldItem = new ChoiceBand();
-            this.heldItem.SetHolder(this);
+            //this.heldItem = new Leftovers();
+            //this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
-                new QuickAttack(),
-                new Flamethrower(),
-                new Earthquake(),
+                new Moonlight(),
+                new FoulPlay(),
+                new BabyDollEyes(),
                 new ThunderWave()
             };
             this.learnSet = new List<Attack>
             {
-                new Flamethrower(),
-                new Tackle(),
-                new Earthquake(),
-                new ThunderWave(),
-                new QuickAttack()
+                new Moonlight(),
+                new FoulPlay(),
+                new BabyDollEyes(),
+                new ThunderWave()
             };
             this.ivs = new Ivs();
             this.evs = new Evs();

@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoketCreature : Pokemon
+public class Lucario : Pokemon
 {
-    public PoketCreature()
+    public Lucario()
     {
-        this.speciesName = "Poket Creature";
-        this.nickname = this.speciesName;
+        this.speciesName = "Lucario";
+        this.nickname = "Lucario";
         this.level = 100;
         this.gender = Gender.Male;
-        this.baseHP = 60;
-        this.baseAttack = 60;
-        this.baseDefense = 60;
-        this.baseSpecialAttack = 60;
-        this.baseSpecialDefense = 60;
-        this.baseSpeed = 60;
+        this.baseHP = 70;
+        this.baseAttack = 110;
+        this.baseDefense = 70;
+        this.baseSpecialAttack = 115;
+        this.baseSpecialDefense = 70;
+        this.baseSpeed = 90;
     }
 
     private void OnEnable()
@@ -31,22 +31,22 @@ public class PoketCreature : Pokemon
             // Must assign Scriptable Objects in Start Function
             this.abilityList = new List<Ability>
             {
-                ScriptableObject.CreateInstance<Intimidate>()
+                ScriptableObject.CreateInstance<Justified>()
             };
             this.ability = this.abilityList[0];
             // Get the user of this ability to the Ability
             this.ability.abilityUser = this;
             this.ability.InitializeAbility();
-            this.Type1 = StaticTypeObjects.Fire;
-            this.Type2 = null;
-            this.heldItem = new ChoiceBand();
-            this.heldItem.SetHolder(this);
+            this.Type1 = StaticTypeObjects.Fighting;
+            this.Type2 = StaticTypeObjects.Steel;
+            //this.heldItem = new ChoiceBand();
+            //this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
-                new QuickAttack(),
-                new Flamethrower(),
-                new Earthquake(),
-                new ThunderWave()
+                new AuraSphere(),
+                new VacuumWave(),
+                new DragonPulse(),
+                new CalmMind()
             };
             this.learnSet = new List<Attack>
             {

@@ -1,27 +1,31 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoketCreature : Pokemon
+public class Latios : Pokemon
 {
-    public PoketCreature()
+    private Latios()
     {
-        this.speciesName = "Poket Creature";
-        this.nickname = this.speciesName;
+        this.speciesName = "Latios";
+        this.nickname = "Latios";
         this.level = 100;
         this.gender = Gender.Male;
-        this.baseHP = 60;
-        this.baseAttack = 60;
-        this.baseDefense = 60;
-        this.baseSpecialAttack = 60;
-        this.baseSpecialDefense = 60;
-        this.baseSpeed = 60;
+        this.baseHP = 80;
+        this.baseAttack = 90;
+        this.baseDefense = 80;
+        this.baseSpecialAttack = 130;
+        this.baseSpecialDefense = 110;
+        this.baseSpeed = 110;
     }
 
     private void OnEnable()
     {
         GameManager.OnStateChange += UpdatePokemonInfo;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnStateChange -= UpdatePokemonInfo;
     }
 
     private void UpdatePokemonInfo(GameState state)
@@ -31,30 +35,29 @@ public class PoketCreature : Pokemon
             // Must assign Scriptable Objects in Start Function
             this.abilityList = new List<Ability>
             {
-                ScriptableObject.CreateInstance<Intimidate>()
+                ScriptableObject.CreateInstance<Levitate>()
             };
             this.ability = this.abilityList[0];
             // Get the user of this ability to the Ability
             this.ability.abilityUser = this;
             this.ability.InitializeAbility();
-            this.Type1 = StaticTypeObjects.Fire;
-            this.Type2 = null;
-            this.heldItem = new ChoiceBand();
-            this.heldItem.SetHolder(this);
+            this.Type1 = StaticTypeObjects.Dragon;
+            this.Type2 = StaticTypeObjects.Psychic;
+            //this.heldItem = new LifeOrb();
+            //this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
-                new QuickAttack(),
-                new Flamethrower(),
-                new Earthquake(),
-                new ThunderWave()
+                new DracoMeteor(),
+                new Psyshock(),
+                new AuraSphere(),
+                new CalmMind()
             };
             this.learnSet = new List<Attack>
             {
-                new Flamethrower(),
-                new Tackle(),
-                new Earthquake(),
-                new ThunderWave(),
-                new QuickAttack()
+                new DracoMeteor(),
+                new Psyshock(),
+                new AuraSphere(),
+                new CalmMind()
             };
             this.ivs = new Ivs();
             this.evs = new Evs();

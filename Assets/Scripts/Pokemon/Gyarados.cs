@@ -3,25 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoketCreature : Pokemon
+public class Gyarados : Pokemon
 {
-    public PoketCreature()
+    private Gyarados()
     {
-        this.speciesName = "Poket Creature";
-        this.nickname = this.speciesName;
+        this.speciesName = "Gyarados";
+        this.nickname = "Gyarados";
         this.level = 100;
         this.gender = Gender.Male;
-        this.baseHP = 60;
-        this.baseAttack = 60;
-        this.baseDefense = 60;
+        this.baseHP = 95;
+        this.baseAttack = 125;
+        this.baseDefense = 79;
         this.baseSpecialAttack = 60;
-        this.baseSpecialDefense = 60;
-        this.baseSpeed = 60;
+        this.baseSpecialDefense = 100;
+        this.baseSpeed = 81;
     }
 
     private void OnEnable()
     {
         GameManager.OnStateChange += UpdatePokemonInfo;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnStateChange -= UpdatePokemonInfo;
     }
 
     private void UpdatePokemonInfo(GameState state)
@@ -37,24 +42,23 @@ public class PoketCreature : Pokemon
             // Get the user of this ability to the Ability
             this.ability.abilityUser = this;
             this.ability.InitializeAbility();
-            this.Type1 = StaticTypeObjects.Fire;
-            this.Type2 = null;
-            this.heldItem = new ChoiceBand();
-            this.heldItem.SetHolder(this);
+            this.Type1 = StaticTypeObjects.Water;
+            this.Type2 = StaticTypeObjects.Flying;
+            //this.heldItem = new LifeOrb();
+            //this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
-                new QuickAttack(),
-                new Flamethrower(),
+                new Liquidation(),
                 new Earthquake(),
+                new Crunch(),
                 new ThunderWave()
             };
             this.learnSet = new List<Attack>
             {
-                new Flamethrower(),
-                new Tackle(),
+                new Crunch(),
                 new Earthquake(),
                 new ThunderWave(),
-                new QuickAttack()
+                new Liquidation()
             };
             this.ivs = new Ivs();
             this.evs = new Evs();

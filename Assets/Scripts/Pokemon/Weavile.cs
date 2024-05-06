@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoketCreature : Pokemon
+public class Weavile : Pokemon
 {
-    public PoketCreature()
+    public Weavile()
     {
-        this.speciesName = "Poket Creature";
-        this.nickname = this.speciesName;
+        this.speciesName = "Weavile";
+        this.nickname = "Weavile";
         this.level = 100;
         this.gender = Gender.Male;
-        this.baseHP = 60;
-        this.baseAttack = 60;
-        this.baseDefense = 60;
-        this.baseSpecialAttack = 60;
-        this.baseSpecialDefense = 60;
-        this.baseSpeed = 60;
+        this.baseHP = 70;
+        this.baseAttack = 120;
+        this.baseDefense = 65;
+        this.baseSpecialAttack = 45;
+        this.baseSpecialDefense = 80;
+        this.baseSpeed = 125;
     }
 
     private void OnEnable()
@@ -31,30 +31,29 @@ public class PoketCreature : Pokemon
             // Must assign Scriptable Objects in Start Function
             this.abilityList = new List<Ability>
             {
-                ScriptableObject.CreateInstance<Intimidate>()
+                ScriptableObject.CreateInstance<Static>()
             };
             this.ability = this.abilityList[0];
             // Get the user of this ability to the Ability
             this.ability.abilityUser = this;
             this.ability.InitializeAbility();
-            this.Type1 = StaticTypeObjects.Fire;
-            this.Type2 = null;
-            this.heldItem = new ChoiceBand();
-            this.heldItem.SetHolder(this);
+            this.Type1 = StaticTypeObjects.Ice;
+            this.Type2 = StaticTypeObjects.Dark;
+            //this.heldItem = new LifeOrb();
+            //this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
-                new QuickAttack(),
-                new Flamethrower(),
-                new Earthquake(),
-                new ThunderWave()
+                new IceShard(),
+                new CloseCombat(),
+                new Crunch(),
+                new SwordsDance()
             };
             this.learnSet = new List<Attack>
             {
-                new Flamethrower(),
-                new Tackle(),
-                new Earthquake(),
-                new ThunderWave(),
-                new QuickAttack()
+                new IceShard(),
+                new CloseCombat(),
+                new Crunch(),
+                new SwordsDance()
             };
             this.ivs = new Ivs();
             this.evs = new Evs();

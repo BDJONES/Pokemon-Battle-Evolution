@@ -1,22 +1,21 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoketCreature : Pokemon
+public class Pikachu : Pokemon
 {
-    public PoketCreature()
+    public Pikachu()
     {
-        this.speciesName = "Poket Creature";
-        this.nickname = this.speciesName;
+        this.speciesName = "Pikachu";
+        this.nickname = "Pikachu";
         this.level = 100;
         this.gender = Gender.Male;
-        this.baseHP = 60;
-        this.baseAttack = 60;
-        this.baseDefense = 60;
-        this.baseSpecialAttack = 60;
+        this.baseHP = 45;
+        this.baseAttack = 80;
+        this.baseDefense = 50;
+        this.baseSpecialAttack = 75;
         this.baseSpecialDefense = 60;
-        this.baseSpeed = 60;
+        this.baseSpeed = 120;
     }
 
     private void OnEnable()
@@ -31,30 +30,29 @@ public class PoketCreature : Pokemon
             // Must assign Scriptable Objects in Start Function
             this.abilityList = new List<Ability>
             {
-                ScriptableObject.CreateInstance<Intimidate>()
+                ScriptableObject.CreateInstance<Static>()
             };
             this.ability = this.abilityList[0];
             // Get the user of this ability to the Ability
             this.ability.abilityUser = this;
             this.ability.InitializeAbility();
-            this.Type1 = StaticTypeObjects.Fire;
+            this.Type1 = StaticTypeObjects.Electric;
             this.Type2 = null;
-            this.heldItem = new ChoiceBand();
-            this.heldItem.SetHolder(this);
+            //this.heldItem = new LightBall();
+            //this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
-                new QuickAttack(),
-                new Flamethrower(),
-                new Earthquake(),
-                new ThunderWave()
+                new Thunderbolt(),
+                new BrickBreak(),
+                new Nuzzle(),
+                new DrainingKiss()
             };
             this.learnSet = new List<Attack>
             {
-                new Flamethrower(),
-                new Tackle(),
-                new Earthquake(),
-                new ThunderWave(),
-                new QuickAttack()
+                new Thunderbolt(),
+                new BrickBreak(),
+                new Nuzzle(),
+                new DrainingKiss()
             };
             this.ivs = new Ivs();
             this.evs = new Evs();
