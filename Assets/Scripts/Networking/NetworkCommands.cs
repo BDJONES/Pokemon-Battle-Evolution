@@ -12,20 +12,16 @@ public class NetworkCommands : NetworkBehaviour
     public static event Action TwoPlayersConnected;
     [SerializeField] private GameObject gameManager;
     [SerializeField] private GameObject uIController;
+    [SerializeField] private GameObject eventsToTriggerManager;
     public static event Action<GameObject> HostConnected;
     public static event Action UIControllerCreated;
     private bool gameManagerSpawned = false;
     private bool uIControllerSpawned = false;
     public override void OnNetworkSpawn()
     {
-        //NetworkObjectId
-        //if (IsOwner)
-        //{
-        var titleScreenUI = GameObject.Find("TitleScreenUI");
-        titleScreenUI.SetActive(false);
-        //Debug.Log("Set TitleScreenUI to Inactive");
-        //}
-        //titleScreenUIDocument.rootVisualElement.style.display = DisplayStyle.None;
+        //var titleScreenUI = GameObject.Find("TitleScreenUI");
+        //titleScreenUI.SetActive(false);
+
         //Destroy(titleScreenUI);
         if (!IsHost)
         {
@@ -40,7 +36,11 @@ public class NetworkCommands : NetworkBehaviour
             var generatedGameManager = Instantiate(gameManager);
             generatedGameManager.name = "Game Manager";
             generatedGameManager.GetComponent<NetworkObject>().Spawn(true);
+            var spawnedEventToTriggerManager = Instantiate(eventsToTriggerManager);
+            spawnedEventToTriggerManager.name = "EventsToTriggerManager";
+            spawnedEventToTriggerManager.GetComponent<NetworkObject>().Spawn(true);
             Debug.Log("Created Game Manager");
+            
             gameManagerSpawned = true;
             uIControllerSpawned = true;
             UIControllerCreated?.Invoke();
@@ -104,6 +104,7 @@ public class NetworkCommands : NetworkBehaviour
             //Debug.Log($"Found the UI Controller: Name = {spawnedUIControllerObject.name}");
             spawnedUIControllerObject.name = "UI Controller";
             UIControllerCreated?.Invoke();
+            uIControllerSpawned = true;
         }
     }
 
