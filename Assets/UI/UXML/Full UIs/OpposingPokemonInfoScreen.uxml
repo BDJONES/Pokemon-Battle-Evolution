@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="Back Button" src="project://database/Assets/UI/UXML/Assets/Pokemon%20Party%20UI/Back%20Button.uxml?fileID=9197481963319205126&amp;guid=d7b6966cbefd4a04984ec609c28775ae&amp;type=3#Back Button" />
     <ui:VisualElement name="Screen" style="flex-grow: 1; background-color: rgba(83, 156, 255, 0.45); align-items: auto; flex-direction: column;">
-        <ui:VisualElement name="TopElements" style="flex-grow: 1; flex-direction: column; justify-content: flex-start; position: absolute; width: 1124px; height: 200px; align-items: flex-start; flex-wrap: nowrap; align-self: auto;">
+        <ui:VisualElement name="TopElements" style="flex-grow: 1; flex-direction: column; justify-content: flex-start; position: relative; width: 1124px; height: 200px; align-items: auto; flex-wrap: nowrap; align-self: center;">
             <ui:VisualElement name="PokemonInfo" style="flex-grow: 1; width: 300px; height: 200px; position: absolute;">
                 <ui:VisualElement name="Name_And_Gender" style="flex-grow: 1; flex-direction: row; justify-content: space-between; align-items: flex-start; align-self: stretch;">
                     <ui:Label tabindex="-1" text="Pokemon" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Name" style="font-size: 20%;" />
@@ -31,8 +31,8 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="BottomElements" style="flex-grow: 1; flex-direction: row; width: 1124px;">
-            <ui:Instance template="Back Button" name="Back_Button" style="position: absolute; bottom: 0; right: 45%;" />
+        <ui:VisualElement name="BottomElements" style="flex-grow: 1; flex-direction: column; width: 1124px; align-self: center;">
+            <ui:Instance template="Back Button" name="Back_Button" style="position: absolute; bottom: 10%; right: auto; align-self: center; align-items: auto; justify-content: flex-start;" />
             <ui:VisualElement name="StatusButtons" style="flex-grow: 1; position: absolute; bottom: 0; right: 5px; width: 350px; height: 350px;" />
         </ui:VisualElement>
     </ui:VisualElement>
