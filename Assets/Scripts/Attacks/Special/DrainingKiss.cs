@@ -18,7 +18,8 @@ public class DrainingKiss : Attack
 
     protected override async UniTask<bool> UseAttack(Pokemon attacker, Pokemon target)
     {
-        GameManager.Instance.AddRPCTaskRpc();
+        attacker.SendLastAttackFromThisPokemonRpc(this.GetType().Name);
+        //GameManager.Instance.AddRPCTaskRpc();
         int damage = await CalculateDamage(this, attacker, target);
         DealDamage(damage, attacker, target);
         if (target.GetHPStat() == 0)

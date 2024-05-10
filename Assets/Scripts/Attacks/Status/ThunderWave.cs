@@ -24,7 +24,6 @@ public class ThunderWave : Attack
         base.TriggerEffect(attacker, target);
         if (target.Status == StatusConditions.Healthy && (target.GetType1() != StaticTypeObjects.Electric || (target.GetType2() != null && target.GetType2() != StaticTypeObjects.Electric)))
         {
-            
             target.Status = StatusConditions.Paralysis;
             activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
             GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} was paralyzed");

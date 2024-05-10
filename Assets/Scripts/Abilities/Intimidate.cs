@@ -34,11 +34,23 @@ public class Intimidate : Ability
             Debug.Log("The client is changing the attack value");
             target.RequestStatChangeRpc(Stats.Attack, target.AttackStage - 1);
         }
-        GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} was intimidated");
-        GameManager.Instance.SendDialogueToHostRpc($"{target.GetNickname()} was intimidated");
-        while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+        if (NetworkManager.Singleton.IsHost)
         {
-            await UniTask.Yield();
+            GameManager.Instance.SendDialogueToClientRpc($"Your {target.GetNickname()} was intimidated");
+            GameManager.Instance.SendDialogueToHostRpc($"Your opponent's {target.GetNickname()} was intimidated");
+            while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+            {
+                await UniTask.Yield();
+            }
+        }
+        else
+        {
+            GameManager.Instance.SendDialogueToHostRpc($"Your {target.GetNickname()} was intimidated");
+            GameManager.Instance.SendDialogueToClientRpc($"Your opponent's {target.GetNickname()} was intimidated");
+            while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+            {
+                await UniTask.Yield();
+            }
         }
     }       
     

@@ -29,4 +29,9 @@ public abstract class Ability : ScriptableObject
     }
 
     protected abstract void TriggerEffect(Pokemon attacker, Pokemon target);
+
+    public string GetAbilityName()
+    {
+        return abilityName;
+    }
 }
