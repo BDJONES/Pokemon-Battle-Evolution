@@ -18,6 +18,7 @@ public class UIController : NetworkBehaviour
     [SerializeField] private VisualTreeAsset generalBattleUI; // Your HP, Opponent HP, Fight Button, Pokemon Button, Forfiet Button
     [SerializeField] private VisualTreeAsset moveSelectUI;
     [SerializeField] private VisualTreeAsset teamUI;
+    [SerializeField] private VisualTreeAsset teamDialogueUI;
     [SerializeField] private VisualTreeAsset pokemonInfoUI;
     [SerializeField] private VisualTreeAsset opposingPokemonInfoUI;
     [SerializeField] private VisualTreeAsset attackInfoUI;
@@ -110,6 +111,11 @@ public class UIController : NetworkBehaviour
             case Menus.InBattlePartyMenu:
                 currentUI.rootVisualElement.style.display = DisplayStyle.None;
                 currentUI.visualTreeAsset = teamUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.InBattlePartyDialogueScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = teamDialogueUI;
                 currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
                 break;
             case Menus.MoveSelectionMenu:
@@ -210,6 +216,11 @@ public class UIController : NetworkBehaviour
             case Menus.InBattlePartyMenu:
                 currentUI.rootVisualElement.style.display = DisplayStyle.None;
                 currentUI.visualTreeAsset = teamUI;
+                currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
+                break;
+            case Menus.InBattlePartyDialogueScreen:
+                currentUI.rootVisualElement.style.display = DisplayStyle.None;
+                currentUI.visualTreeAsset = teamDialogueUI;
                 currentUI.rootVisualElement.style.display = DisplayStyle.Flex;
                 break;
             case Menus.MoveSelectionMenu:

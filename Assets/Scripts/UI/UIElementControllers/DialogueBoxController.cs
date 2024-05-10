@@ -12,6 +12,7 @@ using UnityEngine.UIElements;
 public class DialogueBoxController : NetworkBehaviour
 {
     [SerializeField] private DialogueUIElements dialogueUIElements;
+    [SerializeField] private InBattlePartyDialogueUIElements inBattlePartyDialogueUIElements;
     private Label dialogueBoxText;
     private Queue<FixedString128Bytes> dialogueQueue;
     private UIController uIController;
@@ -39,7 +40,7 @@ public class DialogueBoxController : NetworkBehaviour
 
     private void HandleMenuChange(Menus menu)
     {
-        if (menu == Menus.DialogueScreen)
+        if (menu == Menus.DialogueScreen || menu == Menus.InBattlePartyDialogueScreen)
         {
             InitializeFields();
         }
@@ -55,19 +56,76 @@ public class DialogueBoxController : NetworkBehaviour
     {
         Debug.Log("Initializing the Fields");
         //dialogueBoxText = dialogueUIElements.DialogueBox.Q<Label>("Text");
-        if (dialogueUIElements.DialogueBox != null)
+        if (IsHost)
         {
-            VisualElement element = dialogueUIElements.DialogueBox.Query<VisualElement>();
-            
-            if (element != null)
+            if (uIController.GetCurrentTrainer1Menu() == Menus.DialogueScreen)
             {
-                Debug.Log("Element was found");
-                dialogueBoxText = element.Query<Label>();
+                if (dialogueUIElements.DialogueBox != null)
+                {
+                    VisualElement element = dialogueUIElements.DialogueBox.Query<VisualElement>();
+                    if (element != null)
+                    {
+                        Debug.Log("Element was found");
+                        dialogueBoxText = element.Query<Label>();
+                    }
+                }
+                else
+                {
+                    Debug.Log("Unable to find the Dialogue Box");
+                }
+            }
+            else if (uIController.GetCurrentTrainer1Menu() == Menus.InBattlePartyDialogueScreen)
+            {
+                if (inBattlePartyDialogueUIElements.DialogueBox != null)
+                {
+                    VisualElement element = inBattlePartyDialogueUIElements.DialogueBox.Query<VisualElement>();
+                    if (element != null)
+                    {
+                        Debug.Log("Element was found");
+                        dialogueBoxText = element.Query<Label>();
+                    }
+                }
+                else
+                {
+                    Debug.Log("Unable to find the Dialogue Box");
+                }
             }
         }
         else
         {
-            Debug.Log("Unable to find the Dialogue Box");
+            Debug.Log("Looking for the client's dialogue box");
+            if (uIController.GetCurrentTrainer2Menu() == Menus.DialogueScreen)
+            {
+                if (dialogueUIElements.DialogueBox != null)
+                {
+                    VisualElement element = dialogueUIElements.DialogueBox.Query<VisualElement>();
+                    if (element != null)
+                    {
+                        Debug.Log("Element was found");
+                        dialogueBoxText = element.Query<Label>();
+                    }
+                }
+                else
+                {
+                    Debug.Log("Unable to find the Dialogue Box");
+                }
+            }
+            else if (uIController.GetCurrentTrainer2Menu() == Menus.InBattlePartyDialogueScreen)
+            {
+                if (inBattlePartyDialogueUIElements.DialogueBox != null)
+                {
+                    VisualElement element = inBattlePartyDialogueUIElements.DialogueBox.Query<VisualElement>();
+                    if (element != null)
+                    {
+                        Debug.Log("Element was found");
+                        dialogueBoxText = element.Query<Label>();
+                    }
+                }
+                else
+                {
+                    Debug.Log("Unable to find the Dialogue Box");
+                }
+            }
         }
     }
 
@@ -76,6 +134,25 @@ public class DialogueBoxController : NetworkBehaviour
         FixedString128Bytes convertedDialogue = new FixedString128Bytes(dialogue);
         dialogueQueue.Enqueue(convertedDialogue);
         Debug.Log($"Dialogue Added was {dialogue}");
+    }
+
+    public async UniTask ReadOneDialogueTest()
+    {
+        FixedString128Bytes dialouge = dialogueQueue.Dequeue();
+        if (dialogueBoxText == null)
+        {
+            Debug.Log("This Label was not found");
+            return;
+        }
+        Debug.Log($"Dialogue being added: {dialouge}");
+        dialogueBoxText.text = dialouge.ToString();
+        Debug.Log($"Dialogue Box Text: {dialogueBoxText.text}");
+        float time = 0f;
+        while (time < 1f)
+        {
+            time += Time.deltaTime;
+            await UniTask.Yield();
+        }
     }
 
     public IEnumerator ReadFirstQueuedDialogue()
@@ -87,7 +164,7 @@ public class DialogueBoxController : NetworkBehaviour
             yield return null;
         }
         dialogueBoxText.text = dialouge.ToString();
-        Debug.Log(dialogueBoxText.text);
+        //Debug.Log(dialogueBoxText.text);
         yield return new WaitForSecondsRealtime(1);
         GameManager.Instance.FinishRPCTaskRpc();
         //await UniTask.Delay(TimeSpan.FromSeconds(1), ignoreTimeScale: false);
@@ -99,13 +176,13 @@ public class DialogueBoxController : NetworkBehaviour
         if (dialogueBoxText == null)
         {
             Debug.Log("This Label was not found");
-            rpcManager.RPCFinished();
             yield return null;
         }
         dialogueBoxText.text = dialouge.ToString();
         Debug.Log(dialogueBoxText.text);
+        Debug.Log("Yielding for 1 second");
         yield return new WaitForSecondsRealtime(1);
-        rpcManager.RPCFinished();
+       
         //await UniTask.Delay(TimeSpan.FromSeconds(1), ignoreTimeScale: false);
     }
 

@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 7356512626090453348}
   - component: {fileID: 3679505037618476923}
   - component: {fileID: 7650543552749350864}
+  - component: {fileID: 2098224503683435059}
   m_Layer: 0
   m_Name: UI Controller
   m_TagString: Untagged
@@ -56,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 582784415
+  GlobalObjectIdHash: 1949474524
   InScenePlacedSourceGlobalObjectIdHash: 411838366
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -83,6 +84,7 @@ MonoBehaviour:
   generalBattleUI: {fileID: 9197481963319205126, guid: 5a18e687ea3099948b8315c1e93e6feb, type: 3}
   moveSelectUI: {fileID: 9197481963319205126, guid: b0d7e480cd9ffe347b8c00280ab28385, type: 3}
   teamUI: {fileID: 9197481963319205126, guid: 54f2370bb3db3754fa99d72645ff2ad7, type: 3}
+  teamDialogueUI: {fileID: 9197481963319205126, guid: 13f0cc56016c0f24ab8ab5c7e4011c22, type: 3}
   pokemonInfoUI: {fileID: 9197481963319205126, guid: 620d7f8005b4ca0478836f0f7ab2c105, type: 3}
   opposingPokemonInfoUI: {fileID: 9197481963319205126, guid: e103133f852820c4fabb57866ecb7392, type: 3}
   attackInfoUI: {fileID: 9197481963319205126, guid: 824b0214d9665b143933488cf2e57422, type: 3}
@@ -200,7 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cece9e4cdb8025a42a9bcf41b374ad20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uIDocument: {fileID: 0}
+  uIDocument: {fileID: 7575094973254332059}
 --- !u!114 &7356512626090453348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,3 +242,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uIDocument: {fileID: 7575094973254332059}
+--- !u!114 &2098224503683435059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867522905467510444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d41b1fdd76cdc4b449e06e43ad2a7f3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 7575094973254332059}

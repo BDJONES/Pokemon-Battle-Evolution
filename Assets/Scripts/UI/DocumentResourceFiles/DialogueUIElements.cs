@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,23 +11,15 @@ public class DialogueUIElements : MonoBehaviour
         get
         {
             uIDocument = GameObject.Find("UI Controller").GetComponent<UIDocument>();
-            if (uIDocument == null)
+            if (uIDocument.rootVisualElement == null)
             {
                 Debug.Log("The root is null");
                 return null;
             }
-            VisualElement screen = uIDocument.rootVisualElement.Query<VisualElement>("Screen");
-            if (screen != null)
+            VisualElement dialogueBox = uIDocument.rootVisualElement.Q<TemplateContainer>("DialogueBox");
+            if (dialogueBox != null)
             {
-                VisualElement content = screen.Query<VisualElement>("Content");
-                if (content != null)
-                {
-                    VisualElement dialogueBox = content.Q<TemplateContainer>("DialogueBox");
-                    if (dialogueBox != null)
-                    {
-                        return dialogueBox;
-                    }
-                }
+                return dialogueBox;
             }
             return null;
         }

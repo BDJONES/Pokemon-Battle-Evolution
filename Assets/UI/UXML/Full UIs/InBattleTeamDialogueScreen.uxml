@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="Back Button" src="project://database/Assets/UI/UXML/Assets/Pokemon%20Party%20UI/Back%20Button.uxml?fileID=9197481963319205126&amp;guid=d7b6966cbefd4a04984ec609c28775ae&amp;type=3#Back Button" />
+    <ui:Template name="DialogueBox" src="project://database/Assets/UI/UXML/Assets/Damage%20Calulation/DialogueBox.uxml?fileID=9197481963319205126&amp;guid=2db53d986608dca448b1b122af1201d5&amp;type=3#DialogueBox" />
+    <ui:VisualElement name="Screen" style="flex-grow: 1; justify-content: flex-start; align-items: stretch; align-self: auto; position: relative; bottom: auto; top: auto; background-color: rgba(0, 202, 255, 0.35);">
+        <ui:VisualElement name="Content" style="flex-grow: 1; background-color: rgba(0, 207, 255, 0); opacity: 1; justify-content: space-around; align-items: stretch; align-self: auto; flex-direction: column; top: 30px;">
+            <ui:VisualElement name="Top_Row" style="flex-grow: 1; flex-direction: row; justify-content: space-around; align-items: flex-start; align-self: auto; right: 50px;" />
+            <ui:VisualElement name="Bottom_Row" style="flex-grow: 1; flex-direction: row; align-items: auto; justify-content: space-around; align-self: auto; left: 50px;" />
+        </ui:VisualElement>
+        <ui:Instance template="Back Button" name="Back_Button" style="width: 100px; height: auto; align-self: center;" />
+        <ui:Instance template="DialogueBox" name="DialogueBox" style="position: absolute; align-self: center; align-items: auto; justify-content: flex-start; bottom: 10%; right: auto; height: 150px; width: 600px;" />
+    </ui:VisualElement>
+</ui:UXML>

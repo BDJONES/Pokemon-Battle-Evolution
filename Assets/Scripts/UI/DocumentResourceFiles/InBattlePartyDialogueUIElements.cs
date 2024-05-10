@@ -1,7 +1,7 @@
-using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine;
 
-public class InBattlePartyUIElements : MonoBehaviour
+public class InBattlePartyDialogueUIElements : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
     public Button Pokemon1Button
@@ -88,20 +88,22 @@ public class InBattlePartyUIElements : MonoBehaviour
             return pokemon6Button ?? null;
         }
     }
-    public Button BackButton
+    public VisualElement DialogueBox
     {
         get
         {
+            uiDocument = GameObject.Find("UI Controller").GetComponent<UIDocument>();
             if (uiDocument.rootVisualElement == null)
             {
                 Debug.Log("The root is null");
                 return null;
             }
-            VisualElement screen = uiDocument.rootVisualElement.Query<VisualElement>("Screen");
-            TemplateContainer backButtonElement = screen.Query<TemplateContainer>("Back_Button");
-            VisualElement backButtonContent = backButtonElement.Query<VisualElement>("Content");
-            Button backButton = backButtonContent.Query<Button>("BackButton");
-            return backButton;
+            VisualElement dialogueBox = uiDocument.rootVisualElement.Q<TemplateContainer>("DialogueBox");
+            if (dialogueBox != null)
+            {
+                return dialogueBox;
+            }
+            return null;
         }
     }
 }
