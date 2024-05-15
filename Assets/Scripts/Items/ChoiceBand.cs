@@ -6,22 +6,23 @@ using UnityEngine;
 
 public class ChoiceBand : Item
 {
-    private void OnEnable()
+    public ChoiceBand()
     {
         GameManager.OnStateChange += GameStateOnChangeHandler;
     }
 
-    private void OnDisable()
+    ~ChoiceBand()
     {
         GameManager.OnStateChange -= GameStateOnChangeHandler;
     }
 
     private void GameStateOnChangeHandler(GameState state)
     {
-        if (state == GameState.LoadingPokemonInfo)
+        if (state == GameState.LoadingPokemonInfo && holder.ActiveState)
         {
+            Debug.Log("Activating the ChoiceBand");
             InitializeItem();
-            TriggerEffect(this.holder);
+            //TriggerEffect();
         }
     }
 
@@ -31,12 +32,12 @@ public class ChoiceBand : Item
         this.description = "An item to be held by a Pokémon. This curious headband boosts the holder's Attack stat but only allows the use of a single move.";
     }
 
-    public override void TriggerEffect(Pokemon holder)
+    protected override void TriggerEffect(int userType)
     {
         holder.SetAttackStat(Mathf.FloorToInt(holder.GetAttackStat() * 1.5f));
     }
 
-    public override void RevertEffect(Pokemon holder)
+    protected override void RevertEffect()
     {
         holder.SetAttackStat(Mathf.FloorToInt(holder.GetAttackStat() * 0.67f));
     }
