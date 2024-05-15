@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 436987674
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1154950894
+  InScenePlacedSourceGlobalObjectIdHash: 2941936173
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -67,3 +67,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 8427171205856861874, guid: f2429379f336de54ab67573a62b51052, type: 3}
+  uIController: {fileID: 1867522905467510444, guid: 1380be784e701dd4fb0ed03ef43aa433, type: 3}
+  eventsToTriggerManager: {fileID: 2877971735069348581, guid: 87259ed4835aade42adebf79465a27b3, type: 3}
+  effectQueueController: {fileID: 2065496769514271120, guid: be19b151b2660374b84f284a195cb9fc, type: 3}

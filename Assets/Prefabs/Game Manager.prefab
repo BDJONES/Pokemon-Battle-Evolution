@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1524841614
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1746404534
+  InScenePlacedSourceGlobalObjectIdHash: 3110406044
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -68,3 +68,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trainer1Controller: {fileID: 0}
   trainer2Controller: {fileID: 0}
+  EventsToTriggerManager: {fileID: 0}
+  effectQueueController: {fileID: 8889282503362892488, guid: be19b151b2660374b84f284a195cb9fc, type: 3}
