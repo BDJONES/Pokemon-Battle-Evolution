@@ -178,6 +178,8 @@ public class PokemonInfoController : NetworkBehaviour
             yield return null;
         }
         int newHPValue = trainerController.GetPlayer().GetActivePokemon().GetHPStat();
+
+        Debug.Log($"oldHp = {oldHPValue}, newHP = {newHPValue}");
         hpBar.value = oldHPValue;
         if (oldHPValue > newHPValue)
         {
@@ -199,6 +201,7 @@ public class PokemonInfoController : NetworkBehaviour
         }
         //Debug.Log("Changing the oldHP val");
         oldHP = newHPValue;
+        
         if (newHPValue == 0)
         {
             oldHP = null;

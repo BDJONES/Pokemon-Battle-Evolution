@@ -110,6 +110,7 @@ public class LifeOrb : Item
                 holder.SetHPStat(holder.GetHPStat() - lifeOrbCost);
                 Debug.Log($"{holder.GetNickname()}'s HP = {holder.GetHPStat()}");
             }
+            await UniTask.WaitForSeconds(0.3f);
             activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
             //Debug.Log($"Trainer name is = {holder.transform.parent.parent.gameObject.name}");
             if (holder.transform.parent.parent.gameObject.name == "Me")

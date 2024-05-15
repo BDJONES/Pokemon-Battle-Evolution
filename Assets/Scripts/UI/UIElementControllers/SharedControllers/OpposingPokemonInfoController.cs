@@ -170,6 +170,7 @@ public class OpposingPokemonInfoController : NetworkBehaviour
             yield break;
         }
         float newHPValue = trainerController.GetOpponent().GetActivePokemon().GetHPStat();
+        Debug.Log($"oldHp = {oldHPValue}, newHP = {newHPValue}");
         hpBar.value = oldHPValue;
         if (oldHPValue > newHPValue)
         {

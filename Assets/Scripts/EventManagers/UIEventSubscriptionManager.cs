@@ -14,6 +14,7 @@ public class UIEventSubscriptionManager : Singleton<UIEventSubscriptionManager>
 
     public static void Subscribe(Button button, Action func, int type) // type = 1 is for Host, type = 2 is for Client
     {
+        Debug.Log("Added a new subscription");
         //TemplateContainer templateContainer = new TemplateContainer();
         if (type == 1)
         {
@@ -31,6 +32,7 @@ public class UIEventSubscriptionManager : Singleton<UIEventSubscriptionManager>
     
     public static void UnsubscribeAll(int type)
     {
+        Debug.Log("Unsubscribed from everything");
         if (type == 1)
         {
             while (trainer1Buttons.Count > 0 && trainer1Functions.Count > 0)
