@@ -243,7 +243,7 @@ public class Trainer : NetworkBehaviour
         }
         if (!IsHost)
         {
-            PokemonTeamInfo pokemonTeamInfo = new PokemonTeamInfo();
+            PokemonTeamInfoRPCTransfer pokemonTeamInfo = new PokemonTeamInfoRPCTransfer();
             for(int j = 0; j < pokemonTeam.Length; j++)
             {
                 if (j == 0)
@@ -287,7 +287,7 @@ public class Trainer : NetworkBehaviour
     private void RequestHostTeamRpc()
     {
         rpcManager.RPCStarted();
-        PokemonTeamInfo pokemonTeamInfo = new PokemonTeamInfo();
+        PokemonTeamInfoRPCTransfer pokemonTeamInfo = new PokemonTeamInfoRPCTransfer();
         Trainer player = NetworkManager.LocalClient.PlayerObject.gameObject.GetComponent<Trainer>();
         for (int j = 0; j < player.pokemonTeam.Length; j++)
         {
@@ -320,7 +320,7 @@ public class Trainer : NetworkBehaviour
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void RecieveHostTeamRpc(PokemonTeamInfo pokemonTeamInfo)
+    private void RecieveHostTeamRpc(PokemonTeamInfoRPCTransfer pokemonTeamInfo)
     {
         if (IsHost)
         {
@@ -375,7 +375,7 @@ public class Trainer : NetworkBehaviour
         
     }
 
-    private void UpdateOpponentTeamOnClient(PokemonTeamInfo pokemonTeamInfo)
+    private void UpdateOpponentTeamOnClient(PokemonTeamInfoRPCTransfer pokemonTeamInfo)
     {
         Trainer opponent = GameObject.Find("Trainer(Clone)").GetComponent<Trainer>();
         Dictionary<string, Pokemon> pokemonNameInstanceDictionary = new();
@@ -433,7 +433,7 @@ public class Trainer : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    private void UpdateTeamOnServerRpc(PokemonTeamInfo pokemonTeamInfo)
+    private void UpdateTeamOnServerRpc(PokemonTeamInfoRPCTransfer pokemonTeamInfo)
     {
         rpcManager.RPCStarted();
         Debug.Log($"Name of the attached Object = {gameObject.name}");

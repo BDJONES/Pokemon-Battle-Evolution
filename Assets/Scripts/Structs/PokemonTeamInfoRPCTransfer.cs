@@ -2,7 +2,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public struct PokemonTeamInfo : INetworkSerializable
+public struct PokemonTeamInfoRPCTransfer : INetworkSerializable
 {
     public FixedString128Bytes pokemon1;
     public FixedString128Bytes pokemon2;
