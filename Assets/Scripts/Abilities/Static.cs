@@ -45,7 +45,7 @@ public class Static : Ability
 
     private void EventToTriggerHandler(EventsToTrigger trigger)
     {
-        if (trigger == EventsToTrigger.OpposingPokemonAttackedYourPokemon)
+        if (trigger == EventsToTrigger.OpposingPokemonAttackedYourPokemon && this.abilityUser != null)
         {
             if (this.abilityUser.ActiveState == true)
             {

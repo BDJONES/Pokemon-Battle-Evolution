@@ -15,6 +15,10 @@ public class Justified : Ability
 
     private void DarkAttackHandler(Attack attack)
     {
+        if (this.abilityUser == null)
+        {
+            return;
+        }
         if (this.abilityUser.ActiveState && attack.GetAttackType() == StaticTypeObjects.Dark && (attack.GetAttackCategory() == AttackCategory.Physical || attack.GetAttackCategory() == AttackCategory.Special))
         {
             TriggerEffect(trainerController.GetOpponent().GetActivePokemon(), this.abilityUser);
