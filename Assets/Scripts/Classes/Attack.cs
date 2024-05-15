@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Reflection;
+using Unity.Netcode;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public abstract class Attack : IPlayerAction
@@ -15,7 +17,6 @@ public abstract class Attack : IPlayerAction
     protected int currPowerPoints;
     protected int maxPowerPoints;
     protected bool isContact;
-    public static event Action<Attack> LastAttack;
     protected bool finishedAttack = false;
     public Attack() 
     {
@@ -62,12 +63,24 @@ public abstract class Attack : IPlayerAction
     {
         return maxPowerPoints;
     }
+    public void SetAttackPower(int newPower)
+    {
+        power = newPower;
+    }
     public bool IsContact()
     {
         return isContact;
     }
+
+
     protected async virtual UniTask<bool> UseAttack(Pokemon attacker, Pokemon target)
     {
+        bool canPokemonMove = await CanPokemonMove(attacker);
+        if (!canPokemonMove)
+        {
+            return false;
+        }
+        attacker.SendLastAttackFromThisPokemonRpc(this.GetType().Name);
         if (this.accuracy == 101)
         {
             // Ignore evasion
@@ -114,20 +127,64 @@ public abstract class Attack : IPlayerAction
             }
         }
         //Debug.Log("The Attack Landed");
-        LastAttack.Invoke(this);
-        //finishedAttack = true;
         GameManager.Instance.FinishRPCTaskRpc();
         return true;
     }
+
+    protected async UniTask<bool> CanPokemonMove(Pokemon attacker)
+    {
+        bool isLocalPlayer = attacker.transform.parent.parent.gameObject.GetComponent<NetworkObject>().IsLocalPlayer;
+        if (attacker.Status == StatusConditions.Paralysis)
+        {
+            int paraChance = UnityEngine.Random.Range(0, 99);
+            Debug.Log($"paraChance = {paraChance}");
+            if (paraChance < 25)
+            {
+                int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+                if (isLocalPlayer)
+                {
+                    GameManager.Instance.SendDialogueToClientRpc($"Your Opponent's {attacker.GetNickname()} was fully paralyzed");
+                    GameManager.Instance.SendDialogueToHostRpc($"Your {attacker.GetNickname()} was fully paralyzed");
+                }
+                else
+                {
+                    GameManager.Instance.SendDialogueToHostRpc($"Your Opponent's {attacker.GetNickname()} was fully paralyzed");
+                    GameManager.Instance.SendDialogueToClientRpc($"Your {attacker.GetNickname()} was fully paralyzed");
+                }
+                while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+                {
+                    await UniTask.Yield();
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected virtual void TriggerEffect(Pokemon attacker, Pokemon target)
     {
-        currPowerPoints -= 1;
+        if (target.GetAbility().GetAbilityName() == StaticAbilityObjects.Pressure.GetAbilityName())
+        {
+            currPowerPoints -= 2;
+        }
+        else
+        {
+            currPowerPoints -= 1;
+        }
+        Debug.Log($"TriggerEffect currPowerPoints {currPowerPoints}");
         return;
     }
     protected async virtual UniTask<int> CalculateDamage(Attack attack, Pokemon attacker, Pokemon target)
     {
-        if (attacker.GetAbility().GetType().Name == StaticAbilityObjects.Levitate.GetType().Name && attack.GetAttackType() == StaticTypeObjects.Ground)
+        if (target.IsLevitating && attack.GetAttackType() == StaticTypeObjects.Ground)
         {
+            int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+            GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} was able to float over your Ground-Type attack due to having the ability Levitate.");
+            GameManager.Instance.SendDialogueToHostRpc($"{target.GetNickname()} was able to float over your Ground-Type attack due to having the ability Levitate.");
+            while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+            {
+                await UniTask.Yield();
+            }
             return 0;
         }
         float stab = IsStab(attacker); // Same Type Attack Bonus
@@ -234,6 +291,7 @@ public abstract class Attack : IPlayerAction
     public IPlayerAction PerformAction(Pokemon attacker, Pokemon target)
     {
         GameManager.Instance.AddRPCTaskRpc();
+        // May create a function that returns a boolean on whether to skip turn in the future
         UseAttack(attacker, target);
         
         //while (!finishedAttack) ;
@@ -263,6 +321,13 @@ public abstract class Attack : IPlayerAction
         float effectiveness = 1f;
         if (target.GetType1().immunities.Contains(this.type) || (target.GetType2() != null && target.GetType2().immunities.Contains(this.type)))
         {
+            int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+            GameManager.Instance.SendDialogueToClientRpc($"{this.GetAttackName()} had no effect.");
+            GameManager.Instance.SendDialogueToHostRpc($"{this.GetAttackName()} had no effect.");
+            while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+            {
+                await UniTask.Yield();
+            }
             return 0;
         }
 
@@ -307,6 +372,7 @@ public abstract class Attack : IPlayerAction
                 await UniTask.Yield();
             }
         }
+
         return effectiveness;
     }
 }

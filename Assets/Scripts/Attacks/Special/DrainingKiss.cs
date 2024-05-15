@@ -18,6 +18,11 @@ public class DrainingKiss : Attack
 
     protected override async UniTask<bool> UseAttack(Pokemon attacker, Pokemon target)
     {
+        bool canPokemonMove = await CanPokemonMove(attacker);
+        if (!canPokemonMove)
+        {
+            return false;
+        }
         attacker.SendLastAttackFromThisPokemonRpc(this.GetType().Name);
         //GameManager.Instance.AddRPCTaskRpc();
         int damage = await CalculateDamage(this, attacker, target);
