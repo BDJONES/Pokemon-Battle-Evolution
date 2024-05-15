@@ -13,6 +13,7 @@ public class NetworkCommands : NetworkBehaviour
     [SerializeField] private GameObject gameManager;
     [SerializeField] private GameObject uIController;
     [SerializeField] private GameObject eventsToTriggerManager;
+    [SerializeField] private GameObject effectQueueController;
     public static event Action<GameObject> HostConnected;
     public static event Action UIControllerCreated;
     private bool gameManagerSpawned = false;
@@ -39,7 +40,10 @@ public class NetworkCommands : NetworkBehaviour
             var spawnedEventToTriggerManager = Instantiate(eventsToTriggerManager);
             spawnedEventToTriggerManager.name = "EventsToTriggerManager";
             spawnedEventToTriggerManager.GetComponent<NetworkObject>().Spawn(true);
-            Debug.Log("Created Game Manager");
+            var spawnedEffectQueueController = Instantiate(effectQueueController);
+            spawnedEffectQueueController.name = "EffectQueueController";
+            spawnedEffectQueueController.GetComponent<NetworkObject>().Spawn(true);
+            //Debug.Log("Created Game Manager");
             
             gameManagerSpawned = true;
             uIControllerSpawned = true;
