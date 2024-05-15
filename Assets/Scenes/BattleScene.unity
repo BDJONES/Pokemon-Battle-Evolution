@@ -938,18 +938,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1154950894
       objectReference: {fileID: 0}
-    - target: {fileID: 981014290506156400, guid: 9806849b0b0a2044bb152f680c2d1410, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 2941936173
-      objectReference: {fileID: 0}
-    - target: {fileID: 3359373073416085504, guid: 9806849b0b0a2044bb152f680c2d1410, type: 3}
-      propertyPath: uIController
-      value: 
-      objectReference: {fileID: 1867522905467510444, guid: 1380be784e701dd4fb0ed03ef43aa433, type: 3}
-    - target: {fileID: 3359373073416085504, guid: 9806849b0b0a2044bb152f680c2d1410, type: 3}
-      propertyPath: eventsToTriggerManager
-      value: 
-      objectReference: {fileID: 2877971735069348581, guid: 87259ed4835aade42adebf79465a27b3, type: 3}
     - target: {fileID: 4538642909236066758, guid: 9806849b0b0a2044bb152f680c2d1410, type: 3}
       propertyPath: m_Name
       value: NetworkCommands
