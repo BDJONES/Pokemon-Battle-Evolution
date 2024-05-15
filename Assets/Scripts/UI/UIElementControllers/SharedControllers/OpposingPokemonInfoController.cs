@@ -30,7 +30,7 @@ public class OpposingPokemonInfoController : NetworkBehaviour
     private ProgressBar hpBarPI;
     private Label hpStatLabelPI;
     private UIController uIController;
-    private float? oldHP;
+    private static float? oldHP;
     private Pokemon lastPokemon;
     private EventsToTriggerManager eventsToTriggerManager;
     private void OnEnable()
@@ -60,6 +60,11 @@ public class OpposingPokemonInfoController : NetworkBehaviour
         {
             oldHP = trainerController.GetOpponent().GetActivePokemon().GetHPStat();
         }
+    }
+
+    public static void ChangeOldHP(int value)
+    {
+        oldHP = value;
     }
 
     private void OnDisable()
@@ -141,7 +146,8 @@ public class OpposingPokemonInfoController : NetworkBehaviour
 
     public IEnumerator DrainHP(Menus menu, int oldHPValue)
     {
-        ProgressBar hpBar = null!;
+        ProgressBar hpBar;
+        Debug.Log($"oldHP Value in DrainHP function PIC {oldHPValue}");
         if (menu == Menus.GeneralBattleMenu)
         {
             hpBar = hpBarGB;
@@ -154,12 +160,17 @@ public class OpposingPokemonInfoController : NetworkBehaviour
         {
             hpBar = hpBarOD;
         }
+        else if (menu == Menus.OpposingPokemonInfoScreen)
+        {
+            hpBar = hpBarPI;
+        }
         else
         {
             GameManager.Instance.FinishRPCTaskRpc();
-            yield return null;
+            yield break;
         }
         float newHPValue = trainerController.GetOpponent().GetActivePokemon().GetHPStat();
+        hpBar.value = oldHPValue;
         if (oldHPValue > newHPValue)
         {
             while (hpBar.value > newHPValue)
@@ -188,6 +199,7 @@ public class OpposingPokemonInfoController : NetworkBehaviour
             oldHP = null;
             YourPokemonDeathEventManager.AlertOfDeath();
         }
+        Debug.Log("Finished Updating HP");
         GameManager.Instance.FinishRPCTaskRpc();
         yield return null;
     }
@@ -294,6 +306,7 @@ public class OpposingPokemonInfoController : NetworkBehaviour
             pokemonLevelLabelOD.text = $"Lv. {trainerController.GetOpponent().GetActivePokemon().GetLevel()}";
             hpBarOD.highValue = trainerController.GetOpponent().GetActivePokemon().GetMaxHPStat();
             hpBarOD.value = (float)oldHP;
+            Debug.Log($"oldHP = {oldHP}");
         }
         else if (menu == Menus.OpposingPokemonInfoScreen)
         {
