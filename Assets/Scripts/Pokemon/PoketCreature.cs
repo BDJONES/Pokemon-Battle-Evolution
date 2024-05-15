@@ -19,12 +19,7 @@ public class PoketCreature : Pokemon
         this.baseSpeed = 60;
     }
 
-    private void OnEnable()
-    {
-        GameManager.OnStateChange += UpdatePokemonInfo;
-    }
-
-    private void UpdatePokemonInfo(GameState state)
+    protected override void UpdatePokemonInfo(GameState state)
     {
         if (state == GameState.LoadingPokemonInfo)
         {

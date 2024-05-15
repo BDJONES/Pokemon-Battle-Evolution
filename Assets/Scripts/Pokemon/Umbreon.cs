@@ -19,19 +19,14 @@ public class Umbreon : Pokemon
         this.baseSpeed = 65;
     }
 
-    private void OnEnable()
-    {
-        GameManager.OnStateChange += UpdatePokemonInfo;
-    }
-
-    private void UpdatePokemonInfo(GameState state)
+    protected override void UpdatePokemonInfo(GameState state)
     {
         if (state == GameState.LoadingPokemonInfo)
         {
             // Must assign Scriptable Objects in Start Function
             this.abilityList = new List<Ability>
             {
-                ScriptableObject.CreateInstance<Static>()
+                ScriptableObject.CreateInstance<Synchronize>()
             };
             this.ability = this.abilityList[0];
             // Get the user of this ability to the Ability
@@ -39,8 +34,8 @@ public class Umbreon : Pokemon
             this.ability.InitializeAbility();
             this.Type1 = StaticTypeObjects.Dark;
             this.Type2 = null;
-            //this.heldItem = new Leftovers();
-            //this.heldItem.SetHolder(this);
+            this.heldItem = new Leftovers();
+            this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
                 new Moonlight(),

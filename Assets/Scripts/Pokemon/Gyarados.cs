@@ -19,17 +19,7 @@ public class Gyarados : Pokemon
         this.baseSpeed = 81;
     }
 
-    private void OnEnable()
-    {
-        GameManager.OnStateChange += UpdatePokemonInfo;
-    }
-
-    private void OnDisable()
-    {
-        GameManager.OnStateChange -= UpdatePokemonInfo;
-    }
-
-    private void UpdatePokemonInfo(GameState state)
+    protected override void UpdatePokemonInfo(GameState state)
     {
         if (state == GameState.LoadingPokemonInfo)
         {
@@ -44,8 +34,8 @@ public class Gyarados : Pokemon
             this.ability.InitializeAbility();
             this.Type1 = StaticTypeObjects.Water;
             this.Type2 = StaticTypeObjects.Flying;
-            //this.heldItem = new LifeOrb();
-            //this.heldItem.SetHolder(this);
+            this.heldItem = new LifeOrb();
+            this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
                 new Liquidation(),

@@ -19,12 +19,7 @@ public class Lucario : Pokemon
         this.baseSpeed = 90;
     }
 
-    private void OnEnable()
-    {
-        GameManager.OnStateChange += UpdatePokemonInfo;
-    }
-
-    private void UpdatePokemonInfo(GameState state)
+    protected override void UpdatePokemonInfo(GameState state)
     {
         if (state == GameState.LoadingPokemonInfo)
         {
@@ -39,8 +34,8 @@ public class Lucario : Pokemon
             this.ability.InitializeAbility();
             this.Type1 = StaticTypeObjects.Fighting;
             this.Type2 = StaticTypeObjects.Steel;
-            //this.heldItem = new ChoiceBand();
-            //this.heldItem.SetHolder(this);
+            this.heldItem = new LifeOrb();
+            this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
                 new AuraSphere(),

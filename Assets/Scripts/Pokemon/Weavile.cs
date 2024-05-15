@@ -19,19 +19,14 @@ public class Weavile : Pokemon
         this.baseSpeed = 125;
     }
 
-    private void OnEnable()
-    {
-        GameManager.OnStateChange += UpdatePokemonInfo;
-    }
-
-    private void UpdatePokemonInfo(GameState state)
+    protected override void UpdatePokemonInfo(GameState state)
     {
         if (state == GameState.LoadingPokemonInfo)
         {
             // Must assign Scriptable Objects in Start Function
             this.abilityList = new List<Ability>
             {
-                ScriptableObject.CreateInstance<Static>()
+                ScriptableObject.CreateInstance<Pressure>()
             };
             this.ability = this.abilityList[0];
             // Get the user of this ability to the Ability
@@ -39,8 +34,8 @@ public class Weavile : Pokemon
             this.ability.InitializeAbility();
             this.Type1 = StaticTypeObjects.Ice;
             this.Type2 = StaticTypeObjects.Dark;
-            //this.heldItem = new LifeOrb();
-            //this.heldItem.SetHolder(this);
+            this.heldItem = new LifeOrb();
+            this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
                 new IceShard(),

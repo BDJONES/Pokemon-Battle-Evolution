@@ -18,17 +18,7 @@ public class Latios : Pokemon
         this.baseSpeed = 110;
     }
 
-    private void OnEnable()
-    {
-        GameManager.OnStateChange += UpdatePokemonInfo;
-    }
-
-    private void OnDisable()
-    {
-        GameManager.OnStateChange -= UpdatePokemonInfo;
-    }
-
-    private void UpdatePokemonInfo(GameState state)
+    protected override void UpdatePokemonInfo(GameState state)
     {
         if (state == GameState.LoadingPokemonInfo)
         {
@@ -43,8 +33,8 @@ public class Latios : Pokemon
             this.ability.InitializeAbility();
             this.Type1 = StaticTypeObjects.Dragon;
             this.Type2 = StaticTypeObjects.Psychic;
-            //this.heldItem = new LifeOrb();
-            //this.heldItem.SetHolder(this);
+            this.heldItem = new Leftovers();
+            this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
                 new DracoMeteor(),

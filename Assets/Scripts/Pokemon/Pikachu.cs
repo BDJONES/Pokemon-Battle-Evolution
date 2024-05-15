@@ -18,12 +18,7 @@ public class Pikachu : Pokemon
         this.baseSpeed = 120;
     }
 
-    private void OnEnable()
-    {
-        GameManager.OnStateChange += UpdatePokemonInfo;
-    }
-
-    private void UpdatePokemonInfo(GameState state)
+    protected override void UpdatePokemonInfo(GameState state)
     {
         if (state == GameState.LoadingPokemonInfo)
         {
@@ -38,8 +33,8 @@ public class Pikachu : Pokemon
             this.ability.InitializeAbility();
             this.Type1 = StaticTypeObjects.Electric;
             this.Type2 = null;
-            //this.heldItem = new LightBall();
-            //this.heldItem.SetHolder(this);
+            this.heldItem = new LightBall();
+            this.heldItem.SetHolder(this);
             this.moveSet = new List<Attack>
             {
                 new Thunderbolt(),
