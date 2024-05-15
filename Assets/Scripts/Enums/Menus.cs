@@ -11,6 +11,7 @@ public enum Menus
     PokemonDamagedScreen,
     OpposingPokemonDamagedScreen,
     InBattlePartyMenu,
+    InBattlePartyDialogueScreen,
     PokemonFaintedScreen,
     DialogueScreen,
     ForfietMenu,
