@@ -26,8 +26,8 @@ public class Nuzzle : Attack
             {
                 target.Status = StatusConditions.Paralysis;
                 int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
-                GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()} was paralyzed");
-                GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()} was paralyzed");
+                GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} was paralyzed");
+                GameManager.Instance.SendDialogueToHostRpc($"{target.GetNickname()} was paralyzed");
                 while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
                 {
                     await UniTask.Yield();
