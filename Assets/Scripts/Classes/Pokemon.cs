@@ -27,9 +27,14 @@ public abstract class Pokemon: NetworkBehaviour
         }
         set
         {
+            //bool canBeStatused = CanBeStatused(value);
+            //if (canBeStatused)
+            //{
             status.Value = value;
-            this.StatusEffect();
-            StatusChanged?.Invoke(status.Value);
+            //this.StatusEffect();
+            StatusChanged?.Invoke(value);
+            AlertNewStatusOnClientRpc(status.Value);
+            //}
         }
     }
     public event Action<StatusConditions>? StatusChanged;
@@ -222,9 +227,49 @@ public abstract class Pokemon: NetworkBehaviour
         get 
         { 
             return isPressured.Value; 
-        } 
+        }
+        set
+        {
+            isPressured.Value = value;
+        }
+    }
+    public NetworkVariable<bool> isLevitating = new NetworkVariable<bool>(false);
+    public bool IsLevitating
+    {
+        get
+        {
+            return isLevitating.Value;
+        }
+        set
+        {
+            isLevitating.Value = value;
+        }
     }
     protected Attack? lastAttack = null;
+    protected EventsToTriggerManager eventsToTriggerManager;
+
+    protected virtual void OnEnable()
+    {
+        NetworkCommands.UIControllerCreated += () =>
+        {
+            eventsToTriggerManager = GameObject.Find("EventsToTriggerManager").GetComponent<EventsToTriggerManager>();
+            eventsToTriggerManager.OnTriggerEvent += HandleTriggeredEvent;
+            this.StatusChanged += HandleStatusChange;
+        };            
+        GameManager.OnStateChange += UpdatePokemonInfo;
+    }
+
+    private void OnDisable()
+    {
+        eventsToTriggerManager.OnTriggerEvent -= HandleTriggeredEvent;
+        this.StatusChanged -= HandleStatusChange;
+        GameManager.OnStateChange -= UpdatePokemonInfo;
+    }
+
+    protected virtual void UpdatePokemonInfo(GameState state)
+    {
+        return;
+    }
 
     public string GetSpeciesName()
     {
@@ -367,6 +412,10 @@ public abstract class Pokemon: NetworkBehaviour
     {
         return evs;
     }
+    public Attack? GetLastAttack()
+    {
+        return lastAttack;
+    }
     public void RemoveItem()
     {
         heldItem = null;
@@ -410,18 +459,36 @@ public abstract class Pokemon: NetworkBehaviour
     {
         speedStat = newSpeed;
     }
-    public void SetPressuredStatus(bool status)
+    public void SetLastAttack(Attack attack)
     {
-        isPressured.Value = status;
-    }    
+        this.lastAttack = attack;
+        Debug.Log($"The last attack used by {this.nickname} was {lastAttack.GetAttackName()}");
+        Debug.Log($"The last attack is a contact move {lastAttack.IsContact()}");
+        GameManager.Instance.FinishRPCTaskRpc();
+    }
+    private bool CanBeStatused(StatusConditions statusCondition)
+    {
+        if (statusCondition == StatusConditions.Paralysis)
+        {
+            if (Type1 == StaticTypeObjects.Electric || (Type2 != null && Type2 == StaticTypeObjects.Electric))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     public void StatusEffect()
     {
+        //if (IsHost)
+        //{
+        Debug.Log("Causing Status Effects");
         if (this.status.Value == StatusConditions.Burn)
         {
             // Fix Burn effect based on info here: https://the-episodes-and-movie-yveltal-and-more.fandom.com/wiki/Burn_(Pok%C3%A9mon_Status_Condition)#Generation_7
             // Damage Calculation already takes burn into effect
+            int burnDamage = this.GetMaxHPStat() / 16;
+            this.SetHPStat(Mathf.FloorToInt(hpStat.Value - burnDamage));
             return;
-
         }
         else if (this.status.Value == StatusConditions.Paralysis)
         {
@@ -429,6 +496,7 @@ public abstract class Pokemon: NetworkBehaviour
             this.SetSpeedStat(this.speedStat / 2);
             this.SetSpeedStat(Mathf.FloorToInt(this.speedStat * stageConversionDictionary[speedStage.Value]));
         }
+        //}
     }
     public void ResetStatStages()
     {
@@ -452,40 +520,94 @@ public abstract class Pokemon: NetworkBehaviour
     public void ResetBattleEffects()
     {
         isPressured.Value = false;
+        isLevitating.Value = false;
     }
-    public void SetLastAttack(Attack attack)
+    private void HandleStatusChange(StatusConditions conditions)
     {
-        this.lastAttack = attack;
+        if (conditions != StatusConditions.Healthy)
+        {
+            this.StatusEffect();
+            TriggerStatusEffectOnHostRpc();
+        }
     }
-    public Attack? GetLastAttack()
+
+    private void HandleTriggeredEvent(EventsToTrigger e)
     {
-        return lastAttack;
+        if (e == EventsToTrigger.YourPokemonSwitched)
+        {
+            if (this.Status != StatusConditions.Healthy)
+            {
+                this.StatusEffect();
+                TriggerStatusEffectOnHostRpc();
+            }
+        }
     }
     [Rpc(SendTo.Server)]
     public void RequestStatChangeRpc(Stats stat, int value)
     {
-        Pokemon target = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<TrainerController>().GetPlayer().GetActivePokemon();
         switch (stat)
         {
             case Stats.Attack:
-                target.AttackStage = value; 
+                this.AttackStage = value; 
                 break;
             case Stats.SpecialAttack:
-                target.SpecialAttackStage = value;
+                this.SpecialAttackStage = value;
                 break;
             case Stats.Defense:
-                target.DefenseStage = value;
+                this.DefenseStage = value;
                 break;
             case Stats.SpecialDefense:
-                target.SpecialDefenseStage = value;
+                this.SpecialDefenseStage = value;
                 break;
             case Stats.Speed:
-                target.SpeedStage = value;
+                this.SpeedStage = value;
                 break;
             case Stats.Evasion:
                 break;
             case Stats.Accuracy:
                 break;
         }
+    }
+    [Rpc(SendTo.Server)]
+    public void RequestFieldChangeRpc(PokemonFields field, bool value)
+    {
+        switch(field)
+        {
+            case PokemonFields.isPressured:
+                this.IsPressured = value;
+                break;
+            case PokemonFields.isLevitating: 
+                this.IsLevitating = value;
+                Debug.Log($"Changed value of IsLevitating to {value}");
+                break;
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    public void RequestStatusChangeRpc(StatusConditions statusCondition)
+    {
+        Debug.Log($"{this.nickname} is being changed to {statusCondition}");
+        this.Status = statusCondition;
+    }
+
+    [Rpc(SendTo.NotServer)]
+    private void AlertNewStatusOnClientRpc(StatusConditions statusCondition)
+    {
+        //RequestStatusChangeRpc(statusCondition);
+        StatusChanged?.Invoke(statusCondition);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void SendLastAttackFromThisPokemonRpc(string attackName)
+    {
+        GameManager.Instance.AddRPCTaskRpc();
+        Attack attack = (Attack)Activator.CreateInstance(System.Type.GetType(attackName.ToString().Replace(" ", "")));
+        SetLastAttack(attack);
+    }
+
+    [Rpc(SendTo.Server)]
+    public void TriggerStatusEffectOnHostRpc()
+    {
+        this.StatusEffect();
     }
 }
