@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 public class Pokemon6Controller : PartyPokemonController
@@ -7,28 +8,20 @@ public class Pokemon6Controller : PartyPokemonController
     protected override void AttachButton()
     {
         InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[5]);
-        Debug.Log("Attaching the Button");
-        if (IsHost)
+        if (battlePartyUIElements.Pokemon6Button != null)
         {
-            if (uIController.GetCurrentTrainer1Menu() == Menus.InBattlePartyMenu)
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon1Button, PartyPokemonClicked, 1);
-            }
-            else
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyDialogueUIElements.Pokemon1Button, PartyPokemonClicked, 1);
-            }
+            Debug.Log("Found The Button");
+        }
+        if (NetworkManager.Singleton.IsHost)
+        {
+            Debug.Log("Hello There Host");
+            
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon6Button, PartyPokemonClicked, 1);
         }
         else
         {
-            if (uIController.GetCurrentTrainer2Menu() == Menus.InBattlePartyMenu)
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon1Button, PartyPokemonClicked, 2);
-            }
-            else
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyDialogueUIElements.Pokemon1Button, PartyPokemonClicked, 2);
-            }
+            Debug.Log("Hello There Client");
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon6Button, PartyPokemonClicked, 2);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Unity.Netcode;
 
 public class Pokemon1Controller : PartyPokemonController
 {
@@ -10,27 +11,17 @@ public class Pokemon1Controller : PartyPokemonController
         var player = trainerController.gameObject;
         InitializeSwitch(trainerController.GetPlayer().GetPokemonTeam()[0]);
         Debug.Log("Attaching the Button");
-        if (IsHost)
+        if (battlePartyUIElements.Pokemon1Button != null)
         {
-            if (uIController.GetCurrentTrainer1Menu() == Menus.InBattlePartyMenu)
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon1Button, PartyPokemonClicked, 1);
-            }
-            else
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyDialogueUIElements.Pokemon1Button, PartyPokemonClicked, 1);
-            }
+            Debug.Log("Found The Button");
+        }
+        if (NetworkManager.Singleton.IsHost)
+        {
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon1Button, PartyPokemonClicked, 1);
         }
         else
         {
-            if (uIController.GetCurrentTrainer2Menu() == Menus.InBattlePartyMenu)
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon1Button, PartyPokemonClicked, 2);
-            }
-            else
-            {
-                UIEventSubscriptionManager.Subscribe(battlePartyDialogueUIElements.Pokemon1Button, PartyPokemonClicked, 2);
-            }
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon1Button, PartyPokemonClicked, 2);
         }
     }
 }

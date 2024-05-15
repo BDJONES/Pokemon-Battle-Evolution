@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using System;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.UIElements;
 
 public abstract class PartyPokemonController : NetworkBehaviour
@@ -26,13 +25,19 @@ public abstract class PartyPokemonController : NetworkBehaviour
 
     private void Start()
     {
-        //NetworkCommands.UIControllerCreated += () =>
-        //{
         uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
         battlePartyUIElements = uIController.gameObject.GetComponent<InBattlePartyUIElements>();
         battlePartyDialogueUIElements = uIController.gameObject.GetComponent<InBattlePartyDialogueUIElements>();
+        if (battlePartyUIElements != null)
+        {
+            Debug.Log("Battle Party Elements are here");
+        }
+        if (battlePartyDialogueUIElements != null)
+        {
+            Debug.Log("Dialogue Elements are here");
+        }
         AttachButton();
-        //};
+
     }
 
     protected abstract void AttachButton();
