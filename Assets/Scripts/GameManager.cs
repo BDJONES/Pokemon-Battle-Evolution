@@ -1,14 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
-using UnityEngine.UIElements;
 using Unity.Netcode;
-using Unity.Services.Lobbies.Models;
 using Unity.Collections;
-using UnityEngine.Rendering;
-using UnityEditor.Experimental.GraphView;
 
 public class GameManager : NetworkSingleton<GameManager>
 {
@@ -272,7 +266,7 @@ public class GameManager : NetworkSingleton<GameManager>
             //    break;
             //}
             UpdateGameStateRpc(GameState.ProcessingInput);
-            await DecideWhoGoesFirst(trainer1Selection, trainer2Selection);
+            await PlayOutTurn(trainer1Selection, trainer2Selection);
             trainer1Selection = null;
             trainer2Selection = null;
         }
@@ -902,7 +896,7 @@ public class GameManager : NetworkSingleton<GameManager>
         Debug.Log("Finished Executing the Switch");
     }
 
-    private async UniTask DecideWhoGoesFirst(IPlayerAction trainer1Action, IPlayerAction trainer2Action)
+    private async UniTask PlayOutTurn(IPlayerAction trainer1Action, IPlayerAction trainer2Action)
     {
         Debug.Log("Playing out turn");
         int oldHPTrainer1;
