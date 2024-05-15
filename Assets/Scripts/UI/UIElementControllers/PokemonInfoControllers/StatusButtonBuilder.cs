@@ -67,24 +67,24 @@ public class StatusButtonBuilder : NetworkBehaviour
         Debug.Log("Creating Your Status Buttons");
         if (trainer.GetActivePokemon().Status != StatusConditions.Healthy)
         {
-            var newButton = StatusButtonElement.Instantiate();
-            VisualElement content = newButton.Query<VisualElement>("Content");
-            Label text = content.Query<Label>();
-            text.text = trainer.GetActivePokemon().Status.ToString();
-            pokemonInfoUIElements.StatusButtons.Add(newButton);
+            var StatusButton = StatusButtonElement.Instantiate();
+            VisualElement statusContent = StatusButton.Query<VisualElement>("Content");
+            Label statusText = statusContent.Query<Label>();
+            statusText.text = trainer.GetActivePokemon().Status.ToString();
+            pokemonInfoUIElements.StatusButtons.Add(StatusButton);
         }
         if (trainer.GetActivePokemon().GetItem() != null)
         {
-            var newButton = StatusButtonElement.Instantiate();
-            VisualElement content = newButton.Query<VisualElement>("Content");
-            Label text = content.Query<Label>();
-            text.text = trainer.GetActivePokemon().GetItem().GetItemName();
-            pokemonInfoUIElements.StatusButtons.Add(newButton);
+            var ItemButton = StatusButtonElement.Instantiate();
+            VisualElement itemContent = ItemButton.Query<VisualElement>("Content");
+            Label itemText = itemContent.Query<Label>();
+            itemText.text = trainer.GetActivePokemon().GetItem().GetItemName();
+            pokemonInfoUIElements.StatusButtons.Add(ItemButton);
         }
         var newButton = StatusButtonElement.Instantiate();
         VisualElement content = newButton.Query<VisualElement>("Content");
         Label text = content.Query<Label>();
-        text.text = trainer.GetActivePokemon().GetAbiltity().GetAbilityName();
+        text.text = trainer.GetActivePokemon().GetAbility().GetAbilityName();
         pokemonInfoUIElements.StatusButtons.Add(newButton);
     }
 
