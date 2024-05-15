@@ -42,30 +42,29 @@ public class ViewBuilder : NetworkBehaviour
     {
         if (IsOwner)
         {
-            if (menu == Menus.InBattlePartyMenu || menu == Menus.PokemonFaintedScreen)
+            if (menu == Menus.InBattlePartyMenu || menu == Menus.InBattlePartyDialogueScreen || menu == Menus.PokemonFaintedScreen)
             {
+                Debug.Log("Creating the WidgetHolder");
+                RemoveUI();
                 PopulateUI();
             }
-            else
+            else if (previousMenu == Menus.InBattlePartyMenu || previousMenu == Menus.InBattlePartyDialogueScreen || previousMenu == Menus.PokemonFaintedScreen)
             {
-                if (previousMenu == Menus.InBattlePartyMenu || previousMenu == Menus.PokemonFaintedScreen)
-                {
-                    var widgetHolder = GameObject.Find("WidgetHolder");
-                    var pokemon1Controller = widgetHolder.GetComponent<Pokemon1Controller>();
-                    var pokemon2Controller = widgetHolder.GetComponent<Pokemon2Controller>();
-                    var pokemon3Controller = widgetHolder.GetComponent<Pokemon3Controller>();
-                    var pokemon4Controller = widgetHolder.GetComponent<Pokemon4Controller>();
-                    var pokemon5Controller = widgetHolder.GetComponent<Pokemon5Controller>();
-                    var pokemon6Controller = widgetHolder.GetComponent<Pokemon6Controller>();
-                    Destroy(pokemon1Controller);
-                    Destroy(pokemon2Controller);
-                    Destroy(pokemon3Controller);
-                    Destroy(pokemon4Controller);
-                    Destroy(pokemon5Controller);
-                    Destroy(pokemon6Controller);
-                    Destroy(GameObject.Find("WidgetHolder"));
-                    //RemoveUI();
-                }
+                Debug.Log("Removing the WidgetHolder");
+                var widgetHolder = GameObject.Find("WidgetHolder");
+                var pokemon1Controller = widgetHolder.GetComponent<Pokemon1Controller>();
+                var pokemon2Controller = widgetHolder.GetComponent<Pokemon2Controller>();
+                var pokemon3Controller = widgetHolder.GetComponent<Pokemon3Controller>();
+                var pokemon4Controller = widgetHolder.GetComponent<Pokemon4Controller>();
+                var pokemon5Controller = widgetHolder.GetComponent<Pokemon5Controller>();
+                var pokemon6Controller = widgetHolder.GetComponent<Pokemon6Controller>();
+                Destroy(pokemon1Controller);
+                Destroy(pokemon2Controller);
+                Destroy(pokemon3Controller);
+                Destroy(pokemon4Controller);
+                Destroy(pokemon5Controller);
+                Destroy(pokemon6Controller);
+                Destroy(widgetHolder);
             }
             previousMenu = menu;
         }
@@ -142,19 +141,36 @@ public class ViewBuilder : NetworkBehaviour
 
     private void RemoveUI()
     {
-        for (int i = 1; i <= 6; i++)
+        if (previousMenu == Menus.InBattlePartyMenu || previousMenu == Menus.InBattlePartyDialogueScreen || previousMenu == Menus.PokemonFaintedScreen)
         {
-            var element = uIController.currentUI.rootVisualElement.Q<VisualElement>($"Pokemon{i}");
-            if (element != null)
+            var widgetHolder = GameObject.Find("WidgetHolder");
+            var pokemon1Controller = widgetHolder.GetComponent<Pokemon1Controller>();
+            var pokemon2Controller = widgetHolder.GetComponent<Pokemon2Controller>();
+            var pokemon3Controller = widgetHolder.GetComponent<Pokemon3Controller>();
+            var pokemon4Controller = widgetHolder.GetComponent<Pokemon4Controller>();
+            var pokemon5Controller = widgetHolder.GetComponent<Pokemon5Controller>();
+            var pokemon6Controller = widgetHolder.GetComponent<Pokemon6Controller>();
+            Destroy(pokemon1Controller);
+            Destroy(pokemon2Controller);
+            Destroy(pokemon3Controller);
+            Destroy(pokemon4Controller);
+            Destroy(pokemon5Controller);
+            Destroy(pokemon6Controller);
+            Destroy(widgetHolder);
+            for (int i = 1; i <= 6; i++)
             {
-                Debug.Log("Removing duplicates");
-                if (i <= 3)
+                var element = uIController.currentUI.rootVisualElement.Q<VisualElement>($"Pokemon{i}");
+                if (element != null)
                 {
-                    uIController.currentUI.rootVisualElement.Q("Top_Row").Remove(element);
-                }
-                else
-                {
-                    uIController.currentUI.rootVisualElement.Q("Bottom_Row").Remove(element);
+                    Debug.Log("Removing duplicates");
+                    if (i <= 3)
+                    {
+                        uIController.currentUI.rootVisualElement.Q("Top_Row").Remove(element);
+                    }
+                    else
+                    {
+                        uIController.currentUI.rootVisualElement.Q("Bottom_Row").Remove(element);
+                    }
                 }
             }
         }
