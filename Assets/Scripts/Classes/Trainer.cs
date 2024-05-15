@@ -177,8 +177,11 @@ public class Trainer : NetworkBehaviour
         Pokemon tempPokemon = activePokemon;        
         teamObjects[index] = tempGameObject;
         pokemonTeam[index] = tempPokemon;
-        activePokemon.ResetStatStages();
-        activePokemon.ResetBattleEffects();
+        if (IsHost)
+        {
+            activePokemon.ResetStatStages();
+            activePokemon.ResetBattleEffects();
+        }
         activePokemon.ActiveState = false;
         activePokemonGameObject = newObject;
         activePokemon = newPokemon;
