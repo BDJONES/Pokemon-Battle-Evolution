@@ -14,6 +14,10 @@ public abstract class Item
     {
         this.holder = holder;
     }
+    public string GetItemName()
+    {
+        return itemName;
+    }
     protected abstract void InitializeItem();
 
     protected virtual void TriggerEffect(int userType)

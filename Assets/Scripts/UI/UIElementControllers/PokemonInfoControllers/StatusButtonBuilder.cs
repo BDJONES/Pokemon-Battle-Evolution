@@ -6,52 +6,65 @@ using UnityEngine.UIElements;
 public class StatusButtonBuilder : NetworkBehaviour
 {
     [SerializeField] private VisualTreeAsset StatusButtonElement;
-    [SerializeField] private TrainerController trainerController;
     [SerializeField] private PokemonInfoUIElements pokemonInfoUIElements;
     private UIController uIController;
-
+    private TrainerController trainerController;
     private void OnEnable()
     {
-        //if (IsOwner)
-        //{
-            NetworkCommands.UIControllerCreated += () =>
-            {
-                uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
-                uIController.OnHostMenuChange += HandleMenuChange;
-                uIController.OnClientMenuChange += HandleMenuChange;
-                pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
-            };
-        //}
+        NetworkCommands.UIControllerCreated += () =>
+        {
+            uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+            uIController.OnHostMenuChange += HandleHostMenuChange;
+            uIController.OnClientMenuChange += HandleClientMenuChange;
+            pokemonInfoUIElements = uIController.GetComponent<PokemonInfoUIElements>();
+            trainerController = gameObject.transform.parent.parent.gameObject.GetComponent<TrainerController>();
+        };
     }
 
     private void OnDisable()
     {
         if (uIController != null)
         {
-            uIController.OnHostMenuChange -= HandleMenuChange;
-            uIController.OnClientMenuChange -= HandleMenuChange;
+            uIController.OnHostMenuChange -= HandleHostMenuChange;
+            uIController.OnClientMenuChange -= HandleClientMenuChange;
         }
-    }    
-    
-    private void HandleMenuChange(Menus menu)
+    }
+
+    private void HandleHostMenuChange(Menus menu)
     {
-        if (menu == Menus.PokemonInfoScreen)
+        if (IsOwner)
         {
-            CreateYourStatusButtons();
+            if (menu == Menus.PokemonInfoScreen)
+            {
+                CreateYourStatusButtons();
+            }
+            else if (menu == Menus.OpposingPokemonInfoScreen)
+            {
+                CreateOpponentStatusButtons();
+            }
         }
-        else if (menu == Menus.OpposingPokemonInfoScreen)
+    }
+
+    private void HandleClientMenuChange(Menus menu)
+    {
+        if (IsOwner)
         {
-            CreateOpponentStatusButtons();
+            if (menu == Menus.PokemonInfoScreen)
+            {
+                CreateYourStatusButtons();
+            }
+            else if (menu == Menus.OpposingPokemonInfoScreen)
+            {
+                CreateOpponentStatusButtons();
+            }
         }
     }
 
     private void CreateYourStatusButtons()
     {
+
         Trainer trainer = trainerController.GetPlayer();
-        //GameObject StatusButtonHolder = new GameObject
-        //{
-        //    name = "WidgetHolder"
-        //};
+        Debug.Log("Creating Your Status Buttons");
         if (trainer.GetActivePokemon().Status != StatusConditions.Healthy)
         {
             var newButton = StatusButtonElement.Instantiate();
@@ -60,15 +73,25 @@ public class StatusButtonBuilder : NetworkBehaviour
             text.text = trainer.GetActivePokemon().Status.ToString();
             pokemonInfoUIElements.StatusButtons.Add(newButton);
         }
+        if (trainer.GetActivePokemon().GetItem() != null)
+        {
+            var newButton = StatusButtonElement.Instantiate();
+            VisualElement content = newButton.Query<VisualElement>("Content");
+            Label text = content.Query<Label>();
+            text.text = trainer.GetActivePokemon().GetItem().GetItemName();
+            pokemonInfoUIElements.StatusButtons.Add(newButton);
+        }
+        var newButton = StatusButtonElement.Instantiate();
+        VisualElement content = newButton.Query<VisualElement>("Content");
+        Label text = content.Query<Label>();
+        text.text = trainer.GetActivePokemon().GetAbiltity().GetAbilityName();
+        pokemonInfoUIElements.StatusButtons.Add(newButton);
     }
 
     private void CreateOpponentStatusButtons()
     {
         Trainer trainer = trainerController.GetOpponent();
-        //GameObject StatusButtonHolder = new GameObject
-        //{
-        //    name = "WidgetHolder"
-        //};
+        Debug.Log("Creating Opponent Status Buttons");
         if (trainer.GetActivePokemon().Status != StatusConditions.Healthy)
         {
             var newButton = StatusButtonElement.Instantiate();
