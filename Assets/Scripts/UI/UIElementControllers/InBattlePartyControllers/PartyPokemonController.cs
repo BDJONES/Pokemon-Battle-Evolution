@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UIElements;
 
 public abstract class PartyPokemonController : NetworkBehaviour
@@ -16,7 +18,9 @@ public abstract class PartyPokemonController : NetworkBehaviour
         InputReceived?.Invoke(input);
     }
     protected InBattlePartyUIElements battlePartyUIElements;
+    protected InBattlePartyDialogueUIElements battlePartyDialogueUIElements;
     public event EventHandler<OnSwitchEventArgs> SwitchSelected;
+    protected UIController uIController;
     protected Switch switchPA;
     protected Menus previousMenu;
 
@@ -24,7 +28,9 @@ public abstract class PartyPokemonController : NetworkBehaviour
     {
         //NetworkCommands.UIControllerCreated += () =>
         //{
-        battlePartyUIElements = GameObject.Find("UI Controller").GetComponent<InBattlePartyUIElements>();
+        uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+        battlePartyUIElements = uIController.gameObject.GetComponent<InBattlePartyUIElements>();
+        battlePartyDialogueUIElements = uIController.gameObject.GetComponent<InBattlePartyDialogueUIElements>();
         AttachButton();
         //};
     }
@@ -36,19 +42,97 @@ public abstract class PartyPokemonController : NetworkBehaviour
     }
 
 
-    protected void PartyPokemonClicked()
+    protected async void PartyPokemonClicked()
     {
         Debug.Log("PartyPokemon Clicked");
-        var args = new OnSwitchEventArgs
+        if (!switchPA.GetPokemon().IsDead() && switchPA.GetPokemon() != trainerController.GetPlayer().GetActivePokemon())
         {
-            Switch = this.switchPA
-        };
-        SwitchSelected?.Invoke(this, args);
-        ReceiveInput(switchPA);
+            Debug.Log("Valid Switch Occuring");
+            var args = new OnSwitchEventArgs
+            {
+                Switch = this.switchPA
+            };
+            SwitchSelected?.Invoke(this, args);
+            ReceiveInput(switchPA);
+        }
+        else
+        {
+            Debug.Log("Invalid Switch Occuring");
+            UIController uIController = GameObject.Find("UI Controller").GetComponent<UIController>();
+            if (NetworkManager.Singleton.IsHost)
+            {
+                Debug.Log("I'm the Host");
+                if (uIController != null)
+                {
+                    Debug.Log("I found the UI Controller");
+                    int activeRPCs;
+                    GameManager.Instance.SendDialogueToHostRpc($"{switchPA.GetPokemon().GetNickname()} could not be switched in");
+                    //while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+                    //{
+                    //    await UniTask.Yield();
+                    //}
+                    uIController.UpdateMenuRpc(Menus.InBattlePartyDialogueScreen, 1);
+                    activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+                    GameManager.Instance.RequestHostReadFirstDialogueRpc();
+                    while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+                    {
+                        await UniTask.Yield();
+                    }
+                    uIController.UpdateMenuRpc(Menus.GeneralBattleMenu, 1);
+                }
+                else
+                {
+                    Debug.Log("UI Controller could not be found");
+                }
+            }
+            else
+            {
+                Debug.Log("I'm the Client");
+                if (uIController != null)
+                {
+                    DialogueBoxController dialogueBox = trainerController.GetDialogueBoxController();
+                    dialogueBox.AddDialogueToQueue($"{switchPA.GetPokemon().GetNickname()} could not be switched in");
+                    uIController.UpdateMenuRpc(Menus.InBattlePartyDialogueScreen, 2);
+                    while (uIController.GetCurrentTrainer2Menu() != Menus.InBattlePartyDialogueScreen)
+                    {
+                        await UniTask.Yield();
+                    }
+                   
+                    await dialogueBox.ReadOneDialogueTest();
+                    uIController.UpdateMenuRpc(Menus.GeneralBattleMenu, 2);
+                }
+                else
+                {
+                    Debug.Log("UI Controller could not be found");
+                }
+            }
+        }
     }
 
     public void SetTrainerController(TrainerController tc)
     {
         trainerController = tc;
+    }
+
+    [Rpc(SendTo.Server)] 
+    private void SetInvalidSwitchDialogueForClientRpc()
+    {
+        Debug.Log("Dialogue is Being Set");
+        SetClientDialogue();
+    }
+
+    private async void SetClientDialogue()
+    {
+        int activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
+        GameManager.Instance.SendDialogueToClientRpc($"{switchPA.GetPokemon().GetNickname()} could not be switched in");
+        while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+        {
+            await UniTask.Yield();
+        }
+        GameManager.Instance.RequestClientReadFirstDialogueRpc();
+        while (GameManager.Instance.RPCManager.ActiveRPCs() > activeRPCs)
+        {
+            await UniTask.Yield();
+        }
     }
 }
