@@ -97,8 +97,7 @@ public class BackButtonController : NetworkBehaviour
 
     private void BackButtonClicked()
     {
-        var player = transform.parent.parent.gameObject;
-        if (IsOwner && uIController.GetCurrentTrainer1Menu() == Menus.MoveSelectionMenu)
+        if (IsOwner && (uIController.GetCurrentTrainer1Menu() == Menus.MoveSelectionMenu || uIController.GetCurrentTrainer1Menu() == Menus.InBattlePartyDialogueScreen))
         {
             uIController.UpdateMenuRpc(Menus.GeneralBattleMenu, 1);
         }
@@ -110,7 +109,7 @@ public class BackButtonController : NetworkBehaviour
                 uIController.UpdateMenuRpc((Menus)prevMenu, 1);
             }
         }
-        else if (!IsHost && uIController.GetCurrentTrainer2Menu() == Menus.MoveSelectionMenu)
+        else if (!IsHost && (uIController.GetCurrentTrainer2Menu() == Menus.MoveSelectionMenu || uIController.GetCurrentTrainer2Menu() == Menus.InBattlePartyDialogueScreen))
         {
             uIController.UpdateMenuRpc(Menus.GeneralBattleMenu, 2);
         }
