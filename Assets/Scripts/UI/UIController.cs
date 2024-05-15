@@ -83,7 +83,7 @@ public class UIController : NetworkBehaviour
     //}
 
     [Rpc(SendTo.ClientsAndHost)]
-    public void UpdateMenuClientRpc(Menus newMenu)
+    private void UpdateMenuClientRpc(Menus newMenu)
     {
         trainer2PrevMenu = trainer2Menu;
         trainer2Menu = newMenu;
@@ -188,7 +188,7 @@ public class UIController : NetworkBehaviour
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    public void UpdateMenuHostRpc(Menus newMenu)
+    private void UpdateMenuHostRpc(Menus newMenu)
     {
         if (!IsHost) return;
         //Debug.Log("Updating the Host's menu");
