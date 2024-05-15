@@ -134,7 +134,6 @@ public class AttackInfoController : NetworkBehaviour
 
     protected void HandleMenuChange(Menus menu)
     {
-        var player = transform.parent.parent.gameObject;
         if (menu == Menus.MoveSelectionMenu)
         {
             attack1 = trainerController.GetPlayer().GetActivePokemon().GetMoveset()[0];

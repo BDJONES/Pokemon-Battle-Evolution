@@ -161,7 +161,8 @@ public class DialogueBoxController : NetworkBehaviour
         if (dialogueBoxText == null)
         {
             Debug.Log("This Label was not found");
-            yield return null;
+            GameManager.Instance.FinishRPCTaskRpc();
+            yield break;
         }
         dialogueBoxText.text = dialouge.ToString();
         //Debug.Log(dialogueBoxText.text);
@@ -176,6 +177,7 @@ public class DialogueBoxController : NetworkBehaviour
         if (dialogueBoxText == null)
         {
             Debug.Log("This Label was not found");
+            GameManager.Instance.FinishRPCTaskRpc();
             yield return null;
         }
         dialogueBoxText.text = dialouge.ToString();
