@@ -100,6 +100,7 @@ public class Leftovers : Item
             {
                 this.holder.SetHPStat(holder.GetHPStat() + hpRegained);
             }
+            await UniTask.WaitForSeconds(1f);
             activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
             // Need to add Dialogue and other Screen Info, which should be easy because I'm the host
             if (userType == 1)

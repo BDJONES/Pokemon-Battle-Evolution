@@ -6,12 +6,12 @@ using UnityEngine.UIElements;
 
 public class Ivs : INetworkSerializable
 {
-    [SerializeField] public int hp;
-    [SerializeField] public int attack;
-    [SerializeField] public int defense;
-    [SerializeField] public int specialAttack;
-    [SerializeField] public int specialDefense;
-    [SerializeField] public int speed;
+    public int hp;
+    public int attack;
+    public int defense;
+    public int specialAttack;
+    public int specialDefense;
+    public int speed;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -22,6 +22,7 @@ public class Ivs : INetworkSerializable
         serializer.SerializeValue(ref specialDefense);
         serializer.SerializeValue(ref speed);
     }
+
     public Ivs()
     {
         hp = 31;

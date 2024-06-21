@@ -9,6 +9,7 @@ public class LifeOrb : Item
     private EventsToTriggerManager eventsToTriggerManager;
     private static event Action<int> LifeOrbTriggerEvent;
     private TrainerController trainerContoller;
+    private Attack currentAttack;
     public LifeOrb()
     {
         GameObject eventsToTriggerGO = GameObject.Find("EventsToTriggerManager");
@@ -16,6 +17,12 @@ public class LifeOrb : Item
         eventsToTriggerManager.OnTriggerEvent += HandlePokemonAttack;
         GameManager.OnStateChange += HandleStateChange;
         LifeOrbTriggerEvent += TriggerEffect;
+        GameManager.LastAttack += AssignLastAttack;
+    }
+
+    private void AssignLastAttack(Attack attack)
+    {
+        currentAttack = attack;
     }
 
     ~LifeOrb()
@@ -51,8 +58,7 @@ public class LifeOrb : Item
 
     private void HandlePokemonAttack(EventsToTrigger e)
     {
-        
-        if (holder == null)
+        if (holder == null || (currentAttack != null && currentAttack.GetAttackCategory() == AttackCategory.Status))
         {
             return;
         }
@@ -103,6 +109,12 @@ public class LifeOrb : Item
             //PokemonInfoController.ChangeOldHP(oldHPStat);
             if (holder.GetHPStat() - lifeOrbCost < 0)
             {
+                GameManager.Instance.SendDialogueToClientRpc($"{holder.GetNickname()} fainted due to Life Orb damage.");
+                GameManager.Instance.SendDialogueToHostRpc($"{holder.GetNickname()} fainted due to Life Orb damage.");
+                while (!GameManager.Instance.RPCManager.AreAllRPCsCompleted())
+                {
+                    await UniTask.Yield();
+                }
                 holder.SetHPStat(0);
             }
             else
@@ -110,7 +122,8 @@ public class LifeOrb : Item
                 holder.SetHPStat(holder.GetHPStat() - lifeOrbCost);
                 Debug.Log($"{holder.GetNickname()}'s HP = {holder.GetHPStat()}");
             }
-            await UniTask.WaitForSeconds(0.3f);
+            // May add add something where a function only activated with OnValueChanged in The Network Variable for HP
+            await UniTask.WaitForSeconds(1f);
             activeRPCs = GameManager.Instance.RPCManager.ActiveRPCs();
             //Debug.Log($"Trainer name is = {holder.transform.parent.parent.gameObject.name}");
             if (holder.transform.parent.parent.gameObject.name == "Me")

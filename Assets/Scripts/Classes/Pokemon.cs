@@ -52,6 +52,7 @@ public abstract class Pokemon: NetworkBehaviour
     [SerializeField] protected Item? heldItem;
     protected int baseHP;
     [SerializeField] protected NetworkVariable<int> hpStat = new NetworkVariable<int>();
+
     protected int baseAttack;
     [SerializeField] protected int attackStat;
     [SerializeField] private NetworkVariable<int> attackStage = new NetworkVariable<int>(0);
@@ -420,6 +421,10 @@ public abstract class Pokemon: NetworkBehaviour
     public void SetNickname(string newNickname)
     {
         nickname = newNickname;
+    }
+    public NetworkVariable<int> GetHPNetworkVariable()
+    {
+        return hpStat;
     }
     public void SetHPStat(int newHP)
     {

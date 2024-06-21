@@ -9,6 +9,7 @@ public abstract class Attack : IPlayerAction
     protected Type type = null!;
     protected AttackCategory moveCategory;
     protected int power;
+    protected int basePower; // May add in the future for the sake of keeping the info the same as in the games
     protected int accuracy;
     protected int priority;
     protected int currPowerPoints;
@@ -109,7 +110,12 @@ public abstract class Attack : IPlayerAction
             int accurateRange = 100 - this.accuracy;
             if (generatedValue < accurateRange)
             {
-                Debug.Log("The Attack Missed");
+                GameManager.Instance.SendDialogueToClientRpc($"{attacker.GetNickname()} missed {attackName}.");
+                GameManager.Instance.SendDialogueToHostRpc($"{attacker.GetNickname()} missed {attackName}.");
+                while (!GameManager.Instance.RPCManager.AreAllRPCsCompleted())
+                {
+                    await UniTask.Yield();
+                }
                 return false;
             }
             else
@@ -268,11 +274,17 @@ public abstract class Attack : IPlayerAction
         }
         return damage;
     }
-    public virtual void DealDamage(int damage, Pokemon attacker, Pokemon target)
+    public async virtual void DealDamage(int damage, Pokemon attacker, Pokemon target)
     {
         if (target.GetHPStat() - damage <= 0)
         {
             target.SetHPStat(0);
+            GameManager.Instance.SendDialogueToClientRpc($"{target.GetNickname()} fainted.");
+            GameManager.Instance.SendDialogueToHostRpc($"{target.GetNickname()} fainted.");
+            while (!GameManager.Instance.RPCManager.AreAllRPCsCompleted())
+            {
+                await UniTask.Yield();
+            }
             Debug.Log("Opponent fainted");
             //Object.Destroy(target.gameObject);
             return;

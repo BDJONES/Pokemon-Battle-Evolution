@@ -1,15 +1,27 @@
-﻿using UnityEditor;
+﻿using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 
 
-public class Evs
+public class Evs : INetworkSerializable
 {
-    [SerializeField] public int hp;
-    [SerializeField] public int attack;
-    [SerializeField] public int defense;
-    [SerializeField] public int specialAttack;
-    [SerializeField] public int specialDefense;
-    [SerializeField] public int speed;
+    public int hp;
+    public int attack;
+    public int defense;
+    public int specialAttack;
+    public int specialDefense;
+    public int speed;
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref hp);
+        serializer.SerializeValue(ref attack);
+        serializer.SerializeValue(ref defense);
+        serializer.SerializeValue(ref specialAttack);
+        serializer.SerializeValue(ref specialDefense);
+        serializer.SerializeValue(ref speed);
+    }
+
     public Evs()
     {
         hp = 0;

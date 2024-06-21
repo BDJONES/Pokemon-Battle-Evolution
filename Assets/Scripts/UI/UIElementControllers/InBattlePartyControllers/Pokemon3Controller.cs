@@ -14,11 +14,11 @@ public class Pokemon3Controller : PartyPokemonController
         }
         if (NetworkManager.Singleton.IsHost)
         {
-            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon2Button, PartyPokemonClicked, 1);
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon3Button, PartyPokemonClicked, 1);
         }
         else
         {
-            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon2Button, PartyPokemonClicked, 2);
+            UIEventSubscriptionManager.Subscribe(battlePartyUIElements.Pokemon3Button, PartyPokemonClicked, 2);
         }
     }
 }

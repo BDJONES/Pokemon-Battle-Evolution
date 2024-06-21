@@ -2,6 +2,6 @@
     <Style src="project://database/Assets/UI/USS/PokemonButton_Styles.uss?fileID=7433441132597879392&amp;guid=bb26127f8cb269c47b86194b467cf527&amp;type=3#PokemonButton_Styles" />
     <Style src="project://database/Assets/UI/USS/PlayerActionButtonAnimation_Style.uss?fileID=7433441132597879392&amp;guid=7c1e34b1b0bb1f242af81bfcefc8dc2f&amp;type=3#PlayerActionButtonAnimation_Style" />
     <ui:VisualElement style="flex-grow: 1; align-items: center; justify-content: center;">
-        <ui:Button text="Pokemon" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PokemonButton" class="pokemonButton buttonPressed" style="height: 90px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(56, 56, 56); border-right-color: rgb(56, 56, 56); border-top-color: rgb(56, 56, 56); border-bottom-color: rgb(56, 56, 56);" />
+        <ui:Button text="Pokemon" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PokemonButton" class="pokemonButton buttonPressed" style="height: 90px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(56, 56, 56); border-right-color: rgb(56, 56, 56); border-top-color: rgb(56, 56, 56); border-bottom-color: rgb(56, 56, 56); background-color: rgb(255, 255, 255);" />
     </ui:VisualElement>
 </ui:UXML>

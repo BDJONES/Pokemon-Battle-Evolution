@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="Back Button" src="project://database/Assets/UI/UXML/Assets/Pokemon%20Party%20UI/Back%20Button.uxml?fileID=9197481963319205126&amp;guid=d7b6966cbefd4a04984ec609c28775ae&amp;type=3#Back Button" />
-    <ui:VisualElement name="Screen" style="flex-grow: 1; background-color: rgba(83, 156, 255, 0.45); align-items: auto; flex-direction: column;">
+    <ui:VisualElement name="Screen" style="flex-grow: 1; background-color: rgb(83, 156, 255); align-items: auto; flex-direction: column;">
         <ui:VisualElement name="TopElements" style="flex-grow: 1; flex-direction: column; justify-content: flex-start; position: relative; width: 1124px; height: 200px; align-items: auto; flex-wrap: nowrap; align-self: center;">
             <ui:VisualElement name="PokemonInfo" style="flex-grow: 1; width: 300px; height: 200px; position: absolute;">
                 <ui:VisualElement name="Name_And_Gender" style="flex-grow: 1; flex-direction: row; justify-content: space-between; align-items: flex-start; align-self: stretch;">
